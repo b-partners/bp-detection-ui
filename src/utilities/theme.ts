@@ -25,7 +25,6 @@ export const theme = createTheme({
     allVariants: {
       color: '#2f2f2f',
     },
-    fontFamily: `"Roboto Regular 400", "Helvetica", "Arial", sans-serif"`,
   },
   components: {
     MuiPaper: {

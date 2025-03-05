@@ -1,10 +1,33 @@
 import { SxProps } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 export const MainStyle: SxProps = {
   padding: 0,
   margin: 0,
-  height: '100vh',
+  minHeight: '100vh',
+  flexDirection: 'column',
   alignItems: 'center',
+  '& #annotator-section': {
+    width: {
+      xs: '90vw',
+      md: '70vw',
+      lg: '50vw',
+    },
+    height: '600px',
+    mb: 10,
+    position: 'relative',
+    '& > .MuiButton-root': {
+      my: 2,
+    },
+    '& .MuiPaper-root': {
+      height: 60,
+      display: 'flex',
+      alignItems: 'center',
+      px: 2,
+      mb: 2,
+      bgcolor: grey[300],
+    },
+  },
   '& .location-input': {
     width: {
       xs: '90vw',
