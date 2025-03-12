@@ -14,7 +14,7 @@ export const MainStyle: SxProps = {
       lg: '50vw',
     },
     height: '600px',
-    mb: 10,
+    mb: 20,
     position: 'relative',
     '& > .MuiButton-root': {
       my: 2,
@@ -59,5 +59,9 @@ export const MainStyle: SxProps = {
       lg: '35vw',
     },
     mt: 10,
+  },
+  '& .progress-bar-detection': {
+    pt: 20,
+    height: '90vh',
   },
 };

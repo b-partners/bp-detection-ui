@@ -21,6 +21,6 @@ export const useDialog = create<DialogState & DialogAction>(set => ({
   content: undefined,
   isOpen: false,
   open(content, options) {
-    set({ content: content, ...options });
+    set({ content: content, isOpen: true, ...options });
   },
 }));

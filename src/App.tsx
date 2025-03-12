@@ -1,17 +1,18 @@
+import { AnnotatorSection, GlobalDialog } from '@/components';
+import { useQueryImageFromAddress } from '@/queries';
+import { MainStyle as style } from '@/style';
+import { scrollToBottom } from '@/utilities';
 import { LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
 import { IconButton, InputBase, Paper, Stack } from '@mui/material';
 import { FormEvent } from 'react';
 import './App.css';
-import { AnnotatorSection } from './components';
-import { useQueryImageFromAddress } from './queries';
-import { MainStyle as style } from './style';
 
 function App() {
   const { imageSrc, isQueryImagePending, queryImage } = useQueryImageFromAddress();
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    queryImage();
+    queryImage(undefined, { onSuccess: scrollToBottom });
   };
 
   return (
@@ -31,6 +32,7 @@ function App() {
         </Stack>
       </Paper>
       {(imageSrc || isQueryImagePending) && <AnnotatorSection imageSrc={imageSrc} />}
+      <GlobalDialog />
     </Stack>
   );
 }
