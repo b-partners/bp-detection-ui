@@ -8,7 +8,7 @@ import { useAddressFrom } from './forms';
 import { scrollToBottom } from './utilities';
 
 function App() {
-  const { imageSrc, isQueryImagePending, queryImage } = useQueryImageFromAddress();
+  const { imageSrc, isQueryImagePending, queryImage, areaPictureDetails } = useQueryImageFromAddress();
   const {
     register,
     formState: { errors },
@@ -38,7 +38,7 @@ function App() {
           <IconButton loading={isQueryImagePending}>{errors['address'] ? <Error /> : <SearchIcon />}</IconButton>
         </Stack>
       </Paper>
-      {(imageSrc || isQueryImagePending) && <AnnotatorSection imageSrc={imageSrc} />}
+      {(imageSrc || isQueryImagePending) && areaPictureDetails && <AnnotatorSection areaPictureDetails={areaPictureDetails} imageSrc={imageSrc} />}
       <GlobalDialog />
     </Stack>
   );

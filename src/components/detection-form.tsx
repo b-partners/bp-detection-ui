@@ -2,14 +2,19 @@ import { useDetectionForm } from '@/forms';
 import { useDialog } from '@/hooks';
 import { Info } from '@mui/icons-material';
 import { Button, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from '@mui/material';
+import { FC } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { BpInput } from './bp-input';
 
-export const DetectionForm = () => {
+interface DetectionFormProps {
+  onValid(): void;
+}
+
+export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
   const { close: closeDialog } = useDialog();
   const form = useDetectionForm();
 
-  const handleSubmit = form.handleSubmit(() => {});
+  const handleSubmit = form.handleSubmit(() => onValid());
 
   return (
     <FormProvider {...form}>
@@ -35,7 +40,7 @@ export const DetectionForm = () => {
       </DialogContent>
       <DialogActions>
         <Button onClick={closeDialog}>Annuler</Button>
-        <Button>Valider</Button>
+        <Button onClick={handleSubmit}>Valider</Button>
       </DialogActions>
     </FormProvider>
   );
