@@ -20,7 +20,9 @@ export const AnnotatorSection: FC<{ imageSrc: string }> = ({ imageSrc }) => {
       <Paper elevation={0}>
         <Typography>Veuillez sélectionner sur l'image suivante votre toiture</Typography>
       </Paper>
+      <Box minHeight='500px'>
       <AnnotatorCanvas allowAnnotation width='100%' height='500px' image={imageSrc} setPolygons={setPolygons} polygonList={polygons} zoom={20} />
+      </Box>
       <Button onClick={handleClickDetectionButton} disabled={polygons.length === 0} loading={isDetectionPending} variant='contained'>
         Valider ma toiture
       </Button>
