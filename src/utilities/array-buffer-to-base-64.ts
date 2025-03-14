@@ -23,7 +23,7 @@ export const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
     binary += String.fromCharCode(byte);
   }
   const base64 = btoa(binary);
-  const typeMime = getMimeType(base64)
+  const typeMime = getMimeType(base64);
 
-  return `data:${typeMime};base64,${base64}`
+  return `data:${typeMime};base64,${base64}`;
 };

@@ -1,4 +1,3 @@
-
 import { FileType } from '@bpartners/typescript-client';
 import { getCached } from './cache';
 
