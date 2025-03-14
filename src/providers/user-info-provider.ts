@@ -18,6 +18,11 @@ export const userInfoProvider = async (apiKey: string) => {
     const currentAccount = getCurrentAccount(accounts);
     userInfo.accountId = currentAccount?.id ?? '';
   }
-  cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '');
+  if (!userInfo.accountHolderId) {
+    const { data: accountHolders } = await bpUserAccountApi(apiKey).getAccountHolders(userInfo.userId ?? '', userInfo.accountId ?? '');
+    const currentAccountHolder = accountHolders[0];
+    userInfo.accountHolderId = currentAccountHolder?.id ?? '';
+  }
+  cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
   return { ...userInfo };
 };
