@@ -7,14 +7,14 @@ import { FormProvider } from 'react-hook-form';
 import { BpInput } from './bp-input';
 
 interface DetectionFormProps {
-  onValid(): void;
+  onValid(receiverEmail: string): void;
 }
 
 export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
   const { close: closeDialog } = useDialog();
   const form = useDetectionForm();
 
-  const handleSubmit = form.handleSubmit(() => onValid());
+  const handleSubmit = form.handleSubmit(({ email }) => onValid(email));
 
   return (
     <FormProvider {...form}>

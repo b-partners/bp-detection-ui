@@ -15,9 +15,9 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const handleClickDetectionButton = () => {
     openDialog(
       <DetectionForm
-        onValid={() => {
+        onValid={(receiverEmail: string) => {
           closeDialog();
-          startDetection(polygons);
+          startDetection({ polygons, receiverEmail });
         }}
       />,
       { style: DialogFormStyle }
