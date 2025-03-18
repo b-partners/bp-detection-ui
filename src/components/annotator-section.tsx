@@ -4,7 +4,7 @@ import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Typography } from '@mui/material';
 import { FC, useState } from 'react';
-import { DetectionForm, DetectionResult, DialogFormStyle } from '.';
+import { DetectionForm, DialogFormStyle } from '.';
 import { useQueryStartDetection } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -43,7 +43,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       >
         Analyser ma toiture
       </Button>
-      {!!geoJsonResult && <DetectionResult />}
     </Box>
   );
 };

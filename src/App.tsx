@@ -1,54 +1,43 @@
-import { AnnotatorSection, GlobalDialog } from '@/components';
-import { useQueryImageFromAddress } from '@/queries';
+import '@/App.css';
+import { GlobalDialog } from '@/components';
+import { AnnotateImageStep, DetectionLoadingStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
+import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
-import { Error, LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
-import { CircularProgress, IconButton, InputBase, Paper, Stack } from '@mui/material';
-import { useEffect } from 'react';
-import './App.css';
-import { useAddressFrom } from './forms';
-import { scrollToBottom } from './utilities';
+import { Stack, Step, StepContent, StepLabel, Stepper } from '@mui/material';
 
 function App() {
-  const { imageSrc, isQueryImagePending, queryImage, areaPictureDetails } = useQueryImageFromAddress();
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useAddressFrom();
-
-  const onSubmit = handleSubmit(
-    data => {
-      queryImage(data.address);
-    },
-    error => {
-      alert(error.address);
-    }
-  );
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [isQueryImagePending]);
+  const { actualStep } = useStep();
 
   return (
     <Stack sx={style}>
       <img alt='bp-ia-logo' src='/assets/images/bp-ia-logo.png' />
-      <Paper onSubmit={onSubmit} component='form' className='location-input' elevation={1}>
-        <Stack>
-          <IconButton>
-            <LocationOnIcon />
-          </IconButton>
-        </Stack>
-        <InputBase {...register('address')} disabled={isQueryImagePending} placeholder='Adresse à analysé' error={!!errors['address']} />
-        <Stack>
-          <IconButton onClick={onSubmit}>
-            {isQueryImagePending && <CircularProgress size={25} />}
-            {!isQueryImagePending && errors['address'] && <Error />}
-            {!isQueryImagePending && !errors['address'] && <SearchIcon />}
-          </IconButton>
-        </Stack>
-      </Paper>
-      {(imageSrc || isQueryImagePending) && areaPictureDetails && <AnnotatorSection areaPictureDetails={areaPictureDetails} imageSrc={imageSrc} />}
-      <GlobalDialog />
+      <Stepper activeStep={actualStep} orientation='vertical'>
+        <Step>
+          <StepLabel>Récupération de votre adresse</StepLabel>
+          <StepContent>
+            <GetAddressStep />
+          </StepContent>
+        </Step>
+        <Step>
+          <StepLabel>Délimitation de votre toiture</StepLabel>
+          <StepContent>
+            <AnnotateImageStep />
+          </StepContent>
+        </Step>
+        <Step>
+          <StepLabel>Analyse de votre toiture</StepLabel>
+          <StepContent>
+            <DetectionLoadingStep />
+          </StepContent>
+        </Step>
+        <Step>
+          <StepLabel>Résulta de l'analyse</StepLabel>
+          <StepContent>
+            <DetectionResultStep />
+          </StepContent>
+        </Step>
+        <GlobalDialog />
+      </Stepper>
     </Stack>
   );
 }

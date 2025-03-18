@@ -1,6 +1,6 @@
 import { Divider, Paper, Stack, Typography } from '@mui/material';
 
-export const DetectionResultItem = () => {
+export const DetectionResultStep = () => {
   return (
     <Stack sx={{ mb: 10 }}>
       <Divider sx={{ my: 10 }} />

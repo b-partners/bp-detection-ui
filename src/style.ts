@@ -41,7 +41,7 @@ export const MainStyle: SxProps = {
     px: 1,
     borderRadius: 5,
   },
-  '& > .location-input > .MuiInputBase-root': {
+  '& .location-input > .MuiInputBase-root': {
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
@@ -49,7 +49,7 @@ export const MainStyle: SxProps = {
     px: 2,
     flexGrow: 1,
   },
-  '& > .location-input > .MuiStack-root': {
+  '& .location-input > .MuiStack-root': {
     justifyContent: 'center',
   },
   '& > img': {
