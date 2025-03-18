@@ -26,6 +26,7 @@ export const MainStyle: SxProps = {
       px: 2,
       mb: 2,
       bgcolor: grey[300],
+      justifyContent: 'space-between',
     },
   },
   '& .location-input': {

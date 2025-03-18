@@ -19,8 +19,8 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
   return (
     <FormProvider {...form}>
       <DialogTitle>
-        <Typography>Veuillez renseigner les informations suivantes</Typography>
-        <Tooltip title="Seule l'adresse email est obligatoire pour que vous puissiez recevoir les résulta de l'analyse de votre toiture.">
+        <Typography>Veuillez saisir les informations suivantes.</Typography>
+        <Tooltip title="Seule l'adresse email est obligatoire afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
           <Info />
         </Tooltip>
       </DialogTitle>
@@ -30,7 +30,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
           <BpInput type='text' name='firstName' label='Prénoms' />
           <BpInput type='tel' name='phone' label='Numéro de téléphone' />
           <BpInput
-            title="L'adresse est obligatoire pour que vous puissiez recevoir les résultats par email"
+            title="L'adresse e-mail est obligatoire afin que vous puissiez recevoir les résultats par courrier électronique."
             type='email'
             name='email'
             label='Adresse Email'
@@ -40,7 +40,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={closeDialog}>Annuler</Button>
-        <Button onClick={handleSubmit}>Valider</Button>
+        <Button onClick={handleSubmit}>Analyser</Button>
       </DialogActions>
     </FormProvider>
   );

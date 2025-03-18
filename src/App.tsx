@@ -2,7 +2,8 @@ import { AnnotatorSection, GlobalDialog } from '@/components';
 import { useQueryImageFromAddress } from '@/queries';
 import { MainStyle as style } from '@/style';
 import { Error, LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
-import { IconButton, InputBase, Paper, Stack } from '@mui/material';
+import { CircularProgress, IconButton, InputBase, Paper, Stack } from '@mui/material';
+import { useEffect } from 'react';
 import './App.css';
 import { useAddressFrom } from './forms';
 import { scrollToBottom } from './utilities';
@@ -17,12 +18,16 @@ function App() {
 
   const onSubmit = handleSubmit(
     data => {
-      queryImage(data.address, { onSuccess: scrollToBottom });
+      queryImage(data.address);
     },
     error => {
       alert(error.address);
     }
   );
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [isQueryImagePending]);
 
   return (
     <Stack sx={style}>
@@ -35,7 +40,11 @@ function App() {
         </Stack>
         <InputBase {...register('address')} disabled={isQueryImagePending} placeholder='Adresse à analysé' error={!!errors['address']} />
         <Stack>
-          <IconButton loading={isQueryImagePending}>{errors['address'] ? <Error /> : <SearchIcon />}</IconButton>
+          <IconButton onClick={onSubmit}>
+            {isQueryImagePending && <CircularProgress size={25} />}
+            {!isQueryImagePending && errors['address'] && <Error />}
+            {!isQueryImagePending && !errors['address'] && <SearchIcon />}
+          </IconButton>
         </Stack>
       </Paper>
       {(imageSrc || isQueryImagePending) && areaPictureDetails && <AnnotatorSection areaPictureDetails={areaPictureDetails} imageSrc={imageSrc} />}
