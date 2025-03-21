@@ -12,37 +12,37 @@ export const DetectionResultStep = () => {
         <Typography variant='h4' mb={2}>
           Résultats de l'analyse :
         </Typography>
-        <Paper className='deep-space'>
+        <Paper>
           <Typography>Surface total : </Typography>
           <Typography variant='h5'>145m²</Typography>
         </Paper>
-        <Paper className='ocean-breeze'>
-          <Typography>Revêtement : </Typography>
+        <Paper>
+          <Typography>Revêtement 1: </Typography>
           <Typography variant='h6'>Ardoise</Typography>
         </Paper>
-        <Paper className='ocean-breeze'>
-          <Typography >Revêtement : </Typography>
+        <Paper>
+          <Typography>Revêtement 1: </Typography>
           <Typography variant='h6'>Asphalte</Typography>
         </Paper>
-        <Paper className='deep-space'>
-          <Typography>Taux d'humidité : </Typography>
+        <Paper>
+          <Typography>Taux d'usures :</Typography>
           <Typography variant='h5'>10%</Typography>
         </Paper>
-        <Paper className='ocean-breeze'>
-          <Typography>Taux de mutation : </Typography>
-          <Typography variant='h6'>Dégradation</Typography>
-        </Paper>
-        <Paper className='ocean-breeze'>
-          <Typography>Obstacle : </Typography>
-          <Typography variant='h6'>Velux</Typography>
-        </Paper>
-        <Paper className='deep-space'>
+        <Paper>
           <Typography>Taux de moisissures :</Typography>
           <Typography variant='h5'>10%</Typography>
         </Paper>
-        <Paper className='deep-space'>
-          <Typography>Taux d'usures :</Typography>
+        <Paper>
+          <Typography>Taux d'humidité : </Typography>
           <Typography variant='h5'>10%</Typography>
+        </Paper>
+        <Paper>
+          <Typography>Taux de mutation : </Typography>
+          <Typography variant='h6'>Dégradation</Typography>
+        </Paper>
+        <Paper>
+          <Typography>Obstacle / Velux : </Typography>
+          <Typography variant='h6'>Oui</Typography>
         </Paper>
       </Stack>
     </Box>
