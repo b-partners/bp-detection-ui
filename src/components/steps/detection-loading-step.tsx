@@ -18,6 +18,7 @@ export const DetectionLoadingStep = () => {
     <Stack className='progress-bar-detection'>
       <Paper>
         <Typography>L'analyse de la toiture en cours</Typography>
+        <Typography>Cela peut prendre un peu de temps. Veuillez ne pas fermer l'onglet suivant.</Typography>
       </Paper>
       <LinearProgress />
     </Stack>

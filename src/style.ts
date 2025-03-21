@@ -10,8 +10,8 @@ export const MainStyle: SxProps = {
   '& #annotator-section': {
     width: {
       xs: '90vw',
-      md: '70vw',
-      lg: '50vw',
+      md: '80vw',
+      lg: '70vw',
     },
     height: '600px',
     mb: 20,
@@ -29,29 +29,6 @@ export const MainStyle: SxProps = {
       justifyContent: 'space-between',
     },
   },
-  '& .location-input': {
-    width: {
-      xs: '90vw',
-      md: '70vw',
-      lg: '50vw',
-    },
-    height: 50,
-    marginY: 10,
-    display: 'flex',
-    px: 1,
-    borderRadius: 5,
-  },
-  '& .location-input > .MuiInputBase-root': {
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    px: 2,
-    flexGrow: 1,
-  },
-  '& .location-input > .MuiStack-root': {
-    justifyContent: 'center',
-  },
   '& > img': {
     objectFit: 'contain',
     width: {
@@ -62,7 +39,21 @@ export const MainStyle: SxProps = {
     mt: 10,
   },
   '& .progress-bar-detection': {
-    pt: 20,
-    height: '90vh',
+    width: {
+      xs: '90vw',
+      md: '80vw',
+      lg: '70vw',
+    },
+    py: 10,
+    '& .MuiPaper-root:first-child': {
+      height: 60,
+      display: 'flex',
+      flexDirection: 'column',
+      p: 2,
+      mb: 2,
+      bgcolor: grey[300],
+      justifyContent: 'center',
+      gap: 1,
+    },
   },
 };

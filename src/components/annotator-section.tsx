@@ -1,4 +1,4 @@
-import { useDialog } from '@/hooks';
+import { useDialog, useStep } from '@/hooks';
 import { AnnotatorCanvas, Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
@@ -12,12 +12,14 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
   const { open: openDialog, close: closeDialog } = useDialog();
 
+  const setStep = useStep(({ setStep }) => setStep);
+
   const handleClickDetectionButton = () => {
     openDialog(
       <DetectionForm
         onValid={(receiverEmail: string) => {
           closeDialog();
-          startDetection({ polygons, receiverEmail });
+          startDetection({ polygons, receiverEmail }, { onSuccess: () => setStep({ actualStep: 2, params: {} }) });
         }}
       />,
       { style: DialogFormStyle }
