@@ -20,7 +20,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
     <FormProvider {...form}>
       <DialogTitle>
         <Typography>Veuillez saisir les informations suivantes.</Typography>
-        <Tooltip title="Seule l'adresse email est obligatoire afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
+        <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
           <Info />
         </Tooltip>
       </DialogTitle>
@@ -28,7 +28,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
         <Stack component='form' onSubmit={handleSubmit}>
           <BpInput type='text' name='lastName' label='Nom' />
           <BpInput type='text' name='firstName' label='Prénoms' />
-          <BpInput type='tel' name='phone' label='Numéro de téléphone' />
+          <BpInput title='Le numéro de téléphone est obligatoire' type='tel' name='phone' label='Numéro de téléphone' required />
           <BpInput
             title="L'adresse e-mail est obligatoire afin que vous puissiez recevoir les résultats par courrier électronique."
             type='email'

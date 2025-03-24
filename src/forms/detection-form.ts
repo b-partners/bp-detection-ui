@@ -10,7 +10,9 @@ const phoneNumberValidator = (phone: string) => {
 const schema = z.object({
   firstName: z.custom(() => true),
   lastName: z.custom(() => true),
-  phone: z.custom(value => !value || phoneNumberValidator(value)),
+  phone: z
+    .string({ required_error: 'Le numéro de téléphone est requis.', message: 'Le numéro de téléphone est requis.' })
+    .refine(value => phoneNumberValidator(value), { message: 'Numéro de téléphone non valide' }),
   email: z.string({ required_error: 'Ce champs est requis.', message: 'Adresse email non valide.' }).email({ message: 'Adresse email non valide.' }),
 });
 
