@@ -13,7 +13,7 @@ const schema = z.object({
   phone: z
     .string({ required_error: 'Le numéro de téléphone est requis.', message: 'Le numéro de téléphone est requis.' })
     .refine(value => phoneNumberValidator(value), { message: 'Numéro de téléphone non valide' }),
-  email: z.string({ required_error: 'Ce champs est requis.', message: 'Adresse email non valide.' }).email({ message: 'Adresse email non valide.' }),
+  email: z.string({ required_error: "L'adresse email  est requis.", message: "L'adresse email  est requis." }).email({ message: 'Adresse email non valide.' }),
 });
 
 const resolver = zodResolver(schema);
