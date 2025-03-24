@@ -4,9 +4,14 @@ import { grey } from '@mui/material/colors';
 export const MainStyle: SxProps = {
   padding: 0,
   margin: 0,
-  minHeight: '100vh',
+  display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  position: 'relative',
+  minHeight: '100vh',
+  '& .MuiStepper-root': {
+    mb: 2,
+  },
   '& #annotator-section': {
     width: {
       xs: '90vw',
@@ -29,7 +34,16 @@ export const MainStyle: SxProps = {
       justifyContent: 'space-between',
     },
   },
-  '& > img': {
+  '& > .img-container > img': {
+    transition: 'all 200ms linear',
+  },
+  '& > .img-container.img-full': {
+    alignSelf: 'center',
+  },
+  '& > .img-container.img-min': {
+    alignSelf: 'flex-start',
+  },
+  '& > .img-container.img-full > img': {
     objectFit: 'contain',
     width: {
       xs: '70vw',
@@ -37,6 +51,13 @@ export const MainStyle: SxProps = {
       lg: '35vw',
     },
     mt: 10,
+    alignSelf: 'center',
+  },
+  '& > .img-container.img-min > img': {
+    objectFit: 'contain',
+    width: '10rem',
+    mt: 2,
+    alignSelf: 'flex-start',
   },
   '& .progress-bar-detection': {
     width: {
