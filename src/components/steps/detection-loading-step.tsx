@@ -10,7 +10,7 @@ export const DetectionLoadingStep = () => {
 
   useEffect(() => {
     if (data) {
-      setStep({ actualStep: 2, params: {} });
+      setStep({ actualStep: 3, params: {} });
     }
   }, [data, setStep]);
 

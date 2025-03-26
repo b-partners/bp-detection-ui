@@ -1,3 +1,4 @@
+import { ReferencerGeoJSON } from '@/providers';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { create } from 'zustand';
 
@@ -6,6 +7,7 @@ interface State {
   params: {
     imageSrc?: string;
     areaPictureDetails?: AreaPictureDetails;
+    geojsonBody?: ReferencerGeoJSON;
   };
 }
 
@@ -16,7 +18,7 @@ interface Action {
 export const useStep = create<State & Action>(set => ({
   params: {},
   setStep(step) {
-    set(() => ({ ...step }));
+    set(prev => ({ ...step, params: { ...prev, ...step.params } }));
   },
   actualStep: 0,
 }));

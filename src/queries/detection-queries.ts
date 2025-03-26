@@ -1,3 +1,4 @@
+import { useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
 import { getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
 import { getImageSize, getQueryParams } from '@/utilities';
@@ -30,9 +31,16 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 
 export const useQueryDetectionResult = () => {
   const { geoDetectionApiKey } = getQueryParams();
+  const geojsonBody = useStep(({ params }) => params.geojsonBody);
+
   const { data, isPending } = useQuery({
     queryKey: ['detection', 'result'],
-    queryFn: () => getDetectionResult(geoDetectionApiKey),
+    queryFn: () => {
+      if (geojsonBody) {
+        return getDetectionResult(geoDetectionApiKey, geojsonBody);
+      }
+      throw new Error();
+    },
     retryDelay: 8000,
     retry: Number.MAX_SAFE_INTEGER,
   });

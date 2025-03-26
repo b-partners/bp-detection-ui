@@ -26,22 +26,17 @@ export const processDetection = async ({ geometry }: GeojsonReturn, emailReceive
 
   cache.detectionId(detectionId);
 
-  const geoJson: ReferencerGeoJSON = {
+  const geoJson = {
     geoServerProperties: geoServerProperties(layers),
     emailReceiver,
     detectableObjectModel: {
-      modelName: 'BP_TOITURE',
-      toitureRevetement: false,
+      modelName: 'BP_ZAN',
       arbre: false,
-      velux: false,
-      panneauPhotovoltaique: false,
-      moisissure: true,
-      usure: true,
-      fissureCassure: false,
-      obstacle: false,
-      cheminee: false,
-      humidite: true,
-      risqueFeu: false,
+      espaceVert: true,
+      toiture: false,
+      voieCarrosable: false,
+      trottoir: true,
+      parking: false,
     },
     geoJsonZone: [
       {
@@ -56,26 +51,26 @@ export const processDetection = async ({ geometry }: GeojsonReturn, emailReceive
     zoneName: 'HOUSES_0',
   };
 
-  const data = await fetch(`${baseUrl}/detections/${detectionId}`, {
+  const data = await fetch(`${baseUrl}/detections/${detectionId}/roofer`, {
     headers: { 'x-api-key': geoDetectionApiKey, 'content-type': 'application/json' },
     method: 'POST',
     body: JSON.stringify(geoJson),
   });
   const result = await data.json();
 
-  return result;
+  return { result, geoJson };
 };
 
-export const getDetectionResult = async (geoDetectionApiKey: string) => {
+export const getDetectionResult = async (geoDetectionApiKey: string, geoJson: ReferencerGeoJSON) => {
   const detectionId = getCached.detectionId() ?? '';
-  const data = await fetch(`${baseUrl}/detections/${detectionId}`, {
-    headers: { 'x-api-key': geoDetectionApiKey },
-    method: 'GET',
+  const data = await fetch(`${baseUrl}/detections/${detectionId}/roofer`, {
+    headers: { 'x-api-key': geoDetectionApiKey, 'content-type': 'application/json' },
+    method: 'POST',
+    body: JSON.stringify(geoJson),
   });
   const result = await data.json();
 
-  if (result?.step.name !== 'MACHINE_DETECTION' || result?.step.name !== 'HUMAN_DETECTION') throw new Error('Not done');
+  if (!result.geoJsonUrl) throw new Error('Not done');
 
-  if (result?.step?.status?.progression !== 'FINISHED') throw new Error('Not done');
   return result;
 };

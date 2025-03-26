@@ -19,7 +19,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       <DetectionForm
         onValid={(receiverEmail: string) => {
           closeDialog();
-          startDetection({ polygons, receiverEmail }, { onSuccess: () => setStep({ actualStep: 2, params: {} }) });
+          startDetection({ polygons, receiverEmail }, { onSuccess: (result) => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) });
         }}
       />,
       { style: DialogFormStyle }
@@ -39,7 +39,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       </Box>
       <Button
         onClick={handleClickDetectionButton}
-        disabled={polygons.length === 0 || (!isDetectionPending && geoJsonResult)}
+        disabled={polygons.length === 0 || (!isDetectionPending && geoJsonResult?.result)}
         loading={isDetectionPending}
         variant='contained'
       >
