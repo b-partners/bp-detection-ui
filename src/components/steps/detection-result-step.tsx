@@ -12,6 +12,8 @@ export const DetectionResultStep = () => {
 
   const { width } = useWindodwsSize()
 
+  console.log(data);
+  
 
   return (
     <Box sx={style}>

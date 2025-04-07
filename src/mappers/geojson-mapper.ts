@@ -46,11 +46,11 @@ const coordinatesToShapeAttributes = (coordinates: Feature['geometry']['coordina
   return res;
 };
 
-export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes) => {
+export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes, offsets: Point) => {
   const points: Point[] = [];
 
   shapeAttributes.all_points_x.forEach((x, index) => {
-    points.push({ x, y: shapeAttributes.all_points_y[index] });
+    points.push({ x: x, y: shapeAttributes.all_points_y[index] });
   });
 
   return points;
@@ -89,18 +89,18 @@ export const geoJsonMapper = {
       [filename]: result,
     };
   },
-  toPolygon(geoJson: ConverterPayload) {
+  toPolygon(geoJson: ConverterPayload, offsets: Point) {
     const regions = geoJson.regions;
 
     const polygons: Polygon[] = [];
 
-    Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
+    Object.values(regions).forEach(({ shape_attributes }) => {
       const { fillColor, strokeColor } = getColorFromMain('#0000ff');
       polygons.push({
         id: v4(),
         fillColor,
         strokeColor,
-        points: geoShapeAttributesToPoints(shape_attributes),
+        points: geoShapeAttributesToPoints(shape_attributes, offsets),
       });
     });
 
