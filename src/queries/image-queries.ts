@@ -1,6 +1,6 @@
 import { arrayBufferToBase64, getFileUrl, getQueryParams } from '@/utilities';
 import { FileType } from '@bpartners/typescript-client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getImageFromAddress } from '../providers';
 
 const mutationFn = async (address: string) => {
@@ -26,4 +26,15 @@ export const useQueryImageFromAddress = () => {
     areaPictureDetails: data?.areaPictureDetails,
     queryImage: mutate,
   };
+};
+
+export const useQueryImageFromUrl = (url?: string) => {
+  const queryUrlFn = async () => {
+    const { apiKey } = getQueryParams();
+    const file = await fetch(url || '', { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
+    const base64 = arrayBufferToBase64(await file.arrayBuffer());
+    return base64;
+  };
+
+  return useQuery({ queryFn: queryUrlFn, queryKey: [url], enabled: !!url });
 };

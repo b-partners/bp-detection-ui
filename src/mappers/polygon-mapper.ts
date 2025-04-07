@@ -2,7 +2,7 @@ import { Geojson, GeojsonReturn, GeoShapeAttributes, Polygon } from '@bpartners/
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { v4 } from 'uuid';
 
-function toGeoShapeAttributes(polygon: Polygon): GeoShapeAttributes {
+const toGeoShapeAttributes = (polygon: Polygon): GeoShapeAttributes => {
   const shapeAttributes: GeoShapeAttributes = {
     all_points_x: [],
     all_points_y: [],
@@ -13,7 +13,7 @@ function toGeoShapeAttributes(polygon: Polygon): GeoShapeAttributes {
     shapeAttributes.all_points_y.push(y);
   });
   return shapeAttributes;
-}
+};
 
 export const polygonMapper = {
   toRefererGeoJson(polygon: Polygon, image_size: number, areaPicture: AreaPictureDetails) {

@@ -2,12 +2,17 @@ import { useStep } from '@/hooks';
 import { AnnotatorCanvas } from '@bpartners/annotator-component';
 import { Box, Paper, Stack, Typography } from '@mui/material';
 import { DetectionResultStepStyle as style } from './styles';
+import { useGeojsonQueryResult, useQueryImageFromUrl } from '@/queries';
 
 export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
+  const { data: base64 } = useQueryImageFromUrl(imageSrc)
+
+  const { data } = useGeojsonQueryResult()
+
   return (
     <Box sx={style}>
-      <Box>{imageSrc && <AnnotatorCanvas width='100%' height='500px' image={imageSrc} setPolygons={() => {}} polygonList={[]} zoom={20} />}</Box>
+      <Box>{imageSrc && <AnnotatorCanvas width='100%' height='500px' image={base64 || ''} setPolygons={() => { }} polygonList={data?.polygons || []} zoom={20} />}</Box>
       <Stack className='text-result'>
         <Typography variant='h4' mb={2}>
           Résultats de l'analyse :
@@ -16,7 +21,13 @@ export const DetectionResultStep = () => {
           <Typography>Surface total : </Typography>
           <Typography variant='h5'>145m²</Typography>
         </Paper>
-        <Paper>
+        {data?.stats.map(({ label, percentage }) => (
+          <Paper>
+            <Typography>{label}</Typography>
+            <Typography variant='h6'>{percentage}%</Typography>
+          </Paper>
+        ))}
+        {/* <Paper>
           <Typography>Revêtement 1: </Typography>
           <Typography variant='h6'>Ardoise</Typography>
         </Paper>
@@ -43,7 +54,7 @@ export const DetectionResultStep = () => {
         <Paper>
           <Typography>Obstacle / Velux : </Typography>
           <Typography variant='h6'>Oui</Typography>
-        </Paper>
+        </Paper> */}
       </Stack>
     </Box>
   );

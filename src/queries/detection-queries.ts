@@ -1,10 +1,11 @@
 import { useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
 import { getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
-import { getImageSize, getQueryParams } from '@/utilities';
+import { cache, getImageSize, getQueryParams } from '@/utilities';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
 
 interface MutationProps {
   polygons: Polygon[];
@@ -16,6 +17,12 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     const imageSize = await getImageSize(src);
     const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
     const refererGeoJson = (await pointsToGeoPoints(geoJson))?.[0];
+
+    const coordinates = refererGeoJson?.geometry.coordinates[0][0];
+    const mappedCoodinates = coordinates?.map(([longitude, latitude]) => ({ longitude, latitude })) || [];
+    const area = getAreaOfPolygon(mappedCoodinates);
+    cache.area(area);
+
     if (!refererGeoJson) return null;
     const { geoDetectionApiKey } = getQueryParams();
     const result = processDetection(refererGeoJson, receiverEmail, geoDetectionApiKey, areaPictureDetails.actualLayer?.name ?? '');
