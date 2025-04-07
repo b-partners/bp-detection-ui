@@ -1,4 +1,4 @@
-import { useStep } from '@/hooks';
+import { useStep, useWindodwsSize } from '@/hooks';
 import { AnnotatorCanvas } from '@bpartners/annotator-component';
 import { Box, Paper, Stack, Typography } from '@mui/material';
 import { DetectionResultStepStyle as style } from './styles';
@@ -10,9 +10,12 @@ export const DetectionResultStep = () => {
 
   const { data } = useGeojsonQueryResult()
 
+  const { width } = useWindodwsSize()
+
+
   return (
     <Box sx={style}>
-      <Box>{imageSrc && <AnnotatorCanvas width='100%' height='500px' image={base64 || ''} setPolygons={() => { }} polygonList={data?.polygons || []} zoom={20} />}</Box>
+      <Box>{imageSrc && <AnnotatorCanvas width={width * 0.7} height='500px' image={base64 || ''} setPolygons={() => { }} polygonList={data?.polygons || []} zoom={20} />}</Box>
       <Stack className='text-result'>
         <Typography variant='h4' mb={2}>
           Résultats de l'analyse :
@@ -22,7 +25,7 @@ export const DetectionResultStep = () => {
           <Typography variant='h5'>145m²</Typography>
         </Paper>
         {data?.stats.map(({ label, percentage }) => (
-          <Paper>
+          <Paper key={label}>
             <Typography>{label}</Typography>
             <Typography variant='h6'>{percentage}%</Typography>
           </Paper>

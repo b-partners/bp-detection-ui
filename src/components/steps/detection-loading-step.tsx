@@ -9,8 +9,10 @@ export const DetectionLoadingStep = () => {
   const setStep = useStep(({ setStep }) => setStep);
 
   useEffect(() => {
+    console.log(data);
+    
     if (data) {
-      setStep({ actualStep: 3, params: {} });
+      setStep({ actualStep: 3, params: { geoJsonResultUrl: data.geoJsonUrl } });
     }
   }, [data, setStep]);
 

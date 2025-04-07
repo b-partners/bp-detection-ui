@@ -1,5 +1,5 @@
-import { ConverterResultGeoJSON, ShapeAttributes } from '@/providers';
-import { GeoShapeAttributes, getColorFromMain, Point, Polygon, PolygonColor } from '@bpartners/annotator-component';
+import { ShapeAttributes } from '@/providers';
+import { GeoShapeAttributes, getColorFromMain, Point, Polygon } from '@bpartners/annotator-component';
 import { v4 } from 'uuid';
 
 interface Feature {
@@ -95,7 +95,7 @@ export const geoJsonMapper = {
     const polygons: Polygon[] = [];
 
     Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
-      const { fillColor, strokeColor } = getColorFromMain(colors[label as keyof typeof colors]);
+      const { fillColor, strokeColor } = getColorFromMain('#0000ff');
       polygons.push({
         id: v4(),
         fillColor,

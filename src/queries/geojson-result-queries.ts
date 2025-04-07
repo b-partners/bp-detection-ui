@@ -32,18 +32,29 @@ export const useGeojsonQueryResult = () => {
   const { areaPictureDetails, geoJsonResultUrl } = useStep(({ params }) => params);
 
   const queryFn = async () => {
-    const geojsonText = await fetch(geoJsonResultUrl);
-    const geojsonInJson = JSON.parse(await geojsonText.text());
+    console.log('here');
+    try {
+      const geojsonText = await fetch(geoJsonResultUrl);
+      const geojsonInJson = JSON.parse(await geojsonText.text());
 
-    const stats = getStatistics(geojsonInJson);
+      console.log('here 1');
 
-    const conveterPayload = geoJsonMapper.toConverterPayloadGeoJSON(geojsonInJson.features, areaPictureDetails?.xTile || 0, areaPictureDetails?.yTile || 0);
+      const stats = getStatistics(geojsonInJson);
+      console.log('here 2');
 
-    const convertedPoints = await geoPointsToPoins(conveterPayload);
+      const conveterPayload = geoJsonMapper.toConverterPayloadGeoJSON(geojsonInJson.features, areaPictureDetails?.xTile || 0, areaPictureDetails?.yTile || 0);
 
-    const polygons = geoJsonMapper.toPolygon(Object.values(convertedPoints)?.[0] as any);
+      const convertedPoints = await geoPointsToPoins(conveterPayload);
+      console.log('here 3');
 
-    return { stats, polygons };
+      const polygons = geoJsonMapper.toPolygon(Object.values(convertedPoints)?.[0] as any);
+
+      console.log('here 4');
+      return { stats, polygons };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
 
   return useQuery({ queryKey: ['geojson-result'], queryFn, enabled: !!geoJsonResultUrl });
