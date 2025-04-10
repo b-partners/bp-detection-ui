@@ -1,15 +1,22 @@
 import { useAddressFrom } from '@/forms';
 import { useStep } from '@/hooks';
-import { useQueryImageFromAddress } from '@/queries';
+import { useLocationQuery, useQueryImageFromAddress } from '@/queries';
 import { Error as ErrorIcon, LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
-import { Box, CircularProgress, IconButton, InputBase, Paper, Stack } from '@mui/material';
-import { useEffect } from 'react';
+import { Box, CircularProgress, debounce, IconButton, InputBase, MenuItem, Paper, Stack } from '@mui/material';
+import { ChangeEvent, useEffect, useMemo } from 'react';
 import { GetAddressStepStyle as style } from './styles';
 
 export const GetAddressStep = () => {
   const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails } = useQueryImageFromAddress();
 
-  const setStep = useStep(e => e.setStep);
+  const {
+    setStep,
+    params: { sessionId },
+  } = useStep();
+
+  const { mutate: findLocation, data } = useLocationQuery(sessionId || '');
+
+  const search = useMemo(() => debounce(findLocation, 1000), []);
 
   useEffect(() => {
     if (imageSrc && areaPictureDetails) {
@@ -18,9 +25,10 @@ export const GetAddressStep = () => {
   }, [imageSrc, areaPictureDetails, setStep]);
 
   const {
-    register,
     formState: { errors },
     handleSubmit,
+    setValue,
+    register,
   } = useAddressFrom();
 
   const onSubmit = handleSubmit(
@@ -32,15 +40,28 @@ export const GetAddressStep = () => {
     }
   );
 
+  const { onChange, ...others } = register('address');
+
+  const handleClickComplete = (text: string) => () => {
+    setValue('address', text);
+    findLocation('');
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const text = event.target.value;
+    setValue('address', text);
+    search(text);
+  };
+
   return (
-    <Box sx={style}>
-      <Paper onSubmit={onSubmit} component='form' className='location-input' elevation={1}>
+    <Stack sx={style} alignItems='center'>
+      <Paper onSubmit={onSubmit} {...others} component='form' className='location-input' elevation={1}>
         <Stack>
           <IconButton>
             <LocationOnIcon />
           </IconButton>
         </Stack>
-        <InputBase {...register('address')} disabled={isQueryImagePending} placeholder='Adresse à analysé' error={!!errors['address']} />
+        <InputBase onChange={handleChange} disabled={isQueryImagePending} placeholder='Adresse à analysé' error={!!errors['address']} />
         <Stack>
           <IconButton onClick={onSubmit}>
             {isQueryImagePending && <CircularProgress size={25} />}
@@ -49,6 +70,17 @@ export const GetAddressStep = () => {
           </IconButton>
         </Stack>
       </Paper>
-    </Box>
+      {data && data.length > 0 && (
+        <Box className='location-list'>
+          <Paper>
+            {data.map(({ description }: any) => (
+              <MenuItem onClick={handleClickComplete(description)} key={description}>
+                {description}
+              </MenuItem>
+            ))}
+          </Paper>
+        </Box>
+      )}
+    </Stack>
   );
 };

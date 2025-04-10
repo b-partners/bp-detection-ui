@@ -49,8 +49,6 @@ export const GetAddressStepStyle: SxProps = {
     md: '80vw',
     lg: '70vw',
   },
-  display: 'flex',
-  justifyContent: 'center',
   '& .location-input': {
     width: {
       xs: '90vw',
@@ -58,10 +56,21 @@ export const GetAddressStepStyle: SxProps = {
       lg: '50vw',
     },
     height: 50,
-    marginY: 10,
+    marginTop: 10,
+    marginBottom: 1,
     display: 'flex',
     px: 1,
     borderRadius: 5,
+  },
+  '& .location-list': {
+    width: {
+      xs: '90vw',
+      md: '70vw',
+      lg: '50vw',
+    },
+    maxHeight: '15rem',
+    overflowY: 'auto',
+    px: 1,
   },
   '& .location-input > .MuiInputBase-root': {
     height: '100%',

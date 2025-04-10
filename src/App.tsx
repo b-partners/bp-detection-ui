@@ -4,6 +4,8 @@ import { AnnotateImageStep, DetectionLoadingStep, DetectionResultStep, GetAddres
 import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
 import { Box, Step, StepLabel, Stepper } from '@mui/material';
+import { useEffect } from 'react';
+import { v4 } from 'uuid';
 
 const steps = [
   {
@@ -25,7 +27,11 @@ const steps = [
 ];
 
 function App() {
-  const { actualStep } = useStep();
+  const { actualStep, setSession } = useStep();
+
+  useEffect(() => {
+    setSession(v4());
+  }, []);
 
   return (
     <Box sx={style}>

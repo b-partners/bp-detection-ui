@@ -94,8 +94,8 @@ export const geoJsonMapper = {
 
     const polygons: Polygon[] = [];
 
-    Object.values(regions).forEach(({ shape_attributes }) => {
-      const { fillColor, strokeColor } = getColorFromMain('#0000ff');
+    Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
+      const { fillColor, strokeColor } = getColorFromMain(colors[label as keyof typeof colors]);
       polygons.push({
         id: v4(),
         fillColor,
