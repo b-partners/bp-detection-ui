@@ -4,43 +4,52 @@ import { grey } from '@mui/material/colors';
 export const DetectionResultStepStyle: SxProps = {
   position: 'relative',
   mb: 10,
+  p: 1,
   width: {
-    xs: '90vw',
-    md: '80vw',
+    xs: '95vw',
+    sm: '90vw',
+    md: '85vw',
     lg: '70vw',
   },
   minHeight: '600px',
   display: 'flex',
   alignItems: 'flex-start',
   flexWrap: 'wrap',
-  '& .text-result': {
-    flexGrow: 1,
-    flexBasis: {
-      md: '30%',
-      xs: '100%',
+  '& .MuiGrid2-root > .title': {
+    fontSize: {
+      xs: '1rem',
+      sm: '1.125rem',
+      md: '1.25rem',
+      lg: '1.5rem',
     },
-    maxHeight: '550px',
-    overflowY: 'scroll',
   },
-  '& > .MuiBox-root': {
-    flexGrow: 1,
-    flexBasis: {
-      md: '68%',
-      xs: '100%',
+  '& .MuiGrid2-root > .MuiPaper-root > .MuiTypography-root.label': {
+    fontSize: {
+      xs: '0.875rem',
+      sm: '1rem',
+      md: '1.125rem',
+      lg: '1.25rem',
     },
+    textTransform: 'lowercase',
+  },
+  '& .MuiGrid2-root > .MuiPaper-root > .MuiTypography-root.result': {
+    fontSize: {
+      xs: '0.875rem',
+      sm: '1rem',
+      md: '1.125rem',
+      lg: '1.25rem',
+    },
+    textTransform: 'capitalize',
   },
   '& .MuiPaper-root': {
-    height: 60,
+    p: 1,
+    my: 1,
     display: 'flex',
     alignItems: 'center',
-    px: 2,
-    py: 2,
-    mb: 2,
-    mr: 1,
     bgcolor: grey[300],
     justifyContent: 'space-between',
   },
-  gap: 2,
+  gap: 1,
 };
 
 export const GetAddressStepStyle: SxProps = {
