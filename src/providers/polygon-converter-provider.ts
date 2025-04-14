@@ -18,7 +18,7 @@ export const pointsToGeoPoints = async (body: Geojson) => {
 
 export const geoPointsToPoins = async (geoJson: any) => {
   try {
-    const res = await fetch(`${process.env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL}`, {
+    const res = await fetch(`${process.env.REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'user-agent': 'postman' },
       body: JSON.stringify(geoJson),

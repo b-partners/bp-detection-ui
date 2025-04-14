@@ -17,8 +17,9 @@ const toGeoShapeAttributes = (polygon: Polygon, offsets: Point): GeoShapeAttribu
 
 export const polygonMapper = {
   toRefererGeoJson(polygon: Polygon, image_size: number, areaPicture: AreaPictureDetails) {
+    const filename = `${v4().replace(/\-/gi, '')}_20_${(areaPicture.xTile || 0) - 1}_${(areaPicture.yTile || 0) - 1}.jpg`;
     const currentGeoJson: Geojson = {
-      filename: areaPicture.filename ?? '',
+      filename,
       regions: {},
       region_attributes: {
         label: 'pathway',

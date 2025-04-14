@@ -40,10 +40,18 @@ export const useGeojsonQueryResult = () => {
     const conveterPayload = geoJsonMapper.toConverterPayloadGeoJSON(geojsonInJson.features, areaPictureDetails?.xTile || 0, areaPictureDetails?.yTile || 0);
 
     const convertedPoints = await geoPointsToPoins(conveterPayload);
+    const polygons: any = [];
 
-    const polygons = geoJsonMapper.toPolygon(Object.values(convertedPoints)?.[0] as any, {
-      x: areaPictureDetails?.xOffset || 0,
-      y: areaPictureDetails?.yOffset || 0,
+    Object.values(convertedPoints).forEach(conveterPayload => {
+      const currentPolygons = geoJsonMapper.toPolygon(
+        conveterPayload as any,
+        {
+          x: areaPictureDetails?.xOffset || 0,
+          y: areaPictureDetails?.yOffset || 0,
+        },
+        { x: (areaPictureDetails?.xTile || 0) - 1, y: (areaPictureDetails?.yTile || 0) - 1 }
+      );
+      polygons.push(...currentPolygons);
     });
 
     return { stats, polygons };

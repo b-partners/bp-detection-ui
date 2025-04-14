@@ -50,7 +50,7 @@ export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes, off
   const points: Point[] = [];
 
   shapeAttributes.all_points_x.forEach((x, index) => {
-    points.push({ x: x, y: shapeAttributes.all_points_y[index] });
+    points.push({ x: x + offsets.x, y: shapeAttributes.all_points_y[index] + offsets.y });
   });
 
   return points;
@@ -65,7 +65,7 @@ const colors = {
 
 export const geoJsonMapper = {
   toConverterPayloadGeoJSON(feature: Feature[], x: number, y: number) {
-    const filename = `${v4().replace(/\-/gi, '')}_20_${x}_${y}.jpg`;
+    const filename = `${v4().replace(/\-/gi, '')}_20_${x - 1}_${y - 1}.jpg`;
     const result: ConverterPayload = {
       size: 1024,
       filename,
@@ -89,9 +89,10 @@ export const geoJsonMapper = {
       [filename]: result,
     };
   },
-  toPolygon(geoJson: ConverterPayload, offsets: Point) {
+  toPolygon(geoJson: ConverterPayload, offsets: Point, tiles: Point) {
     const regions = geoJson.regions;
 
+    const [_, currentXTile, currentYTile] = geoJson.filename.match(/\d+_(\d+)_(\d+)/) || [0, 0, 0];
     const polygons: Polygon[] = [];
 
     Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
@@ -100,7 +101,10 @@ export const geoJsonMapper = {
         id: v4(),
         fillColor,
         strokeColor,
-        points: geoShapeAttributesToPoints(shape_attributes, offsets),
+        points: geoShapeAttributesToPoints(shape_attributes, {
+          x: 1024 * Math.abs(tiles.x - +currentXTile) - offsets.x,
+          y: 1024 * Math.abs(tiles.y - +currentYTile) - offsets.y,
+        }),
       });
     });
 
