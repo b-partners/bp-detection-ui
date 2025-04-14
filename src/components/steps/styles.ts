@@ -50,6 +50,10 @@ export const DetectionResultStepStyle: SxProps = {
     justifyContent: 'space-between',
   },
   gap: 1,
+  '& .color-legend': {
+    height: 20,
+    width: 20,
+  },
 };
 
 export const GetAddressStepStyle: SxProps = {

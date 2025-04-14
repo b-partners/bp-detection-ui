@@ -56,11 +56,14 @@ export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes, off
   return points;
 };
 
-const colors = {
-  PASSAGE_PIETON: '#0000ff',
-  BATI_TUILES: '#ff0000',
-  LINE: '#f0f0f0',
-  ESPACE_VERT: '#00ff00',
+export const detectionResultColors = {
+  TOITURE_REVETEMENT: '#00D084',
+  OBSTACLE: '#FF3F34',
+  HUMIDITE: '#1E90FF',
+  VELUX: '#FFD300',
+  CHEMINEE: '#C71585',
+  USURE: '#FF7F50',
+  MOISISSURE: '#32FF7E',
 };
 
 export const geoJsonMapper = {
@@ -96,7 +99,7 @@ export const geoJsonMapper = {
     const polygons: Polygon[] = [];
 
     Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
-      const { fillColor, strokeColor } = getColorFromMain(colors[label as keyof typeof colors]);
+      const { fillColor, strokeColor } = getColorFromMain(detectionResultColors[label as keyof typeof detectionResultColors]);
       polygons.push({
         id: v4(),
         fillColor,
