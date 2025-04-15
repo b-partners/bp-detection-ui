@@ -24,8 +24,8 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     cache.area(area);
 
     if (!refererGeoJson) return null;
-    const { geoDetectionApiKey } = getQueryParams();
-    const result = processDetection(refererGeoJson, receiverEmail, geoDetectionApiKey, areaPictureDetails.actualLayer?.name ?? '');
+    const { apiKey } = getQueryParams();
+    const result = processDetection(refererGeoJson, receiverEmail, apiKey, areaPictureDetails.actualLayer?.name ?? '');
     return result;
   };
 
@@ -37,14 +37,14 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 };
 
 export const useQueryDetectionResult = () => {
-  const { geoDetectionApiKey } = getQueryParams();
+  const { apiKey } = getQueryParams();
   const geojsonBody = useStep(({ params }) => params.geojsonBody);
 
   const { data, isPending } = useQuery({
     queryKey: ['detection', 'result'],
     queryFn: () => {
       if (geojsonBody) {
-        return getDetectionResult(geoDetectionApiKey, geojsonBody);
+        return getDetectionResult(apiKey, geojsonBody);
       }
       throw new Error();
     },

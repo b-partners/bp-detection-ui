@@ -64,6 +64,7 @@ export const detectionResultColors = {
   CHEMINEE: '#C71585',
   USURE: '#FF7F50',
   MOISISSURE: '#32FF7E',
+  PANNEAU_PHOTOVOLTAIQUE: '#7B61FF',
 };
 
 export const geoJsonMapper = {

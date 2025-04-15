@@ -21,7 +21,7 @@ const geoServerProperties = (layers: string) => ({
   },
 });
 
-export const processDetection = async ({ geometry }: GeojsonReturn, emailReceiver: string, geoDetectionApiKey: string, layers: string) => {
+export const processDetection = async ({ geometry }: GeojsonReturn, emailReceiver: string, apiKey: string, layers: string) => {
   const detectionId = v4();
 
   cache.detectionId(detectionId);
@@ -57,7 +57,7 @@ export const processDetection = async ({ geometry }: GeojsonReturn, emailReceive
   };
 
   const data = await fetch(`${baseUrl}/detections/${detectionId}/roofer`, {
-    headers: { 'x-api-key': geoDetectionApiKey, 'content-type': 'application/json' },
+    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
     method: 'POST',
     body: JSON.stringify(geoJson),
   });
@@ -66,10 +66,10 @@ export const processDetection = async ({ geometry }: GeojsonReturn, emailReceive
   return { result, geoJson };
 };
 
-export const getDetectionResult = async (geoDetectionApiKey: string, geoJson: ReferencerGeoJSON) => {
+export const getDetectionResult = async (apiKey: string, geoJson: ReferencerGeoJSON) => {
   const detectionId = getCached.detectionId() ?? '';
   const data = await fetch(`${baseUrl}/detections/${detectionId}/roofer`, {
-    headers: { 'x-api-key': geoDetectionApiKey, 'content-type': 'application/json' },
+    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
     method: 'POST',
     body: JSON.stringify(geoJson),
   });

@@ -6,23 +6,22 @@ import { useQuery } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
 
 const getStatistics = (geojson: any) => {
-  const areas: Record<string, any> = {};
-  const stats: { percentage: number; label: string }[] = [];
+  const stats: Record<string, any> = {};
   geojson.features.map(({ geometry, properties }: any) => {
     const { label } = properties;
     const coordinates = geometry.coordinates[0][0].map(([x, y]: any) => ({ longitude: x, latitude: y }));
     const currentArea = +getAreaOfPolygon(coordinates);
-    if (areas[label]) {
-      areas[label] += currentArea;
+    if (stats[label]) {
+      stats[label] += currentArea;
     } else {
-      areas[label] = currentArea;
+      stats[label] = currentArea;
     }
   });
 
   const totalArea = getCached.area();
 
-  Object.keys(areas).forEach(key => {
-    stats.push({ percentage: +((100 / totalArea) * areas[key]).toFixed(2), label: key });
+  Object.keys(stats).forEach(key => {
+    stats[key] = +((100 / totalArea) * stats[key]).toFixed(2);
   });
 
   return stats;
