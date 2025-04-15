@@ -18,7 +18,7 @@ export interface GeoJson {
   type: 'FeatureCollection';
 }
 
-interface ConverterPayload {
+export interface ConverterPayload {
   size: number;
   filename: string;
   zoom: number;

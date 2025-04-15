@@ -21,7 +21,7 @@ const geoServerProperties = (layers: string) => ({
   },
 });
 
-export const processDetection = async ({ geometry }: GeojsonReturn, emailReceiver: string, apiKey: string, layers: string) => {
+export const processDetection = async (coordinates: Array<Array<Array<Array<number>>>>, emailReceiver: string, apiKey: string, layers: string) => {
   const detectionId = v4();
 
   cache.detectionId(detectionId);
@@ -46,7 +46,7 @@ export const processDetection = async ({ geometry }: GeojsonReturn, emailReceive
     geoJsonZone: [
       {
         geometry: {
-          coordinates: geometry.coordinates,
+          coordinates,
           type: 'MultiPolygon',
         },
         id: v4(),

@@ -1,6 +1,7 @@
-import { Geojson, GeojsonReturn, GeoShapeAttributes, Point, Polygon } from '@bpartners/annotator-component';
+import { GeojsonReturn, GeoShapeAttributes, Point, Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { v4 } from 'uuid';
+import { ConverterPayload } from './geojson-mapper';
 
 const toGeoShapeAttributes = (polygon: Polygon, offsets: Point): GeoShapeAttributes => {
   const shapeAttributes: GeoShapeAttributes = {
@@ -18,22 +19,28 @@ const toGeoShapeAttributes = (polygon: Polygon, offsets: Point): GeoShapeAttribu
 export const polygonMapper = {
   toRefererGeoJson(polygon: Polygon, image_size: number, areaPicture: AreaPictureDetails) {
     const filename = `${v4().replace(/\-/gi, '')}_20_${(areaPicture.xTile || 0) - 1}_${(areaPicture.yTile || 0) - 1}.jpg`;
-    const currentGeoJson: Geojson = {
+
+    const result: ConverterPayload = {
+      size: image_size,
       filename,
-      regions: {},
-      region_attributes: {
-        label: 'pathway',
-      },
-      image_size,
       zoom: 20,
+      regions: {},
+      base64_img_data: null,
     };
 
-    currentGeoJson.regions[polygon.id] = {
-      id: polygon.id,
-      shape_attributes: toGeoShapeAttributes(polygon, { x: areaPicture.xOffset || 0, y: areaPicture.yOffset || 0 }),
+    result.regions = {
+      '1': {
+        shape_attributes: toGeoShapeAttributes(polygon, { x: areaPicture.xOffset || 0, y: areaPicture.yOffset || 0 }),
+        region_attributes: {
+          label: 'polygon',
+          confidence: 0.7055366635322571,
+        },
+      },
     };
 
-    return currentGeoJson;
+    return {
+      [filename]: result,
+    };
   },
   toGeoJsonZone(refererGeojson: GeojsonReturn) {
     const {

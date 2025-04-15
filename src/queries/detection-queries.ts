@@ -14,19 +14,39 @@ interface MutationProps {
 
 export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPictureDetails) => {
   const mutationFn = async ({ polygons, receiverEmail }: MutationProps) => {
-    const imageSize = await getImageSize(src);
-    const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
-    const refererGeoJson = (await pointsToGeoPoints(geoJson))?.[0];
+    try {
+      const imageSize = await getImageSize(src);
+      const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
+      const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
 
-    const coordinates = refererGeoJson?.geometry.coordinates[0][0];
-    const mappedCoodinates = coordinates?.map(([longitude, latitude]) => ({ longitude, latitude })) || [];
-    const area = getAreaOfPolygon(mappedCoodinates);
-    cache.area(area);
+      const regions = (Object.values(refererGeoJson)[0] as any)?.regions;
+      const { all_points_x, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
 
-    if (!refererGeoJson) return null;
-    const { apiKey } = getQueryParams();
-    const result = processDetection(refererGeoJson, receiverEmail, apiKey, areaPictureDetails.actualLayer?.name ?? '');
-    return result;
+      const coordinates: any[] = [];
+
+      (all_points_x as any[])?.forEach((latitude, index) => {
+        coordinates.push({ latitude, longitude: all_points_y[index] });
+      });
+
+      const area = getAreaOfPolygon(coordinates);
+
+      cache.area(area);
+
+      if (!refererGeoJson) return null;
+
+      const mappedCoordinates: number[][] = [];
+
+      (all_points_x as number[]).forEach((x, index) => {
+        mappedCoordinates.push([all_points_y[index] as number, x as number]);
+      });
+
+      const { apiKey } = getQueryParams();
+      const result = processDetection([[mappedCoordinates]], receiverEmail, apiKey, areaPictureDetails.actualLayer?.name ?? '');
+      return result;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
 
   const { isPending, data, mutate } = useMutation({

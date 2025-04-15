@@ -1,8 +1,8 @@
-import { Geojson, GeojsonReturn } from '@bpartners/annotator-component';
+import { GeojsonReturn } from '@bpartners/annotator-component';
 
-export const pointsToGeoPoints = async (body: Geojson) => {
+export const pointsToGeoPoints = async (body: any) => {
   try {
-    const res = await fetch(`${process.env.REACT_APP_ANNOTATOR_GEO_REFERENCER_API_URL}`, {
+    const res = await fetch(`${process.env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

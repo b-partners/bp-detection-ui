@@ -19,7 +19,7 @@ const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
       <Box className='color-legend' sx={{ bgcolor: detectionResultColors[source as keyof typeof detectionResultColors] }}></Box>
       <Typography className='label'>{label}</Typography>
     </Stack>
-    <Typography className='result'>{percentage}%</Typography>
+    <Typography className='result'>{percentage || 0}%</Typography>
   </Paper>
 );
 
