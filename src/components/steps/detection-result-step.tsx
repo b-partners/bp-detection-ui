@@ -3,7 +3,7 @@ import { detectionResultColors } from '@/mappers/geojson-mapper';
 import { useGeojsonQueryResult, useQueryImageFromUrl } from '@/queries';
 import { getCached } from '@/utilities';
 import { AnnotatorCanvas } from '@bpartners/annotator-component';
-import { Box, Grid2, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid2, Paper, Stack, Typography } from '@mui/material';
 import { FC } from 'react';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -27,7 +27,7 @@ export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
   const { data: base64 } = useQueryImageFromUrl(imageSrc);
 
-  const { data } = useGeojsonQueryResult();
+  const { data, refetch } = useGeojsonQueryResult();
 
   return (
     <Grid2 sx={style} container spacing={2}>
@@ -62,6 +62,7 @@ export const DetectionResultStep = () => {
           </Stack>
           <Typography className='result'>{data?.stats?.['OBSTACLE'] || data?.stats?.['VELUX'] ? 'OUI' : 'NON'}</Typography>
         </Paper>
+        <Button onClick={() => refetch()}>Refresh</Button>
       </Grid2>
     </Grid2>
   );

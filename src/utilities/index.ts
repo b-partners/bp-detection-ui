@@ -1,4 +1,5 @@
 export * from './array-buffer-to-base-64';
+export * from './array-buffer-to-file';
 export * from './before-close';
 export * from './cache';
 export * from './get-file-url';

@@ -1,5 +1,4 @@
-import { cache, getCached } from '@/utilities';
-import { GeojsonReturn } from '@bpartners/annotator-component';
+import { cache, getCached, getQueryParams } from '@/utilities';
 import { v4 } from 'uuid';
 import { ReferencerGeoJSON } from './type';
 
@@ -21,12 +20,8 @@ const geoServerProperties = (layers: string) => ({
   },
 });
 
-export const processDetection = async (coordinates: Array<Array<Array<Array<number>>>>, emailReceiver: string, apiKey: string, layers: string) => {
-  const detectionId = v4();
-
-  cache.detectionId(detectionId);
-
-  const geoJson = {
+const getGeoJsonTemlate = (layers: string, emailReceiver?: string, geoJsonZone?: any) => {
+  return {
     geoServerProperties: geoServerProperties(layers),
     emailReceiver,
     detectableObjectModel: {
@@ -43,21 +38,36 @@ export const processDetection = async (coordinates: Array<Array<Array<Array<numb
       humidite: true,
       risqueFeu: false,
     },
-    geoJsonZone: [
-      {
-        geometry: {
-          coordinates,
-          type: 'MultiPolygon',
-        },
-        id: v4(),
-        zoom: 21,
-      },
-    ],
+    geoJsonZone,
     zoneName: 'HOUSES_0',
   };
+};
+
+export const processDetection = async (layers: string, coordinates?: Array<Array<Array<Array<number>>>>, emailReceiver?: string) => {
+  const cachedDetectionId = getCached.detectionId();
+  const detectionId = cachedDetectionId || v4();
+  const { apiKey } = getQueryParams();
+  cache.detectionId(detectionId);
+
+  const geoJson = getGeoJsonTemlate(
+    layers,
+    emailReceiver,
+    coordinates
+      ? [
+          {
+            geometry: {
+              coordinates,
+              type: 'MultiPolygon',
+            },
+            id: v4(),
+            zoom: 21,
+          },
+        ]
+      : []
+  );
 
   const data = await fetch(`${baseUrl}/detections/${detectionId}/roofer`, {
-    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
+    headers: { 'x-api-key': apiKey || '', 'content-type': 'application/json' },
     method: 'POST',
     body: JSON.stringify(geoJson),
   });
@@ -78,4 +88,19 @@ export const getDetectionResult = async (apiKey: string, geoJson: ReferencerGeoJ
   if (!result.geoJsonUrl) throw new Error('Not done');
 
   return result;
+};
+
+export const sendImageToDetect = async (image: File) => {
+  const detectionId = getCached.detectionId();
+  const { apiKey } = getQueryParams();
+  const result = await fetch(`${baseUrl}/detections/${detectionId}/image`, {
+    method: 'POST',
+    body: image,
+    headers: {
+      'x-api-key': apiKey,
+      'content-type': image.type,
+    },
+  });
+
+  return await result.json();
 };

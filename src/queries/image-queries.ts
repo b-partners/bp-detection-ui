@@ -1,14 +1,32 @@
-import { arrayBufferToBase64, getFileUrl, getQueryParams } from '@/utilities';
+import { useStep } from '@/hooks';
+import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, getQueryParams } from '@/utilities';
 import { FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getImageFromAddress } from '../providers';
+import { v4 } from 'uuid';
+import { getImageFromAddress, processDetection, sendImageToDetect } from '../providers';
 
-const mutationFn = async (address: string) => {
+const mutationFn = (actualStep: number) => async (address: string) => {
   const { apiKey } = getQueryParams();
   const areaPictureDetails = await getImageFromAddress(apiKey, address);
   const fileUrl = getFileUrl(areaPictureDetails?.fileId ?? '', FileType.AREA_PICTURE);
   const file = await fetch(fileUrl, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
-  const fileArrayBuffer = arrayBufferToBase64(await file.arrayBuffer());
+  const imageAsArrayBuffer = await file.arrayBuffer();
+
+  const fileArrayBuffer = arrayBufferToBase64(imageAsArrayBuffer);
+  // create the detection without polygon
+  await processDetection(areaPictureDetails.actualLayer?.name ?? '');
+
+  try {
+    // send the received image as file to the backend
+    if (actualStep === 0) {
+      const filename = `${v4().replace(/\-/gi, '')}_20_${(areaPictureDetails?.xTile || 0) - 1}_${(areaPictureDetails?.yTile || 0) - 1}.jpg`;
+      const imageAsFile = arrayBuffeToFile(imageAsArrayBuffer, filename, file.headers.get('Content-Type') || 'application/octet-stream');
+      await sendImageToDetect(imageAsFile);
+    }
+    // send the received image as file to the backend
+  } catch (err) {
+    console.log({ err });
+  }
 
   return {
     areaPictureDetails,
@@ -18,7 +36,8 @@ const mutationFn = async (address: string) => {
 };
 
 export const useQueryImageFromAddress = () => {
-  const { isPending, data, mutate } = useMutation({ mutationKey: ['image from address'], mutationFn });
+  const { actualStep } = useStep();
+  const { isPending, data, mutate } = useMutation({ mutationKey: ['image from address'], mutationFn: mutationFn(actualStep) });
 
   return {
     isQueryImagePending: isPending,
@@ -31,9 +50,10 @@ export const useQueryImageFromAddress = () => {
 export const useQueryImageFromUrl = (url?: string) => {
   const queryUrlFn = async () => {
     const { apiKey } = getQueryParams();
-    const file = await fetch(url || '', { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
-    const base64 = arrayBufferToBase64(await file.arrayBuffer());
-    return base64;
+    const result = await fetch(url || '', { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
+    const imageAsArrayBuffer = await result.arrayBuffer();
+
+    return arrayBufferToBase64(imageAsArrayBuffer);
   };
 
   return useQuery({ queryFn: queryUrlFn, queryKey: [url], enabled: !!url });

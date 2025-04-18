@@ -14,39 +14,33 @@ interface MutationProps {
 
 export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPictureDetails) => {
   const mutationFn = async ({ polygons, receiverEmail }: MutationProps) => {
-    try {
-      const imageSize = await getImageSize(src);
-      const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
-      const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
+    const imageSize = await getImageSize(src);
+    const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
+    const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
 
-      const regions = (Object.values(refererGeoJson)[0] as any)?.regions;
-      const { all_points_x, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
+    const regions = (Object.values(refererGeoJson)[0] as any)?.regions;
+    const { all_points_x, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
 
-      const coordinates: any[] = [];
+    const coordinates: any[] = [];
 
-      (all_points_x as any[])?.forEach((latitude, index) => {
-        coordinates.push({ latitude, longitude: all_points_y[index] });
-      });
+    (all_points_x as any[])?.forEach((latitude, index) => {
+      coordinates.push({ latitude, longitude: all_points_y[index] });
+    });
 
-      const area = getAreaOfPolygon(coordinates);
+    const area = getAreaOfPolygon(coordinates);
 
-      cache.area(area);
+    cache.area(area);
 
-      if (!refererGeoJson) return null;
+    if (!refererGeoJson) return null;
 
-      const mappedCoordinates: number[][] = [];
+    const mappedCoordinates: number[][] = [];
 
-      (all_points_x as number[]).forEach((x, index) => {
-        mappedCoordinates.push([all_points_y[index] as number, x as number]);
-      });
+    polygons[0].points.forEach(({ x, y }) => {
+      mappedCoordinates.push([y, x]);
+    });
 
-      const { apiKey } = getQueryParams();
-      const result = processDetection([[mappedCoordinates]], receiverEmail, apiKey, areaPictureDetails.actualLayer?.name ?? '');
-      return result;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    const result = processDetection(areaPictureDetails.actualLayer?.name ?? '', [[mappedCoordinates]], receiverEmail);
+    return result;
   };
 
   const { isPending, data, mutate } = useMutation({
