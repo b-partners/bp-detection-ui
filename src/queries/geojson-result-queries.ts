@@ -49,16 +49,11 @@ export const useGeojsonQueryResult = () => {
     const polygons: any = [];
 
     Object.values(converterPayload).forEach(conveterPayload => {
-      const currentPolygons = geoJsonMapper.toPolygon(
-        conveterPayload as any,
-        {
-          x: areaPictureDetails?.xOffset || 0,
-          y: areaPictureDetails?.yOffset || 0,
-        },
-        { x: (areaPictureDetails?.xTile || 0) - 1, y: (areaPictureDetails?.yTile || 0) - 1 }
-      );
+      const currentPolygons = geoJsonMapper.toPolygon(conveterPayload as any);
       polygons.push(...currentPolygons);
     });
+
+    console.log(polygons);
 
     // localStorage.clear();
 

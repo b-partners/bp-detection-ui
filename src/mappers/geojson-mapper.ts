@@ -46,11 +46,11 @@ const coordinatesToShapeAttributes = (coordinates: Feature['geometry']['coordina
   return res;
 };
 
-export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes, offsets: Point) => {
+export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes) => {
   const points: Point[] = [];
 
   shapeAttributes.all_points_x.forEach((x, index) => {
-    points.push({ x: x + offsets.x, y: shapeAttributes.all_points_y[index] + offsets.y });
+    points.push({ x: x, y: shapeAttributes.all_points_y[index] });
   });
 
   return points;
@@ -93,10 +93,9 @@ export const geoJsonMapper = {
       [filename]: result,
     };
   },
-  toPolygon(geoJson: ConverterPayload, offsets: Point, tiles: Point) {
+  toPolygon(geoJson: ConverterPayload) {
     const regions = geoJson.regions;
 
-    const [_, currentXTile, currentYTile] = geoJson.filename.match(/\d+_(\d+)_(\d+)/) || [0, 0, 0];
     const polygons: Polygon[] = [];
 
     Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
@@ -105,10 +104,7 @@ export const geoJsonMapper = {
         id: v4(),
         fillColor,
         strokeColor,
-        points: geoShapeAttributesToPoints(shape_attributes, {
-          x: 1024 * Math.abs(tiles.x - +currentXTile) - offsets.x,
-          y: 1024 * Math.abs(tiles.y - +currentYTile) - offsets.y,
-        }),
+        points: geoShapeAttributesToPoints(shape_attributes),
       });
     });
 
