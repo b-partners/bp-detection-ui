@@ -45,15 +45,12 @@ export const useGeojsonQueryResult = () => {
 
     const stats = getStatistics(convertedPayload);
 
-    // const convertedPoints = await geoPointsToPoins(conveterPayload);
     const polygons: any = [];
 
     Object.values(converterPayload).forEach(conveterPayload => {
       const currentPolygons = geoJsonMapper.toPolygon(conveterPayload as any);
       polygons.push(...currentPolygons);
     });
-
-    console.log(polygons);
 
     // localStorage.clear();
 

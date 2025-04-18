@@ -27,7 +27,7 @@ export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
   const { data: base64 } = useQueryImageFromUrl(imageSrc);
 
-  const { data, refetch } = useGeojsonQueryResult();
+  const { data } = useGeojsonQueryResult();
 
   return (
     <Grid2 sx={style} container spacing={2}>
@@ -62,7 +62,6 @@ export const DetectionResultStep = () => {
           </Stack>
           <Typography className='result'>{data?.stats?.['OBSTACLE'] || data?.stats?.['VELUX'] ? 'OUI' : 'NON'}</Typography>
         </Paper>
-        <Button onClick={() => refetch()}>Refresh</Button>
       </Grid2>
     </Grid2>
   );

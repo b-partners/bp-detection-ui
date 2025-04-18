@@ -57,14 +57,11 @@ export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes) => 
 };
 
 export const detectionResultColors = {
-  TOITURE_REVETEMENT: '#00D084',
   OBSTACLE: '#FF3F34',
   HUMIDITE: '#1E90FF',
-  VELUX: '#FFD300',
-  CHEMINEE: '#C71585',
+  VELUX: '#FF3F34',
   USURE: '#FF7F50',
   MOISISSURE: '#32FF7E',
-  PANNEAU_PHOTOVOLTAIQUE: '#7B61FF',
 };
 
 export const geoJsonMapper = {
@@ -79,14 +76,16 @@ export const geoJsonMapper = {
     };
 
     feature.forEach(({ geometry: { coordinates }, properties: { label } }, index) => {
-      const region = {
-        shape_attributes: coordinatesToShapeAttributes(coordinates),
-        region_attributes: {
-          label,
-          confidence: 0.7055366635322571,
-        },
-      };
-      result.regions[index] = region;
+      if (label !== 'TOITURE_REVETEMENT') {
+        const region = {
+          shape_attributes: coordinatesToShapeAttributes(coordinates),
+          region_attributes: {
+            label,
+            confidence: 0.7055366635322571,
+          },
+        };
+        result.regions[index] = region;
+      }
     });
 
     return {
