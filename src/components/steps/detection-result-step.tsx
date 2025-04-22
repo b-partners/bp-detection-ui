@@ -1,9 +1,9 @@
 import { useStep } from '@/hooks';
-import { detectionResultColors } from '@/mappers/geojson-mapper';
+import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, useQueryImageFromUrl } from '@/queries';
 import { getCached } from '@/utilities';
 import { AnnotatorCanvas } from '@bpartners/annotator-component';
-import { Box, Button, Grid2, Paper, Stack, Typography } from '@mui/material';
+import { Box, Grid2, Paper, Stack, Typography } from '@mui/material';
 import { FC } from 'react';
 import { DetectionResultStepStyle as style } from './styles';
 

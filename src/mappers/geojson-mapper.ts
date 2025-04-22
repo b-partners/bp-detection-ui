@@ -1,39 +1,9 @@
 import { ShapeAttributes } from '@/providers';
 import { GeoShapeAttributes, getColorFromMain, Point, Polygon } from '@bpartners/annotator-component';
 import { v4 } from 'uuid';
+import { detectionResultColors } from './constants';
+import { ConverterPayload, Feature } from './types';
 
-interface Feature {
-  type: 'Feature';
-  properties: {
-    confidence: number;
-    label: string;
-  };
-  geometry: {
-    type: 'MultiPolygon';
-    coordinates: Array<Array<Array<number[]>>>;
-  };
-}
-export interface GeoJson {
-  features: Feature[];
-  type: 'FeatureCollection';
-}
-
-export interface ConverterPayload {
-  size: number;
-  filename: string;
-  zoom: number;
-  regions: Record<
-    string,
-    {
-      shape_attributes: ShapeAttributes;
-      region_attributes: {
-        label: string;
-        confidence: number;
-      };
-    }
-  >;
-  base64_img_data: any;
-}
 
 const coordinatesToShapeAttributes = (coordinates: Feature['geometry']['coordinates']) => {
   const res: GeoShapeAttributes = { all_points_x: [], all_points_y: [], name: 'polygon' };
@@ -54,14 +24,6 @@ export const geoShapeAttributesToPoints = (shapeAttributes: ShapeAttributes) => 
   });
 
   return points;
-};
-
-export const detectionResultColors = {
-  OBSTACLE: '#FF3F34',
-  HUMIDITE: '#1E90FF',
-  VELUX: '#FF3F34',
-  USURE: '#FF7F50',
-  MOISISSURE: '#32FF7E',
 };
 
 export const geoJsonMapper = {

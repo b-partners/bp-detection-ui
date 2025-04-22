@@ -1,7 +1,7 @@
 import { GeojsonReturn, GeoShapeAttributes, Point, Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { v4 } from 'uuid';
-import { ConverterPayload } from './geojson-mapper';
+import { ConverterPayload } from './types';
 
 const toGeoShapeAttributes = (polygon: Polygon, offsets: Point): GeoShapeAttributes => {
   const shapeAttributes: GeoShapeAttributes = {
