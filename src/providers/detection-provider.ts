@@ -1,4 +1,4 @@
-import { cache, getCached, getQueryParams } from '@/utilities';
+import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
 import { ReferencerGeoJSON } from './type';
 
@@ -46,7 +46,7 @@ const getGeoJsonTemlate = (layers: string, emailReceiver?: string, geoJsonZone?:
 export const processDetection = async (layers: string, coordinates?: Array<Array<Array<Array<number>>>>, emailReceiver?: string) => {
   const cachedDetectionId = getCached.detectionId();
   const detectionId = cachedDetectionId || v4();
-  const { apiKey } = getQueryParams();
+  const { apiKey } = ParamsUtilities.getQueryParams();
   cache.detectionId(detectionId);
 
   const geoJson = getGeoJsonTemlate(
@@ -92,7 +92,7 @@ export const getDetectionResult = async (apiKey: string, geoJson: ReferencerGeoJ
 
 export const sendImageToDetect = async (image: File) => {
   const detectionId = getCached.detectionId();
-  const { apiKey } = getQueryParams();
+  const { apiKey } = ParamsUtilities.getQueryParams();
   const result = await fetch(`${baseUrl}/detections/${detectionId}/image`, {
     method: 'POST',
     body: image,

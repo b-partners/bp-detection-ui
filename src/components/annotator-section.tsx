@@ -45,6 +45,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         disabled={polygons.length === 0 || (!isDetectionPending && geoJsonResult?.result)}
         loading={isDetectionPending}
         variant='contained'
+        data-cy='process-detection-button'
       >
         Analyser ma toiture
       </Button>

@@ -1,12 +1,12 @@
 import { useStep } from '@/hooks';
-import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, getQueryParams } from '@/utilities';
+import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, ParamsUtilities } from '@/utilities';
 import { FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { v4 } from 'uuid';
 import { getImageFromAddress, processDetection, sendImageToDetect } from '../providers';
 
 const mutationFn = (actualStep: number) => async (address: string) => {
-  const { apiKey } = getQueryParams();
+  const { apiKey } = ParamsUtilities.getQueryParams();
   const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, address);
   const fileUrl = getFileUrl(areaPictureDetails?.fileId ?? '', FileType.AREA_PICTURE);
   const file = await fetch(fileUrl, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
@@ -51,7 +51,7 @@ export const useQueryImageFromAddress = () => {
 
 export const useQueryImageFromUrl = (url?: string) => {
   const queryUrlFn = async () => {
-    const { apiKey } = getQueryParams();
+    const { apiKey } = ParamsUtilities.getQueryParams();
     const result = await fetch(url || '', { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
     const imageAsArrayBuffer = await result.arrayBuffer();
 

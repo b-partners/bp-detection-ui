@@ -61,7 +61,13 @@ export const GetAddressStep = () => {
             <LocationOnIcon />
           </IconButton>
         </Stack>
-        <InputBase onChange={handleChange} disabled={isQueryImagePending} placeholder='Adresse à analysé' error={!!errors['address']} />
+        <InputBase
+          onChange={handleChange}
+          data-cy='address-search-input'
+          disabled={isQueryImagePending}
+          placeholder='Adresse à analysé'
+          error={!!errors['address']}
+        />
         <Stack>
           <IconButton onClick={onSubmit}>
             {isQueryImagePending && <CircularProgress size={25} />}

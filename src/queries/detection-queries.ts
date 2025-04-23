@@ -1,7 +1,7 @@
 import { useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
 import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
-import { cache, getCached, getImageSize, getQueryParams } from '@/utilities';
+import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -21,7 +21,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
   } = useStep();
 
   const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
-    const { apiKey } = getQueryParams();
+    const { apiKey } = ParamsUtilities.getQueryParams();
     const imageSize = await getImageSize(src);
     const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
     const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
@@ -64,7 +64,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 };
 
 export const useQueryDetectionResult = () => {
-  const { apiKey } = getQueryParams();
+  const { apiKey } = ParamsUtilities.getQueryParams();
   const geojsonBody = useStep(({ params }) => params.geojsonBody);
 
   const { data, isPending } = useQuery({
