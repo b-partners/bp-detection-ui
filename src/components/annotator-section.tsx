@@ -17,9 +17,12 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const handleClickDetectionButton = () => {
     openDialog(
       <DetectionForm
-        onValid={(receiverEmail: string) => {
+        onValid={({ email, lastName, firstName, phone }) => {
           closeDialog();
-          startDetection({ polygons, receiverEmail }, { onSuccess: (result) => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) });
+          startDetection(
+            { polygons, receiverEmail: email, phone, firstName, lastName },
+            { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) }
+          );
         }}
       />,
       { style: DialogFormStyle }
