@@ -7,7 +7,7 @@ import { ChangeEvent, useEffect, useMemo } from 'react';
 import { GetAddressStepStyle as style } from './styles';
 
 export const GetAddressStep = () => {
-  const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails } = useQueryImageFromAddress();
+  const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails, prospect } = useQueryImageFromAddress();
 
   const {
     setStep,
@@ -19,10 +19,10 @@ export const GetAddressStep = () => {
   const search = useMemo(() => debounce(findLocation, 1000), []);
 
   useEffect(() => {
-    if (imageSrc && areaPictureDetails) {
-      setStep({ actualStep: 1, params: { imageSrc, areaPictureDetails } });
+    if (imageSrc && areaPictureDetails && prospect) {
+      setStep({ actualStep: 1, params: { imageSrc, areaPictureDetails, prospect } });
     }
-  }, [imageSrc, areaPictureDetails, setStep]);
+  }, [imageSrc, areaPictureDetails, setStep, prospect]);
 
   const {
     formState: { errors },

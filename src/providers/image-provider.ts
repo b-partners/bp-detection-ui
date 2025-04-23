@@ -5,7 +5,7 @@ import { userInfoProvider } from './user-info-provider';
 
 export const getImageFromAddress = async (apiKey: string, address: string) => {
   const { accountId, accountHolderId } = await userInfoProvider(apiKey);
-  const { data: prospect } = await bpProspectApi(apiKey).updateProspects(accountHolderId ?? 'F', [
+  const { data: prospect } = await bpProspectApi(apiKey).updateProspects(accountHolderId ?? '', [
     {
       address,
       id: v4(),
@@ -25,5 +25,5 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
     },
   });
 
-  return areaPictureDetails;
+  return { areaPictureDetails, prospect: prospect?.[0] };
 };

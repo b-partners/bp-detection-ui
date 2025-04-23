@@ -1,5 +1,5 @@
 import { ReferencerGeoJSON } from '@/providers';
-import { AreaPictureDetails } from '@bpartners/typescript-client';
+import { AreaPictureDetails, Prospect } from '@bpartners/typescript-client';
 import { create } from 'zustand';
 
 interface State {
@@ -10,6 +10,7 @@ interface State {
     geojsonBody?: ReferencerGeoJSON;
     geoJsonResultUrl?: any;
     sessionId?: string;
+    prospect?: Prospect;
   };
 }
 

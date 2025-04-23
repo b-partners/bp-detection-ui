@@ -7,7 +7,7 @@ import { getImageFromAddress, processDetection, sendImageToDetect } from '../pro
 
 const mutationFn = (actualStep: number) => async (address: string) => {
   const { apiKey } = getQueryParams();
-  const areaPictureDetails = await getImageFromAddress(apiKey, address);
+  const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, address);
   const fileUrl = getFileUrl(areaPictureDetails?.fileId ?? '', FileType.AREA_PICTURE);
   const file = await fetch(fileUrl, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
   const imageAsArrayBuffer = await file.arrayBuffer();
@@ -32,6 +32,7 @@ const mutationFn = (actualStep: number) => async (address: string) => {
     areaPictureDetails,
     fileUrl,
     fileArrayBuffer,
+    prospect,
   };
 };
 
@@ -43,6 +44,7 @@ export const useQueryImageFromAddress = () => {
     isQueryImagePending: isPending,
     imageSrc: data?.fileArrayBuffer ?? '',
     areaPictureDetails: data?.areaPictureDetails,
+    prospect: data?.prospect,
     queryImage: mutate,
   };
 };
