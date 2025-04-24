@@ -2,13 +2,14 @@ import App from '@/App';
 import { cache, ParamsUtilities, theme } from '@/utilities';
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { account_holder_mock, account_mock, area_picture_mock, detectionMock, locations_mock, prospect_mock, whoami_mock } from './mocks';
+import { account_holder_mock, account_mock, area_picture_mock, detection_mock, locations_mock, mercator_mock, prospect_mock, whoami_mock } from './mocks';
 
 const queryClient = new QueryClient();
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
-// const process_detection_sel = 'process-detection-button';
+const process_detection_sel = 'process-detection-button';
+const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('<App />', () => {
   it('Test the app', () => {
@@ -31,9 +32,17 @@ describe('<App />', () => {
     // prospect & areaPictures & get image
 
     // detection
-    cy.intercept('POST', `/detections/**/roofer`, detectionMock).as('createDetection');
-    cy.intercept('POST', `/detections/**/image`, detectionMock).as('createDetectionImage');
+    cy.intercept('POST', `/detections/**/roofer`, detection_mock).as('createDetection');
+    cy.intercept('GET', `/detections/**/roofer`, detection_mock).as('getDetection');
+    cy.intercept('POST', `/detections/**/image`, detection_mock).as('createDetectionImage');
+    cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
+      'getDetectionResultGeojson'
+    );
     // detection
+
+    // points conversion
+    cy.intercept('POST', `/Prod/mercator`, mercator_mock).as('createDetectionImage');
+    // points conversion
 
     cy.mount(
       <QueryClientProvider client={queryClient}>
@@ -67,7 +76,7 @@ describe('<App />', () => {
     cy.wait('@getAccountHolders');
     cy.wait('@createProspect');
     cy.wait('@createAreaPicture');
-    cy.wait('@createDetection').then(() => cache.detectionId(detectionMock.id));
+    cy.wait('@createDetection').then(() => cache.detectionId(detection_mock.id));
     cy.wait('@createDetectionImage');
 
     cy.contains("Veuillez sélectionner votre toiture sur l'image suivante.");
@@ -77,7 +86,7 @@ describe('<App />', () => {
     cy.contains('Analyse de votre toiture').should('not.have.class', 'Mui-active');
     //steppers state
 
-    // cy.dataCy(process_detection_sel).should('have.a.property', 'disabled').should('eq', true);
+    cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
 
     cy.contains('zoom +').click();
 
@@ -88,5 +97,24 @@ describe('<App />', () => {
     cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
 
     cy.contains('zoom -').click();
+    cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
+
+    cy.dataCy(process_detection_sel).click();
+
+    cy.contains('Veuillez saisir les informations suivantes.');
+
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('123987456');
+    cy.dataName('email').type('john@gmail.com');
+
+    cy.dataCy(process_detection_on_form_sel).click();
+
+    cy.wait('@getDetectionResultGeojson');
+
+    cy.contains("Taux d'usure");
+    cy.contains('Taux de moisissure');
+    cy.contains("Taux d'humidité");
+    cy.contains('Obstacle / Velux');
   });
 });

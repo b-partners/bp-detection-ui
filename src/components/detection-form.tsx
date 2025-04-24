@@ -47,7 +47,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={closeDialog}>Annuler</Button>
-        <Button onClick={handleSubmit}>Analyser</Button>
+        <Button onClick={handleSubmit} data-cy='process-detection-on-form-button'>Analyser</Button>
       </DialogActions>
     </FormProvider>
   );

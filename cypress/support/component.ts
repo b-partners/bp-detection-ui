@@ -19,6 +19,7 @@ import './commands';
 import { mount } from 'cypress/react';
 
 const dataCy = (selector: string, otherSelectors?: string) => cy.get(`[data-cy="${selector}"] ${otherSelectors || ''}`);
+const dataName = (selector: string, otherSelectors?: string) => cy.get(`[name="${selector}"] ${otherSelectors || ''}`);
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -29,12 +30,14 @@ declare global {
     interface Chainable {
       mount: typeof mount;
       dataCy: typeof dataCy;
+      dataName: typeof dataName;
     }
   }
 }
 
 Cypress.Commands.add('mount', mount);
 Cypress.Commands.add('dataCy', dataCy);
+Cypress.Commands.add('dataName', dataName);
 
 // Example use:
 // cy.mount(<MyComponent />)
