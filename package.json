@@ -8,27 +8,44 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.{js,ts,tsx}\" \"./**/*.{json,yml,yaml}\""
+    "format": "prettier --write \"src/**/*.{js,ts,tsx}\" \"./**/*.{json,yml,yaml}\"",
+    "test": "cypress run --component",
+    "test:open": "cypress open --component"
   },
   "dependencies": {
+    "@bpartners/annotator-component": "^0.13.0",
+    "@bpartners/typescript-client": "^0.65.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",
+    "@hookform/resolvers": "^4.1.3",
     "@mui/icons-material": "^6.4.6",
     "@mui/material": "^6.4.6",
+    "@tanstack/react-query": "^5.67.1",
+    "axios": "^0.21.4 || ^1.6.1",
+    "geolib": "^3.3.4",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
+    "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-hook-form": "^7.54.2",
+    "uuid": "^9.0.1",
+    "zod": "^3.24.2",
+    "zustand": "^5.0.3"
   },
   "peerDependencies": {
+    "axios": "^0.21.4 || ^1.6.1",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/node": "^22.14.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "cypress": "^14.2.0",
     "eslint": "^9.21.0",
+    "eslint-plugin-cypress": "^4.3.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
@@ -36,6 +53,7 @@
     "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }

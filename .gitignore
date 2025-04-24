@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+*.rest
+mock
+*.mock.*
+
+# cypress files
+cypress/screenshots
+cypress/videos
+cypress/downloads
