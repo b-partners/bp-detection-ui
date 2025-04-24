@@ -20,7 +20,7 @@ const geoServerProperties = (layers: string) => ({
   },
 });
 
-const getGeoJsonTemlate = (layers: string, emailReceiver?: string, geoJsonZone?: any) => {
+const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: string, geoJsonZone?: any) => {
   return {
     geoServerProperties: geoServerProperties(layers),
     emailReceiver,
@@ -39,11 +39,11 @@ const getGeoJsonTemlate = (layers: string, emailReceiver?: string, geoJsonZone?:
       risqueFeu: false,
     },
     geoJsonZone,
-    zoneName: 'HOUSES_0',
+    zoneName,
   };
 };
 
-export const processDetection = async (layers: string, coordinates?: Array<Array<Array<Array<number>>>>, emailReceiver?: string) => {
+export const processDetection = async (layers: string, address: string, coordinates?: Array<Array<Array<Array<number>>>>, emailReceiver?: string) => {
   const cachedDetectionId = getCached.detectionId();
   const detectionId = cachedDetectionId || v4();
   const { apiKey } = ParamsUtilities.getQueryParams();
@@ -51,6 +51,7 @@ export const processDetection = async (layers: string, coordinates?: Array<Array
 
   const geoJson = getGeoJsonTemlate(
     layers,
+    address,
     emailReceiver,
     coordinates
       ? [

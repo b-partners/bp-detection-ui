@@ -14,7 +14,7 @@ const mutationFn = (actualStep: number) => async (address: string) => {
 
   const fileArrayBuffer = arrayBufferToBase64(imageAsArrayBuffer);
   // create the detection without polygon
-  await processDetection(areaPictureDetails.actualLayer?.name ?? '');
+  await processDetection(areaPictureDetails.actualLayer?.name ?? '', address);
 
   try {
     // send the received image as file to the backend

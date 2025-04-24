@@ -53,7 +53,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       ]);
     }
 
-    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', [[mappedCoordinates]], receiverEmail);
+    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [[mappedCoordinates]], receiverEmail);
   };
 
   const { isPending, data, mutate } = useMutation({
