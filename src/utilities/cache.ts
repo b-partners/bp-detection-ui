@@ -3,6 +3,7 @@ const ACCOUNT_ID_ITEM = 'ACCOUNT_ID_ITEM';
 const ACCOUNT_HOLDER_ID_ITEM = 'ACCOUNT_HOLDER_ID_ITEM';
 const DETECTION_ID_ITEM = 'DETECTION_ID_ITEM';
 const AREA_ITEM = 'AREA_ITEM';
+const EMAIL_SENT_ITEM = 'EMAIL_SENT_ITEM';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -15,6 +16,9 @@ export const cache = {
   },
   area(area: number) {
     localStorage.setItem(AREA_ITEM, `${area}`);
+  },
+  isEmailSent() {
+    localStorage.setItem(EMAIL_SENT_ITEM, 'true');
   },
 };
 
@@ -31,10 +35,16 @@ export const getCached = {
   area() {
     return +(localStorage.getItem(AREA_ITEM) || '0');
   },
+  isEmailSent() {
+    return !!localStorage.getItem(EMAIL_SENT_ITEM);
+  },
 };
 
 export const clearCached = {
   detectionId() {
     localStorage.removeItem(DETECTION_ID_ITEM);
+  },
+  isEmailSent() {
+    localStorage.removeItem(EMAIL_SENT_ITEM);
   },
 };

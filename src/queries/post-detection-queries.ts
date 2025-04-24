@@ -1,5 +1,6 @@
 import { useStep } from '@/hooks';
 import { sendPdfToMail, sendRooferInformationsToMail } from '@/providers';
+import { cache } from '@/utilities';
 import { useMutation } from '@tanstack/react-query';
 import { RefObject } from 'react';
 import generatePDF, { Margin, Options, Resolution } from 'react-to-pdf';
@@ -37,6 +38,7 @@ export const usePostDetectionQueries = () => {
       lastName: prospect?.name,
       phone: prospect?.phone,
     });
+    cache.isEmailSent();
   };
 
   const { mutate: postDetection } = useMutation({ mutationFn, mutationKey: ['postDetectionQuery'] });

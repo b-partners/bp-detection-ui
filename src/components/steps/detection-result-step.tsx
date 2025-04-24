@@ -33,7 +33,7 @@ export const DetectionResultStep = () => {
   const sendRooferInfo = usePostDetectionQueries();
 
   useEffect(() => {
-    if (data?.stats) {
+    if (data?.stats && !getCached.isEmailSent()) {
       sendRooferInfo(stepResultRef);
     }
   }, [data, stepResultRef]);
