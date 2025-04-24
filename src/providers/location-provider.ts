@@ -1,8 +1,8 @@
 import { ParamsUtilities } from '@/utilities';
 import { autocompleteApi } from './api';
 
-export const locationProvider = async (_sessionId: string, query: string) => {
+export const locationProvider = async (sessionId: string, query: string) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
-  const { data } = await autocompleteApi(apiKey).autoCompleteAddress(query);
+  const { data } = await autocompleteApi(apiKey).autoCompleteAddress(query, sessionId);
   return data;
 };
