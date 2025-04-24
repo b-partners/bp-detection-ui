@@ -12,6 +12,7 @@ export const DetectionResultStepStyle: SxProps = {
     lg: '70vw',
   },
   minHeight: '600px',
+  height: 'fit-content',
   display: 'flex',
   alignItems: 'flex-start',
   flexWrap: 'wrap',

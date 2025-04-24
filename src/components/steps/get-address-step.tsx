@@ -1,6 +1,7 @@
 import { useAddressFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { useLocationQuery, useQueryImageFromAddress } from '@/queries';
+import { clearCached } from '@/utilities';
 import { Error as ErrorIcon, LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
 import { Box, CircularProgress, debounce, IconButton, InputBase, MenuItem, Paper, Stack } from '@mui/material';
 import { ChangeEvent, useEffect, useMemo } from 'react';
@@ -39,6 +40,10 @@ export const GetAddressStep = () => {
       alert(error.address);
     }
   );
+
+  useEffect(() => {
+    clearCached.detectionId();
+  }, []);
 
   const { onChange, ...others } = register('address');
 

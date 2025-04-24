@@ -1,6 +1,6 @@
 import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
-import { ReferencerGeoJSON } from './type';
+import { ReferencerGeoJSON, RooferInformations } from './type';
 
 const baseUrl = process.env.REACT_APP_GEO_DETECTION_API ?? '';
 
@@ -100,6 +100,36 @@ export const sendImageToDetect = async (image: File) => {
     headers: {
       'x-api-key': apiKey,
       'content-type': image.type,
+    },
+  });
+
+  return await result.json();
+};
+
+export const sendPdfToMail = async (pdf: File) => {
+  const detectionId = getCached.detectionId();
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const result = await fetch(`${baseUrl}/detections/${detectionId}/pdf`, {
+    method: 'POST',
+    body: pdf,
+    headers: {
+      'x-api-key': apiKey,
+      'content-type': pdf.type,
+    },
+  });
+
+  return await result.json();
+};
+
+export const sendRooferInformationsToMail = async (info: RooferInformations) => {
+  const detectionId = getCached.detectionId();
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const result = await fetch(`${baseUrl}/detections/${detectionId}/roofer/email`, {
+    method: 'POST',
+    body: JSON.stringify(info),
+    headers: {
+      'x-api-key': apiKey,
+      'content-type': 'application/json',
     },
   });
 

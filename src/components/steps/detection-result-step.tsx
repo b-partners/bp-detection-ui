@@ -1,10 +1,10 @@
 import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
-import { useGeojsonQueryResult, useQueryImageFromUrl } from '@/queries';
+import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { getCached } from '@/utilities';
 import { AnnotatorCanvas } from '@bpartners/annotator-component';
-import { Box, Grid2, Paper, Stack, Typography } from '@mui/material';
-import { FC } from 'react';
+import { Box, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
+import { FC, useEffect, useRef } from 'react';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -23,14 +23,23 @@ const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
   </Paper>
 );
 
+const cover_types = ['ARDOISE', 'ASPHALT'];
+
 export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
   const { data: base64 } = useQueryImageFromUrl(imageSrc);
-
+  const stepResultRef = useRef<HTMLDivElement>(null);
   const { data } = useGeojsonQueryResult();
+  const sendRooferInfo = usePostDetectionQueries();
+
+  useEffect(() => {
+    if (data?.stats) {
+      sendRooferInfo(stepResultRef);
+    }
+  }, [data, stepResultRef]);
 
   return (
-    <Grid2 sx={style} container spacing={2}>
+    <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
       <Grid2 size={{ xs: 12, md: 8 }}>
         {imageSrc && (
           <AnnotatorCanvas
@@ -51,6 +60,15 @@ export const DetectionResultStep = () => {
         <Paper>
           <Typography className='label'>Surface total : </Typography>
           <Typography className='result'>{getCached.area().toFixed(2)}m²</Typography>
+        </Paper>
+        <Paper>
+          <TextField fullWidth label='Revêtement' select>
+            {cover_types.map(option => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
         </Paper>
         <ResultItem label="Taux d'usure" source='USURE' percentage={data?.stats?.['USURE']} />
         <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.stats?.['MOISISSURE']} />

@@ -18,6 +18,8 @@ interface MutationProps {
 export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPictureDetails) => {
   const {
     params: { prospect },
+    setStep,
+    actualStep,
   } = useStep();
 
   const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
@@ -48,9 +50,10 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     });
 
     if (prospect) {
-      await bpProspectApi(apiKey).updateProspects(getCached.userInfo().accountHolderId || '', [
+      const { data } = await bpProspectApi(apiKey).updateProspects(getCached.userInfo().accountHolderId || '', [
         { ...prospect, email: receiverEmail, firstName, name: lastName, phone },
       ]);
+      setStep({ params: { prospect: data[0] }, actualStep });
     }
 
     return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [[mappedCoordinates]], receiverEmail);

@@ -32,3 +32,9 @@ export const getCached = {
     return +(localStorage.getItem(AREA_ITEM) || '0');
   },
 };
+
+export const clearCached = {
+  detectionId() {
+    localStorage.removeItem(DETECTION_ID_ITEM);
+  },
+};
