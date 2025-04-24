@@ -11,7 +11,7 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-describe('<App />', () => {
+describe('Component testing', () => {
   it('Test the app', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
     cy.intercept('GET', '/location*', locations_mock).as('location-search');

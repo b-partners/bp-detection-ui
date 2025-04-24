@@ -35,7 +35,7 @@ jobs:
         run: |
           sh ./initAWS.sh imagery ${{ secrets.BPARTNERS_ANNOTATOR_CLIENT_AWS_ACCESS_KEY_ID }} ${{ secrets.BPARTNERS_ANNOTATOR_CLIENT_AWS_SECRET_ACCESS_KEY }} ${{ env.AWS_REGION }}
           sh ./initNpmrc.sh imagery annotator-imagery-store npm-bpartners-imagery-app ${{ secrets.BP_ANNOTATOR_AWS_ID }}
-          
+
       - run: npm install --legacy-peer-deps
       - run: |
           echo REACT_APP_BPARTNERS_API_URL=${{ env.REACT_APP_BPARTNERS_API_URL }} > .env

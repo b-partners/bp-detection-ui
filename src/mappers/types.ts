@@ -1,4 +1,4 @@
-import { ShapeAttributes } from "@/providers";
+import { ShapeAttributes } from '@/providers';
 
 export type GeoCoordinates = Array<Array<Array<number[]>>>;
 

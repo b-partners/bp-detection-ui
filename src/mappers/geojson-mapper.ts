@@ -4,7 +4,6 @@ import { v4 } from 'uuid';
 import { detectionResultColors } from './constants';
 import { ConverterPayload, Feature } from './types';
 
-
 const coordinatesToShapeAttributes = (coordinates: Feature['geometry']['coordinates']) => {
   const res: GeoShapeAttributes = { all_points_x: [], all_points_y: [], name: 'polygon' };
 

@@ -47,7 +47,6 @@ export interface GeoServerParameter {
   srs: string;
 }
 
-
 export interface ConverterPayloadGeoJSON {
   properties: Properties;
   type: string;
