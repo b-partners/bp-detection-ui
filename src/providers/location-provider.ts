@@ -1,4 +1,8 @@
-export const locationProvider = async (sessionId: string, query: string) => {
-  const result = await fetch(`http://localhost:8080/location?` + `query="${query}"` + `&sessiontoken=${sessionId}`);
-  return await result.json();
+import { ParamsUtilities } from '@/utilities';
+import { autocompleteApi } from './api';
+
+export const locationProvider = async (_sessionId: string, query: string) => {
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const { data } = await autocompleteApi(apiKey).autoCompleteAddress(query);
+  return data;
 };
