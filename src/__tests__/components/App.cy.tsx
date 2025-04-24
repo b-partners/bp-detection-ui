@@ -14,7 +14,7 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 describe('Component testing', () => {
   it('Test the app', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
-    cy.intercept('GET', '/location*', locations_mock).as('location-search');
+    cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
 
     // user informations
     cy.intercept('GET', '/whoami', whoami_mock).as('getWhoami');
@@ -44,6 +44,11 @@ describe('Component testing', () => {
     cy.intercept('POST', `/Prod/mercator`, mercator_mock).as('createDetectionImage');
     // points conversion
 
+    // email message
+    cy.intercept('POST', `/detections/${detection_mock.id}/pdf`, {}).as('sendPdf');
+    cy.intercept('POST', `/detections/${detection_mock.id}/roofer/email`, {}).as('sendUserInfo');
+    // email message
+
     cy.mount(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
@@ -68,8 +73,6 @@ describe('Component testing', () => {
     cy.contains('24 rue mozart mock 3');
 
     cy.contains('24 rue mozart mock 2').click();
-
-    cy.dataCy(search_input_sel).type('{enter}');
 
     cy.wait('@getWhoami');
     cy.wait('@getAccounts');

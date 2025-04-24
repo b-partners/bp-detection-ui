@@ -23,7 +23,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "types": ["cypress"]
+    "types": ["cypress", "node"]
   },
   "include": ["src", "cypress"]
 }

@@ -92,3 +92,11 @@ export interface ShapeAttributes {
   all_points_y: number[];
   name: string;
 }
+
+export interface RooferInformations {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  address?: string;
+}

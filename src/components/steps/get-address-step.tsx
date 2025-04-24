@@ -1,6 +1,7 @@
 import { useAddressFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { useLocationQuery, useQueryImageFromAddress } from '@/queries';
+import { clearCached } from '@/utilities';
 import { Error as ErrorIcon, LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
 import { Box, CircularProgress, debounce, IconButton, InputBase, MenuItem, Paper, Stack } from '@mui/material';
 import { ChangeEvent, useEffect, useMemo } from 'react';
@@ -16,7 +17,7 @@ export const GetAddressStep = () => {
 
   const { mutate: findLocation, data } = useLocationQuery(sessionId || '');
 
-  const search = useMemo(() => debounce(findLocation, 1000), []);
+  const search = useMemo(() => debounce(findLocation, 300), []);
 
   useEffect(() => {
     if (imageSrc && areaPictureDetails && prospect) {
@@ -40,11 +41,17 @@ export const GetAddressStep = () => {
     }
   );
 
+  useEffect(() => {
+    clearCached.detectionId();
+    clearCached.isEmailSent();
+  }, []);
+
   const { onChange, ...others } = register('address');
 
   const handleClickComplete = (text: string) => () => {
     setValue('address', text);
     findLocation('');
+    onSubmit();
   };
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
