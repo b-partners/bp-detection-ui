@@ -16,7 +16,7 @@ export const GetAddressStep = () => {
 
   const { mutate: findLocation, data } = useLocationQuery(sessionId || '');
 
-  const search = useMemo(() => debounce(findLocation, 1000), []);
+  const search = useMemo(() => debounce(findLocation, 300), []);
 
   useEffect(() => {
     if (imageSrc && areaPictureDetails && prospect) {
@@ -45,6 +45,7 @@ export const GetAddressStep = () => {
   const handleClickComplete = (text: string) => () => {
     setValue('address', text);
     findLocation('');
+    onSubmit();
   };
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
