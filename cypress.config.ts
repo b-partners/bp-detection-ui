@@ -9,5 +9,6 @@ export default defineConfig({
       framework: 'react',
       bundler: 'vite',
     },
+    specPattern: 'src/__tests__/components/*.cy.{tsx,ts}',
   },
 });

@@ -26,3 +26,8 @@ dist-ssr
 *.rest
 mock
 *.mock.*
+
+# cypress files
+cypress/screenshots
+cypress/videos
+cypress/downloads

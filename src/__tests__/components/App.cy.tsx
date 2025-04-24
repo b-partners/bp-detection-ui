@@ -1,57 +1,14 @@
-import { AreaPictureDetails, AreaPictureImageSource } from '@bpartners/typescript-client';
+import App from '@/App';
+import { cache, ParamsUtilities, theme } from '@/utilities';
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import App from './App';
-import { cache, ParamsUtilities, theme } from './utilities';
+import { account_holder_mock, account_mock, area_picture_mock, detectionMock, locations_mock, prospect_mock, whoami_mock } from './mocks';
 
 const queryClient = new QueryClient();
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
 // const process_detection_sel = 'process-detection-button';
-
-const locations_mock = [
-  { description: '24 rue mozart mock' },
-  { description: '24 rue mozart mock 1' },
-  { description: '24 rue mozart mock 2' },
-  { description: '24 rue mozart mock 3' },
-];
-
-const whoami_mock = {
-  user: {
-    id: 'user-mock-id',
-  },
-};
-
-const account_mock = {
-  id: 'account-mock-id',
-};
-
-const account_holder_mock = {
-  id: 'account-holder-mock-id',
-};
-
-const prospect_mock = {
-  id: 'prospect-mock-id',
-};
-
-const area_picture_mock: AreaPictureDetails = {
-  fileId: 'file-mock-id',
-  id: 'area-picture-mock-id',
-  actualLayer: {
-    id: 'actual-layer-mock-id',
-    source: AreaPictureImageSource.GEOSERVER,
-    name: 'actual-layer-mock',
-    departementName: 'actual-layer-departement-mock',
-  },
-  address: '24 rue mozart mock 2',
-  shiftNb: 0,
-  filename: 'filename_1000_1000_zoom.jpg',
-};
-
-const detectionMock = {
-  id: 'detection-mock-id',
-};
 
 describe('<App />', () => {
   it('Test the app', () => {
