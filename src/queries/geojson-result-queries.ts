@@ -52,8 +52,6 @@ export const useGeojsonQueryResult = () => {
       polygons.push(...currentPolygons);
     });
 
-    // localStorage.clear();
-
     return { stats, polygons };
   };
 

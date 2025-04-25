@@ -2,9 +2,9 @@ import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { getCached } from '@/utilities';
-import { AnnotatorCanvas } from '@bpartners/annotator-component';
 import { Box, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useEffect, useRef } from 'react';
+import { AnnotatorCanvasCustom } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -41,17 +41,7 @@ export const DetectionResultStep = () => {
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
       <Grid2 size={{ xs: 12, md: 8 }}>
-        {imageSrc && (
-          <AnnotatorCanvas
-            pointRadius={0}
-            width='100%'
-            height='500px'
-            image={base64 || ''}
-            setPolygons={() => {}}
-            polygonList={data?.polygons || []}
-            zoom={20}
-          />
-        )}
+        {imageSrc && <AnnotatorCanvasCustom setPolygons={() => {}} polygonList={data?.polygons || []} image={base64 || ''} />}
       </Grid2>
       <Grid2 size={{ xs: 12, md: 4 }}>
         <Typography className='title' mb={2}>

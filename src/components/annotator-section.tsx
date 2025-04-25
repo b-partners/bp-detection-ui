@@ -1,10 +1,10 @@
 import { useDialog, useStep } from '@/hooks';
-import { AnnotatorCanvas, Polygon } from '@bpartners/annotator-component';
+import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Typography } from '@mui/material';
 import { FC, useState } from 'react';
-import { DetectionForm, DialogFormStyle } from '.';
+import { AnnotatorCanvasCustom, DetectionForm, DialogFormStyle } from '.';
 import { useQueryStartDetection } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -38,7 +38,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         </IconButton>
       </Paper>
       <Box minHeight='500px'>
-        <AnnotatorCanvas allowAnnotation width='100%' height='500px' image={imageSrc} setPolygons={setPolygons} polygonList={polygons} zoom={20} />
+        <AnnotatorCanvasCustom allowAnnotation setPolygons={setPolygons} polygonList={polygons} image={imageSrc} />
       </Box>
       <Button
         onClick={handleClickDetectionButton}
