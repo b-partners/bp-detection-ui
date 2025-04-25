@@ -10,7 +10,7 @@ export const MainStyle: SxProps = {
   position: 'relative',
   minHeight: '100vh',
   '& .MuiStepper-root': {
-    mb: 2,
+    mb: 4,
   },
   '& #annotator-section': {
     width: {

@@ -9,7 +9,7 @@ const generateLocalPdf = async (ref: RefObject<HTMLDivElement | null>, address: 
   const options: Options = {
     filename: 'res.pdf',
     method: 'build',
-    resolution: Resolution.LOW,
+    resolution: Resolution.MEDIUM,
     page: { orientation: 'landscape', margin: Margin.MEDIUM },
     canvas: { mimeType: 'image/png', qualityRatio: 1 },
     overrides: {
