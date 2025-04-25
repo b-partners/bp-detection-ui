@@ -10,14 +10,7 @@ export const AnnotatorCanvasCustom: FC<Omit<AnnotatorCanvasProps, 'buttonsCompon
   } = useStep();
   return (
     <>
-      <AnnotatorCanvas
-        {...props}
-        buttonsComponent={callbacks => <AnnotatorCustomButton callbacks={callbacks} />}
-        pointRadius={0}
-        width='100%'
-        height='500px'
-        zoom={20}
-      />
+      <AnnotatorCanvas {...props} buttonsComponent={callbacks => <AnnotatorCustomButton callbacks={callbacks} />} width='100%' height='500px' zoom={20} />
       <Stack textAlign='center'>
         <Typography>Source: {areaPictureDetails?.actualLayer?.source}</Typography>
       </Stack>

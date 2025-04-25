@@ -41,7 +41,7 @@ export const DetectionResultStep = () => {
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
       <Grid2 size={{ xs: 12, md: 8 }}>
-        {imageSrc && <AnnotatorCanvasCustom setPolygons={() => {}} polygonList={data?.polygons || []} image={base64 || ''} />}
+        {imageSrc && <AnnotatorCanvasCustom setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={base64 || ''} />}
       </Grid2>
       <Grid2 size={{ xs: 12, md: 4 }}>
         <Typography className='title' mb={2}>
