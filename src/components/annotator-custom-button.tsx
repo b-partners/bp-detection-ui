@@ -18,13 +18,13 @@ export const AnnotatorCustomButton: FC<Record<'callbacks', ScaleCallbacks>> = ({
         </Typography>
       </Stack>
       <Stack direction='row'>
-        <IconButton onClick={scaleUp}>
+        <IconButton data-cy='zoom-in' onClick={scaleUp}>
           <ZoomIn />
         </IconButton>
-        <IconButton onClick={scaleReste}>
+        <IconButton data-cy='zoom-reset' onClick={scaleReste}>
           <ZoomInMap />
         </IconButton>
-        <IconButton onClick={scaleDown}>
+        <IconButton data-cy='zoom-out' onClick={scaleDown}>
           <ZoomOut />
         </IconButton>
       </Stack>

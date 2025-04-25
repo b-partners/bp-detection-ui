@@ -91,7 +91,7 @@ describe('Component testing', () => {
 
     cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
 
-    cy.contains('zoom +').click();
+    cy.dataCy('zoom-in').click();
 
     cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
     cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
@@ -99,7 +99,7 @@ describe('Component testing', () => {
     cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
     cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
 
-    cy.contains('zoom -').click();
+    cy.dataCy('zoom-out').click();
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
 
     cy.dataCy(process_detection_sel).click();
