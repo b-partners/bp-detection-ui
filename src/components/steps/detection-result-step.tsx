@@ -3,8 +3,8 @@ import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { getCached } from '@/utilities';
 import { Box, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
-import { FC, useEffect, useRef } from 'react';
-import { AnnotatorCanvasCustom } from '..';
+import { FC, useRef } from 'react';
+import { AnnotatorCanvasCustom, SlopeSelect } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -23,7 +23,19 @@ const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
   </Paper>
 );
 
-const cover_types = ['ARDOISE', 'ASPHALT'];
+export const ANNOTATION_COVERING = [
+  { value: 'tuiles-canal', label: 'Tuiles canal' },
+  { value: 'tuiles-plates', label: 'Tuiles plates' },
+  { value: 'ardoise', label: 'Ardoise' },
+  { value: 'zinc', label: 'Zinc' },
+  { value: 'shingle', label: 'Shingle' },
+  { value: 'beton', label: 'Béton' },
+  { value: 'bac-acier', label: 'Bac acier' },
+  { value: 'bardeaux-bitumineux', label: 'Bardeaux bitumineux' },
+  { value: 'fibro-ciment', label: 'Fibro-ciment' },
+  { value: 'membrane-elastomere', label: 'Membrane élastomère' },
+  { value: 'autres', label: 'Autres' },
+];
 
 export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
@@ -32,11 +44,11 @@ export const DetectionResultStep = () => {
   const { data } = useGeojsonQueryResult();
   const sendRooferInfo = usePostDetectionQueries();
 
-  useEffect(() => {
+  const handleChange = () => {
     if (data?.stats && !getCached.isEmailSent()) {
       sendRooferInfo(stepResultRef);
     }
-  }, [data, stepResultRef]);
+  };
 
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
@@ -52,13 +64,25 @@ export const DetectionResultStep = () => {
           <Typography className='result'>{getCached.area().toFixed(2)}m²</Typography>
         </Paper>
         <Paper>
-          <TextField fullWidth label='Revêtement' select>
-            {cover_types.map(option => (
-              <MenuItem key={option} value={option}>
-                {option}
+          <TextField onChange={handleChange} fullWidth label='Revêtement 1' select>
+            {ANNOTATION_COVERING.map(({ value, label }) => (
+              <MenuItem key={value} value={value}>
+                {label}
               </MenuItem>
             ))}
           </TextField>
+        </Paper>
+        <Paper>
+          <TextField onChange={handleChange} fullWidth label='Revêtement 2' select>
+            {ANNOTATION_COVERING.map(({ value, label }) => (
+              <MenuItem key={value} value={value}>
+                {label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Paper>
+        <Paper>
+          <SlopeSelect />
         </Paper>
         <ResultItem label="Taux d'usure" source='USURE' percentage={data?.stats?.['USURE']} />
         <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.stats?.['MOISISSURE']} />
