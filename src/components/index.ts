@@ -5,3 +5,4 @@ export * from './detection-form';
 export * from './global-dialog';
 export * from './slope-input';
 export * from './style';
+export * from './types';

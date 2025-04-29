@@ -1,44 +1,41 @@
 import { useDialog, useStep } from '@/hooks';
+import { annotatorMapper } from '@/mappers';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { AnnotatorCanvasCustom, DetectionForm, DialogFormStyle } from '.';
+import { AnnotatorCanvasCustom, DetectionForm, DetectionFormInfo, DialogFormStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
-  const [polygons, setPolygons] = useState<Polygon[]>([]);
+  const setStep = useStep(({ setStep }) => setStep);
+  const [polygons, setPolygons] = useState<DomainPolygonType[]>([]);
+  const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
   const { open: openDialog, close: closeDialog } = useDialog();
   const { data, mutate: updateAreaPicture, isPending } = useQueryUpdateAreaPicture();
 
-  const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   useEffect(() => {
     setCurrentImageSrc(data?.imageAsBase64 || '');
   }, [data]);
 
-  const handleUpdateAreaPicture = () => {
-    updateAreaPicture({ isExtended: true });
-  };
+  const handleUpdateAreaPicture = () => updateAreaPicture({ isExtended: true });
 
-  const setStep = useStep(({ setStep }) => setStep);
-
-  const handleClickDetectionButton = () => {
-    openDialog(
-      <DetectionForm
-        onValid={({ email, lastName, firstName, phone }) => {
-          closeDialog();
-          startDetection(
-            { polygons, receiverEmail: email, phone, firstName, lastName },
-            { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) }
-          );
-        }}
-      />,
-      { style: DialogFormStyle }
+  const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
+    closeDialog();
+    startDetection(
+      { polygons, receiverEmail: email, phone, firstName, lastName },
+      { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) }
     );
   };
+  const handleClickDetectionButton = () => openDialog(<DetectionForm onValid={handleValidateForm} />, { style: DialogFormStyle });
 
+  // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
+  const currentShiftNumber = { x: 0, y: 0 };
+  const setMappedDomainPolygons = (polygons: Polygon[]) => setPolygons(polygons.map(polygon => annotatorMapper.toDomainPolygon(polygon, currentShiftNumber)));
+  const getMappedAnnotatorPolygons = () => polygons.map(polygon => annotatorMapper.toPolygonRest(polygon, currentShiftNumber));
+  // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
   return (
     <Box id='annotator-section'>
       <Paper elevation={0}>
@@ -56,7 +53,13 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         </Button>
       </Box>
       <Box minHeight='500px'>
-        {!isPending && <AnnotatorCanvasCustom allowAnnotation setPolygons={setPolygons} polygonList={polygons} image={currentImageSrc} />}
+        <AnnotatorCanvasCustom
+          isLoading={isPending}
+          allowAnnotation
+          setPolygons={setMappedDomainPolygons}
+          polygonList={getMappedAnnotatorPolygons()}
+          image={currentImageSrc}
+        />
       </Box>
       <Button
         onClick={handleClickDetectionButton}

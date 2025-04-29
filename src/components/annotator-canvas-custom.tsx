@@ -13,7 +13,7 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
     params: { areaPictureDetails },
   } = useStep();
   return (
-    <>
+    <Box position='relative'>
       {isLoading && (
         <Box width='100%' height='600px' display='flex' justifyContent='center' alignItems='center' bgcolor={theme => theme.palette.grey[100]}>
           <CircularProgress size={25} />
@@ -25,6 +25,6 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
       <Stack textAlign='center'>
         <Typography>Source: {areaPictureDetails?.actualLayer?.source}</Typography>
       </Stack>
-    </>
+    </Box>
   );
 };

@@ -6,7 +6,7 @@ import { FC } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { BpInput } from './bp-input';
 
-interface FormInfo {
+export interface DetectionFormInfo {
   email: string;
   lastName?: string;
   firstName?: string;
@@ -14,7 +14,7 @@ interface FormInfo {
 }
 
 interface DetectionFormProps {
-  onValid(receiverEmail: FormInfo): void;
+  onValid(detectionFrom: DetectionFormInfo): void;
 }
 
 export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
