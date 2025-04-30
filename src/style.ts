@@ -9,6 +9,15 @@ export const MainStyle: SxProps = {
   alignItems: 'center',
   position: 'relative',
   minHeight: '100vh',
+  '& .info-section': {
+    height: 60,
+    display: 'flex',
+    alignItems: 'center',
+    px: 2,
+    mb: 2,
+    bgcolor: grey[300],
+    justifyContent: 'space-between',
+  },
   '& .MuiStepper-root': {
     mb: 4,
   },
@@ -23,15 +32,6 @@ export const MainStyle: SxProps = {
     position: 'relative',
     '& > .MuiButton-root': {
       my: 2,
-    },
-    '& .MuiPaper-root': {
-      height: 60,
-      display: 'flex',
-      alignItems: 'center',
-      px: 2,
-      mb: 2,
-      bgcolor: grey[300],
-      justifyContent: 'space-between',
     },
   },
   '& > .img-container > img': {

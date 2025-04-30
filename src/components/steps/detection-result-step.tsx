@@ -58,8 +58,25 @@ export const DetectionResultStep = () => {
     });
   }, [data]);
 
+  useEffect(() => {
+    const handleBeforeUnload = async (event: BeforeUnloadEvent) => {
+      if (!getCached.isEmailSent()) {
+        await sendRooferInfo(stepResultRef);
+        event.preventDefault();
+        event.returnValue = 'Êtes-vous sûr de vouloir quitter la page ? Vos résultats seront perdus.';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [sendRooferInfo]);
+
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
+      <Paper elevation={0} className='info-section' sx={{ width: '100%' }}>
+        <Stack>
+          <Typography>Veuillez remplir les champs Revêtement 1, Revêtement 2 et Pente pour nous permettre de mieux comprendre vos besoins.</Typography>
+        </Stack>
+      </Paper>
       <Grid2 size={{ xs: 12, md: 8 }}>
         {imageSrc && <AnnotatorCanvasCustom setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={base64 || ''} />}
       </Grid2>
