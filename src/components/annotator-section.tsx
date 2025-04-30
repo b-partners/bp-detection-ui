@@ -50,7 +50,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       </Paper>
       <Box mb={2}>
         <Button variant='contained' onClick={handleUpdateAreaPicture} loading={isPending}>
-          {!isExtended ? "Restaurer l'image" : "Recentrer l'image"}
+          {isExtended ? "Restaurer l'image" : "Recentrer l'image"}
         </Button>
       </Box>
       <Box minHeight='500px'>
@@ -82,9 +82,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         data-cy='process-detection-button'
       >
         Analyser ma toiture
-      </Button>
-      <Button onClick={() => setPolygons([])} variant='contained'>
-        Clear
       </Button>
     </Box>
   );
