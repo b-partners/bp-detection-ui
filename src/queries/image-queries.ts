@@ -1,5 +1,5 @@
 import { useStep } from '@/hooks';
-import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, ParamsUtilities } from '@/utilities';
+import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { v4 } from 'uuid';
@@ -13,6 +13,11 @@ const getImageFile = async (areaPictureDetails: AreaPictureDetails) => {
 
   const imageAsBase64 = arrayBufferToBase64(imageAsArrayBuffer);
 
+  if (areaPictureDetails.isExtended) {
+    // todo: use backend shift number for the y too
+    const shiftNb = { x: areaPictureDetails?.shiftNb || 0, y: 0 };
+    await localDb.setImageSrc(imageAsBase64, shiftNb);
+  }
   return {
     imageAsBase64,
     imageAsArrayBuffer,
