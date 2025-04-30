@@ -1,10 +1,12 @@
 import { useDialog, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
-import { Polygon } from '@bpartners/annotator-component';
+import { getPolygnImageBoundingBox } from '@/utilities';
+import { getColorFromMain, Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
+import { v4 } from 'uuid';
 import { AnnotatorCanvasCustom, AnnotatorShiftButtons, DetectionForm, DetectionFormInfo, DialogFormStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
@@ -37,6 +39,21 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const mappedAnnotatorPolygons = polygons.map(polygon => annotatorMapper.toPolygonRest(polygon, currentShiftNumber));
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
 
+  const boundingBoxPolygons = polygons.map(polygon => {
+    const { x, y } = getPolygnImageBoundingBox(polygon);
+    return {
+      ...getColorFromMain('#00ff00'),
+      id: v4(),
+      points: [
+        { x, y },
+        { x: x + 1024, y },
+        { x: x + 1024, y: y + 1024 },
+        { x, y: y + 1024 },
+        { x, y },
+      ],
+    } as Polygon;
+  });
+
   return (
     <Box id='annotator-section'>
       <Paper elevation={0}>
@@ -59,7 +76,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           isLoading={isPending}
           allowAnnotation
           setPolygons={setMappedDomainPolygons}
-          polygonList={mappedAnnotatorPolygons}
+          polygonList={[...mappedAnnotatorPolygons, ...boundingBoxPolygons]}
           image={currentImageSrc}
         />
       </Box>
