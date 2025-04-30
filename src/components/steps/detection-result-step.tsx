@@ -1,9 +1,10 @@
+import { useAnnotationFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { getCached } from '@/utilities';
 import { Box, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
-import { FC, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { AnnotatorCanvasCustom, SlopeSelect } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -43,12 +44,19 @@ export const DetectionResultStep = () => {
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { data } = useGeojsonQueryResult();
   const sendRooferInfo = usePostDetectionQueries();
+  const { register, watch } = useAnnotationFrom();
 
-  const handleChange = () => {
-    if (data?.stats && !getCached.isEmailSent()) {
-      sendRooferInfo(stepResultRef);
-    }
-  };
+  useEffect(() => {
+    watch(formData => {
+      if (formData.cover1 && formData.cover2 && formData.slope && data?.stats && !getCached.isEmailSent()) {
+        const pdfGeneratorTimeout = 1000;
+        const timeoutId = setTimeout(() => {
+          sendRooferInfo(stepResultRef);
+          clearTimeout(timeoutId);
+        }, pdfGeneratorTimeout);
+      }
+    });
+  }, [data]);
 
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
@@ -64,7 +72,7 @@ export const DetectionResultStep = () => {
           <Typography className='result'>{getCached.area().toFixed(2)}m²</Typography>
         </Paper>
         <Paper>
-          <TextField onChange={handleChange} fullWidth label='Revêtement 1' select>
+          <TextField {...register('cover1')} fullWidth label='Revêtement 1' select>
             {ANNOTATION_COVERING.map(({ value, label }) => (
               <MenuItem key={value} value={value}>
                 {label}
@@ -73,7 +81,7 @@ export const DetectionResultStep = () => {
           </TextField>
         </Paper>
         <Paper>
-          <TextField onChange={handleChange} fullWidth label='Revêtement 2' select>
+          <TextField {...register('cover2')} fullWidth label='Revêtement 2' select>
             {ANNOTATION_COVERING.map(({ value, label }) => (
               <MenuItem key={value} value={value}>
                 {label}
@@ -82,7 +90,7 @@ export const DetectionResultStep = () => {
           </TextField>
         </Paper>
         <Paper>
-          <SlopeSelect />
+          <SlopeSelect {...register('slope')} />
         </Paper>
         <ResultItem label="Taux d'usure" source='USURE' percentage={data?.stats?.['USURE']} />
         <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.stats?.['MOISISSURE']} />

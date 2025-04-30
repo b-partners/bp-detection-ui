@@ -1,5 +1,4 @@
-import { Info } from '@mui/icons-material';
-import { FormControl, IconButton, InputLabel, MenuItem, Select, SelectProps, Tooltip } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, SelectProps, Tooltip } from '@mui/material';
 import { FC } from 'react';
 
 const PENTES = [
@@ -53,15 +52,6 @@ export const SlopeSelect: FC<SelectProps> = props => {
           );
         })}
       </Select>
-      <IconButton
-        sx={{
-          position: 'absolute',
-          right: '12%',
-          top: '10%',
-        }}
-      >
-        <Info />
-      </IconButton>
     </FormControl>
   );
 };

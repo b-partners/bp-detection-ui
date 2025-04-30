@@ -1,3 +1,4 @@
+export * from './annotation-provider';
 export * from './api';
 export * from './detection-provider';
 export * from './image-provider';

@@ -1,5 +1,6 @@
+import { DomainPolygonResultType } from '@/components';
 import { ShapeAttributes } from '@/providers';
-import { GeoShapeAttributes, getColorFromMain, Point, Polygon } from '@bpartners/annotator-component';
+import { GeoShapeAttributes, getColorFromMain, Point } from '@bpartners/annotator-component';
 import { v4 } from 'uuid';
 import { detectionResultColors } from './constants';
 import { ConverterPayload, Feature } from './types';
@@ -56,7 +57,7 @@ export const geoJsonMapper = {
   toPolygon(geoJson: ConverterPayload) {
     const regions = geoJson.regions;
 
-    const polygons: Polygon[] = [];
+    const polygons: DomainPolygonResultType[] = [];
 
     const allowedLabel = Object.keys(detectionResultColors);
     Object.values(regions)
@@ -68,6 +69,7 @@ export const geoJsonMapper = {
           fillColor,
           strokeColor,
           points: geoShapeAttributesToPoints(shape_attributes),
+          label: label as keyof typeof detectionResultColors,
         });
       });
 

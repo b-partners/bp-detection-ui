@@ -1,14 +1,14 @@
+import { DomainPolygonType } from '@/components';
 import { useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
 import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
 import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
-import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
 
 interface MutationProps {
-  polygons: Polygon[];
+  polygons: DomainPolygonType[];
   receiverEmail: string;
   phone: string;
   firstName?: string;
@@ -53,7 +53,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       const { data } = await bpProspectApi(apiKey).updateProspects(getCached.userInfo().accountHolderId || '', [
         { ...prospect, email: receiverEmail, firstName, name: lastName, phone },
       ]);
-      setStep({ params: { prospect: data[0] }, actualStep });
+      setStep({ params: { prospect: data[0], polygons }, actualStep });
     }
 
     return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [[mappedCoordinates]], receiverEmail);

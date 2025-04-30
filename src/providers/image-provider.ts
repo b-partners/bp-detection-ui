@@ -1,4 +1,4 @@
-import { getQueryParams } from '@/utilities';
+import { ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, ZoomLevel } from '@bpartners/typescript-client';
 import { v4 } from 'uuid';
 import { bpAnnotationApi, bpProspectApi } from './api';
@@ -30,7 +30,7 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
 };
 
 export const updateAreaPicture = async (areaPictureDetails: AreaPictureDetails) => {
-  const { apiKey } = getQueryParams();
+  const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountId } = await userInfoProvider(apiKey);
   const { data } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', areaPictureDetails.id || v4(), { ...areaPictureDetails });
   return data;
