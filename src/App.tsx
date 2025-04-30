@@ -21,7 +21,7 @@ const steps = [
     content: <DetectionLoadingStep />,
   },
   {
-    label: "Résulta de l'analyse",
+    label: "Résultat de l'analyse",
     content: <DetectionResultStep />,
   },
 ];

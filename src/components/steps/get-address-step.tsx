@@ -72,7 +72,7 @@ export const GetAddressStep = () => {
           onChange={handleChange}
           data-cy='address-search-input'
           disabled={isQueryImagePending}
-          placeholder='Adresse à analysé'
+          placeholder='Adresse à analyser'
           error={!!errors['address']}
         />
         <Stack>

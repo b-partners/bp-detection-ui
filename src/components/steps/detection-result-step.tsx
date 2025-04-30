@@ -60,7 +60,7 @@ export const DetectionResultStep = () => {
           Résultats de l'analyse :
         </Typography>
         <Paper>
-          <Typography className='label'>Surface total : </Typography>
+          <Typography className='label'>Surface totale : </Typography>
           <Typography className='result'>{getCached.area().toFixed(2)}m²</Typography>
         </Paper>
         <Paper>
