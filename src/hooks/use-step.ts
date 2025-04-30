@@ -1,3 +1,4 @@
+import { DomainPolygonType } from '@/components';
 import { ReferencerGeoJSON } from '@/providers';
 import { AreaPictureDetails, Prospect } from '@bpartners/typescript-client';
 import { create } from 'zustand';
@@ -11,6 +12,7 @@ interface State {
     geoJsonResultUrl?: any;
     sessionId?: string;
     prospect?: Prospect;
+    polygons?: DomainPolygonType[];
   };
 }
 

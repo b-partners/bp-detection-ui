@@ -1,6 +1,6 @@
 import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
-import { ReferencerGeoJSON, RooferInformations } from './type';
+import { RooferInformations } from './type';
 
 const baseUrl = process.env.REACT_APP_GEO_DETECTION_API ?? '';
 
@@ -60,8 +60,11 @@ export const processDetection = async (layers: string, address: string, coordina
               coordinates,
               type: 'MultiPolygon',
             },
-            id: v4(),
-            zoom: 21,
+            properties: {
+              zoom: 20,
+              id: v4(),
+            },
+            type: 'Feature',
           },
         ]
       : []
@@ -77,12 +80,11 @@ export const processDetection = async (layers: string, address: string, coordina
   return { result, geoJson };
 };
 
-export const getDetectionResult = async (apiKey: string, geoJson: ReferencerGeoJSON) => {
+export const getDetectionResult = async (apiKey: string) => {
   const detectionId = getCached.detectionId() ?? '';
-  const data = await fetch(`${baseUrl}/detections/${detectionId}/roofer`, {
+  const data = await fetch(`${baseUrl}/detections/${detectionId}`, {
     headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
-    method: 'POST',
-    body: JSON.stringify(geoJson),
+    method: 'GET',
   });
   const result = await data.json();
 

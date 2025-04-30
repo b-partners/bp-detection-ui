@@ -41,7 +41,7 @@ export const usePostDetectionQueries = () => {
     cache.isEmailSent();
   };
 
-  const { mutate: postDetection } = useMutation({ mutationFn, mutationKey: ['postDetectionQuery'] });
+  const { mutateAsync: postDetection } = useMutation({ mutationFn, mutationKey: ['postDetectionQuery'] });
 
   return postDetection;
 };

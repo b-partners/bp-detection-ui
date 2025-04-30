@@ -1,5 +1,6 @@
+import { DomainPolygonResultType } from '@/components';
 import { ShapeAttributes } from '@/providers';
-import { GeoShapeAttributes, getColorFromMain, Point, Polygon } from '@bpartners/annotator-component';
+import { GeoShapeAttributes, getColorFromMain, Point } from '@bpartners/annotator-component';
 import { v4 } from 'uuid';
 import { detectionResultColors } from './constants';
 import { ConverterPayload, Feature } from './types';
@@ -56,17 +57,21 @@ export const geoJsonMapper = {
   toPolygon(geoJson: ConverterPayload) {
     const regions = geoJson.regions;
 
-    const polygons: Polygon[] = [];
+    const polygons: DomainPolygonResultType[] = [];
 
-    Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
-      const { fillColor, strokeColor } = getColorFromMain(detectionResultColors[label as keyof typeof detectionResultColors]);
-      polygons.push({
-        id: v4(),
-        fillColor,
-        strokeColor,
-        points: geoShapeAttributesToPoints(shape_attributes),
+    const allowedLabel = Object.keys(detectionResultColors);
+    Object.values(regions)
+      .filter(({ region_attributes: { label } }) => allowedLabel.includes(label))
+      .forEach(({ shape_attributes, region_attributes: { label } }) => {
+        const { fillColor, strokeColor } = getColorFromMain(detectionResultColors[label as keyof typeof detectionResultColors] || '#00FF00');
+        polygons.push({
+          id: v4(),
+          fillColor,
+          strokeColor,
+          points: geoShapeAttributesToPoints(shape_attributes),
+          label: label as keyof typeof detectionResultColors,
+        });
       });
-    });
 
     return polygons;
   },
