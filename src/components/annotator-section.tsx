@@ -2,10 +2,10 @@ import { useDialog, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
-import { ChevronLeft, ChevronRight, HelpCenterOutlined } from '@mui/icons-material';
+import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { AnnotatorCanvasCustom, DetectionForm, DetectionFormInfo, DialogFormStyle, DomainPolygonType } from '.';
+import { AnnotatorCanvasCustom, AnnotatorShiftButtons, DetectionForm, DetectionFormInfo, DialogFormStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -55,18 +55,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       </Box>
       <Box minHeight='500px'>
         <AnnotatorCanvasCustom
-          customButtons={
-            isExtended && (
-              <>
-                <IconButton onClick={prevXShift}>
-                  <ChevronLeft />
-                </IconButton>
-                <IconButton>
-                  <ChevronRight onClick={nextXShift} />
-                </IconButton>
-              </>
-            )
-          }
+          customButtons={isExtended && <AnnotatorShiftButtons prevXShift={prevXShift} nextXShift={nextXShift} />}
           isLoading={isPending}
           allowAnnotation
           setPolygons={setMappedDomainPolygons}
