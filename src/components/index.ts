@@ -1,3 +1,4 @@
+export * from './annotation-tutorial-dialog';
 export * from './annotator-canvas-custom';
 export * from './annotator-custom-button';
 export * from './annotator-section';

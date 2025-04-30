@@ -68,15 +68,11 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 
 export const useQueryDetectionResult = () => {
   const { apiKey } = ParamsUtilities.getQueryParams();
-  const geojsonBody = useStep(({ params }) => params.geojsonBody);
 
   const { data, isPending } = useQuery({
     queryKey: ['detection', 'result'],
     queryFn: () => {
-      if (geojsonBody) {
-        return getDetectionResult(apiKey, geojsonBody);
-      }
-      throw new Error();
+      return getDetectionResult(apiKey);
     },
     retryDelay: 8000,
     retry: Number.MAX_SAFE_INTEGER,

@@ -5,7 +5,16 @@ import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { AnnotatorCanvasCustom, AnnotatorShiftButtons, DetectionForm, DetectionFormInfo, DialogFormStyle, DomainPolygonType } from '.';
+import {
+  AnnotationTutorialDialog,
+  AnnotatorCanvasCustom,
+  AnnotatorShiftButtons,
+  DetectionForm,
+  DetectionFormInfo,
+  DialogFormStyle,
+  DialogTutorialStyle,
+  DomainPolygonType,
+} from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -37,6 +46,8 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const mappedAnnotatorPolygons = polygons.map(polygon => annotatorMapper.toPolygonRest(polygon, currentShiftNumber));
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
 
+  const openTutorialDialog = () => openDialog(<AnnotationTutorialDialog />, { style: DialogTutorialStyle });
+
   return (
     <Box id='annotator-section'>
       <Paper elevation={0}>
@@ -44,7 +55,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           <Typography>Veuillez sélectionner votre toiture sur l'image suivante.</Typography>
           {/* <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography> */}
         </Stack>
-        <IconButton>
+        <IconButton onClick={openTutorialDialog}>
           <HelpCenterOutlined />
         </IconButton>
       </Paper>

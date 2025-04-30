@@ -36,7 +36,7 @@ function App() {
   return (
     <Box sx={style}>
       <Box className={`img-container ${actualStep === 0 ? 'img-full' : 'img-min'}`}>
-        <img alt='bp-ia-logo' src='/assets/images/bp-ia-logo.png' />
+        <img alt='bird-ia-logo' src='/assets/images/bird-ia-logo.png' />
       </Box>
       <Stepper activeStep={actualStep} alternativeLabel>
         {steps.map(({ label }) => (

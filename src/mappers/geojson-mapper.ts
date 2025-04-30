@@ -58,15 +58,18 @@ export const geoJsonMapper = {
 
     const polygons: Polygon[] = [];
 
-    Object.values(regions).forEach(({ shape_attributes, region_attributes: { label } }) => {
-      const { fillColor, strokeColor } = getColorFromMain(detectionResultColors[label as keyof typeof detectionResultColors]);
-      polygons.push({
-        id: v4(),
-        fillColor,
-        strokeColor,
-        points: geoShapeAttributesToPoints(shape_attributes),
+    const allowedLabel = Object.keys(detectionResultColors);
+    Object.values(regions)
+      .filter(({ region_attributes: { label } }) => allowedLabel.includes(label))
+      .forEach(({ shape_attributes, region_attributes: { label } }) => {
+        const { fillColor, strokeColor } = getColorFromMain(detectionResultColors[label as keyof typeof detectionResultColors] || '#00FF00');
+        polygons.push({
+          id: v4(),
+          fillColor,
+          strokeColor,
+          points: geoShapeAttributesToPoints(shape_attributes),
+        });
       });
-    });
 
     return polygons;
   },
