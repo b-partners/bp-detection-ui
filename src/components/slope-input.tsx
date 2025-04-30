@@ -44,7 +44,7 @@ export const SlopeSelect: FC<SelectProps> = props => {
       >
         {PENTES.map((slope, key) => {
           return (
-            <MenuItem value={slope.value} key={`${key}-${slope.value}`}>
+            <MenuItem value={slope.value} data-cy={`slope-${slope.value}`} key={`${key}-${slope.value}`}>
               <Tooltip title={slope.title}>
                 <img width={'50px'} src={slope.url} alt={slope.title} />
               </Tooltip>
