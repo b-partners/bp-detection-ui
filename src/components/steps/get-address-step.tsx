@@ -58,7 +58,9 @@ export const GetAddressStep = () => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const text = event.target.value;
     setValue('address', text);
-    search(text);
+    if (!isQueryImagePending || areaPictureDetails) {
+      search(text);
+    }
   };
 
   return (
@@ -84,7 +86,7 @@ export const GetAddressStep = () => {
           </IconButton>
         </Stack>
       </Paper>
-      {data && data.length > 0 && (
+      {(!isQueryImagePending || areaPictureDetails) && data && data.length > 0 && (
         <Box className='location-list'>
           <Paper>
             {data.map(({ description }: any) => (
