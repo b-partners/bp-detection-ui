@@ -2,9 +2,9 @@ import { createTheme, PaletteOptions } from '@mui/material';
 
 const palette: PaletteOptions = {
   primary: {
-    light: '#ab0056',
-    main: '#7A003D',
-    dark: '#660033',
+    light: '#FF9575',
+    main: '#FF521B',
+    dark: '#893923',
     contrastText: '#fcfcfc',
   },
   secondary: {
@@ -14,7 +14,7 @@ const palette: PaletteOptions = {
     contrastText: '#2f2f2f',
   },
   background: {
-    default: '#F4F6FF',
+    default: '#F0ECE1',
     paper: '#fff',
   },
 };
@@ -24,7 +24,7 @@ export const theme = createTheme({
   typography: {
     allVariants: {
       color: '#2f2f2f',
-      fontFamily: `"Poppins", sans-serif;`,
+      fontFamily: `"Kumbh Sans", sans-serif;`,
     },
   },
   components: {
@@ -40,6 +40,11 @@ export const theme = createTheme({
         root: {
           color: (palette.primary as unknown as { main: string }).main,
         },
+      },
+    },
+    MuiButton: {
+      defaultProps: {
+        variant: 'contained',
       },
     },
   },

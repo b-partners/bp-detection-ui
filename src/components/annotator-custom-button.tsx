@@ -2,9 +2,13 @@ import { useStep } from '@/hooks';
 import { ScaleCallbacks } from '@bpartners/annotator-component';
 import { ZoomIn, ZoomInMap, ZoomOut } from '@mui/icons-material';
 import { IconButton, Stack, Typography } from '@mui/material';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
-export const AnnotatorCustomButton: FC<Record<'callbacks', ScaleCallbacks>> = ({ callbacks }) => {
+interface AnnotatorCustomButtonProps extends Record<'callbacks', ScaleCallbacks> {
+  customButtons?: ReactNode;
+}
+
+export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callbacks, customButtons }) => {
   const { scaleDown, scaleReste, scaleUp } = callbacks;
   const {
     params: { areaPictureDetails },
@@ -18,6 +22,7 @@ export const AnnotatorCustomButton: FC<Record<'callbacks', ScaleCallbacks>> = ({
         </Typography>
       </Stack>
       <Stack direction='row'>
+        {customButtons}
         <IconButton data-cy='zoom-in' onClick={scaleUp}>
           <ZoomIn />
         </IconButton>

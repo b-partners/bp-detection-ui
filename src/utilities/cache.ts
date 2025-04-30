@@ -4,6 +4,7 @@ const ACCOUNT_HOLDER_ID_ITEM = 'ACCOUNT_HOLDER_ID_ITEM';
 const DETECTION_ID_ITEM = 'DETECTION_ID_ITEM';
 const AREA_ITEM = 'AREA_ITEM';
 const EMAIL_SENT_ITEM = 'EMAIL_SENT_ITEM';
+const ANNOTATION_ID_ITEM = 'ANNOTATION_ID_ITEM';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -19,6 +20,9 @@ export const cache = {
   },
   isEmailSent() {
     localStorage.setItem(EMAIL_SENT_ITEM, 'true');
+  },
+  annotationId(annotationId: string) {
+    localStorage.setItem(ANNOTATION_ID_ITEM, annotationId);
   },
 };
 
@@ -38,6 +42,9 @@ export const getCached = {
   isEmailSent() {
     return !!localStorage.getItem(EMAIL_SENT_ITEM);
   },
+  annotationId() {
+    return localStorage.getItem(ANNOTATION_ID_ITEM);
+  },
 };
 
 export const clearCached = {
@@ -46,5 +53,8 @@ export const clearCached = {
   },
   isEmailSent() {
     localStorage.removeItem(EMAIL_SENT_ITEM);
+  },
+  annotationId() {
+    localStorage.removeItem(ANNOTATION_ID_ITEM);
   },
 };

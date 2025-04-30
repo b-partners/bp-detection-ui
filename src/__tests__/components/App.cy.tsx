@@ -33,7 +33,7 @@ describe('Component testing', () => {
 
     // detection
     cy.intercept('POST', `/detections/**/roofer`, detection_mock).as('createDetection');
-    cy.intercept('GET', `/detections/**/roofer`, detection_mock).as('getDetection');
+    cy.intercept('GET', `/detections/**`, detection_mock).as('getDetection');
     cy.intercept('POST', `/detections/**/image`, detection_mock).as('createDetectionImage');
     cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
       'getDetectionResultGeojson'
@@ -45,8 +45,8 @@ describe('Component testing', () => {
     // points conversion
 
     // email message
-    cy.intercept('POST', `/detections/${detection_mock.id}/pdf`, {}).as('sendPdf');
-    cy.intercept('POST', `/detections/${detection_mock.id}/roofer/email`, {}).as('sendUserInfo');
+    cy.intercept('POST', `/detections/${detection_mock.id}/pdf`, { body: {} }).as('sendPdf');
+    cy.intercept('POST', `/detections/${detection_mock.id}/roofer/email`, { body: {} }).as('sendUserInfo');
     // email message
 
     cy.mount(
@@ -119,5 +119,18 @@ describe('Component testing', () => {
     cy.contains('Taux de moisissure');
     cy.contains("Taux d'humidité");
     cy.contains('Obstacle / Velux');
+
+    cy.dataName('cover1').parent('.MuiInputBase-root').click();
+    cy.contains('Zinc').click();
+
+    cy.dataName('cover2').parent('.MuiInputBase-root').click();
+    cy.contains('Autres').click();
+
+    cy.dataName('slope').parent('.MuiInputBase-root').click();
+    cy.dataCy('slope-1').click();
+
+    const sendPdfTimeout = 30000;
+    cy.wait('@sendPdf', { timeout: sendPdfTimeout });
+    cy.wait('@sendUserInfo', { timeout: sendPdfTimeout });
   });
 });

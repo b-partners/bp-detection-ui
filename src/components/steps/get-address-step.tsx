@@ -17,7 +17,8 @@ export const GetAddressStep = () => {
 
   const { mutate: findLocation, data } = useLocationQuery(sessionId || '');
 
-  const search = useMemo(() => debounce(findLocation, 300), []);
+  const searchAddressDebounceTimeout = 200;
+  const search = useMemo(() => debounce(findLocation, searchAddressDebounceTimeout), []);
 
   useEffect(() => {
     if (imageSrc && areaPictureDetails && prospect) {
