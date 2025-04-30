@@ -3,7 +3,7 @@ import { createTheme, PaletteOptions } from '@mui/material';
 const palette: PaletteOptions = {
   primary: {
     light: '#ab0056',
-    main: '#7A003D',
+    main: '#FF521B',
     dark: '#660033',
     contrastText: '#fcfcfc',
   },
@@ -14,7 +14,7 @@ const palette: PaletteOptions = {
     contrastText: '#2f2f2f',
   },
   background: {
-    default: '#F4F6FF',
+    default: '#F0ECE1',
     paper: '#fff',
   },
 };
@@ -24,7 +24,7 @@ export const theme = createTheme({
   typography: {
     allVariants: {
       color: '#2f2f2f',
-      fontFamily: `"Poppins", sans-serif;`,
+      fontFamily: `"Kumbh Sans", sans-serif;`,
     },
   },
   components: {

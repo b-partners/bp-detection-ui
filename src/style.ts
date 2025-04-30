@@ -36,6 +36,7 @@ export const MainStyle: SxProps = {
   },
   '& > .img-container > img': {
     transition: 'all 200ms linear',
+    margin: 2,
   },
   '& > .img-container.img-full': {
     alignSelf: 'center',

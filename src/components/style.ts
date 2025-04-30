@@ -13,3 +13,6 @@ export const DialogFormStyle: SxProps = {
     justifyContent: 'space-between',
   },
 };
+export const DialogTutorialStyle: SxProps = {
+  '& .MuiDialogContent-root': {},
+};
