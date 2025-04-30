@@ -1,12 +1,10 @@
 import { useDialog, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
-import { getPolygnImageBoundingBox } from '@/utilities';
-import { getColorFromMain, Polygon } from '@bpartners/annotator-component';
+import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { v4 } from 'uuid';
 import { AnnotatorCanvasCustom, AnnotatorShiftButtons, DetectionForm, DetectionFormInfo, DialogFormStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
@@ -16,13 +14,13 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
   const { open: openDialog, close: closeDialog } = useDialog();
-  const { data, extendImageToggle, isPending, isExtended, nextXShift, prevXShift } = useQueryUpdateAreaPicture();
+  const { data, isPending, isExtended, nextXShift, prevXShift } = useQueryUpdateAreaPicture();
 
   useEffect(() => {
     setCurrentImageSrc(data?.imageAsBase64 || '');
   }, [data]);
 
-  const handleUpdateAreaPicture = () => extendImageToggle();
+  // const handleUpdateAreaPicture = () => extendImageToggle();
 
   const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
     closeDialog();
@@ -39,44 +37,29 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const mappedAnnotatorPolygons = polygons.map(polygon => annotatorMapper.toPolygonRest(polygon, currentShiftNumber));
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
 
-  const boundingBoxPolygons = polygons.map(polygon => {
-    const { x, y } = getPolygnImageBoundingBox(polygon);
-    return {
-      ...getColorFromMain('#00ff00'),
-      id: v4(),
-      points: [
-        { x, y },
-        { x: x + 1024, y },
-        { x: x + 1024, y: y + 1024 },
-        { x, y: y + 1024 },
-        { x, y },
-      ],
-    } as Polygon;
-  });
-
   return (
     <Box id='annotator-section'>
       <Paper elevation={0}>
         <Stack>
           <Typography>Veuillez sélectionner votre toiture sur l'image suivante.</Typography>
-          <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography>
+          {/* <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography> */}
         </Stack>
         <IconButton>
           <HelpCenterOutlined />
         </IconButton>
       </Paper>
-      <Box mb={2}>
+      {/* <Box mb={2}>
         <Button variant='contained' onClick={handleUpdateAreaPicture} loading={isPending}>
           {isExtended ? "Restaurer l'image" : "Recentrer l'image"}
         </Button>
-      </Box>
+      </Box> */}
       <Box minHeight='500px'>
         <AnnotatorCanvasCustom
           customButtons={isExtended && <AnnotatorShiftButtons prevXShift={prevXShift} nextXShift={nextXShift} />}
           isLoading={isPending}
           allowAnnotation
           setPolygons={setMappedDomainPolygons}
-          polygonList={[...mappedAnnotatorPolygons, ...boundingBoxPolygons]}
+          polygonList={mappedAnnotatorPolygons}
           image={currentImageSrc}
         />
       </Box>
