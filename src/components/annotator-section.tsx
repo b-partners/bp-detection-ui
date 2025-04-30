@@ -2,25 +2,25 @@ import { useDialog, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
-import { HelpCenterOutlined } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { AnnotatorCanvasCustom, DetectionForm, DetectionFormInfo, DialogFormStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
-  const setStep = useStep(({ setStep }) => setStep);
+  const { setStep } = useStep();
   const [polygons, setPolygons] = useState<DomainPolygonType[]>([]);
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
   const { open: openDialog, close: closeDialog } = useDialog();
-  const { data, mutate: updateAreaPicture, isPending } = useQueryUpdateAreaPicture();
+  const { data, extendImageToggle, isPending, isExtended, nextXShift, prevXShift } = useQueryUpdateAreaPicture();
 
   useEffect(() => {
     setCurrentImageSrc(data?.imageAsBase64 || '');
   }, [data]);
 
-  const handleUpdateAreaPicture = () => updateAreaPicture({ isExtended: true });
+  const handleUpdateAreaPicture = () => extendImageToggle();
 
   const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
     closeDialog();
@@ -32,10 +32,11 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const handleClickDetectionButton = () => openDialog(<DetectionForm onValid={handleValidateForm} />, { style: DialogFormStyle });
 
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
-  const currentShiftNumber = { x: 0, y: 0 };
+  const currentShiftNumber = { x: areaPictureDetails.shiftNb || 0, y: 0 };
   const setMappedDomainPolygons = (polygons: Polygon[]) => setPolygons(polygons.map(polygon => annotatorMapper.toDomainPolygon(polygon, currentShiftNumber)));
-  const getMappedAnnotatorPolygons = () => polygons.map(polygon => annotatorMapper.toPolygonRest(polygon, currentShiftNumber));
+  const mappedAnnotatorPolygons = polygons.map(polygon => annotatorMapper.toPolygonRest(polygon, currentShiftNumber));
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
+
   return (
     <Box id='annotator-section'>
       <Paper elevation={0}>
@@ -49,15 +50,27 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       </Paper>
       <Box mb={2}>
         <Button variant='contained' onClick={handleUpdateAreaPicture} loading={isPending}>
-          Recentrer l'image
+          {!isExtended ? "Restaurer l'image" : "Recentrer l'image"}
         </Button>
       </Box>
       <Box minHeight='500px'>
         <AnnotatorCanvasCustom
+          customButtons={
+            isExtended && (
+              <>
+                <IconButton onClick={prevXShift}>
+                  <ChevronLeft />
+                </IconButton>
+                <IconButton>
+                  <ChevronRight onClick={nextXShift} />
+                </IconButton>
+              </>
+            )
+          }
           isLoading={isPending}
           allowAnnotation
           setPolygons={setMappedDomainPolygons}
-          polygonList={getMappedAnnotatorPolygons()}
+          polygonList={mappedAnnotatorPolygons}
           image={currentImageSrc}
         />
       </Box>
@@ -69,6 +82,9 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         data-cy='process-detection-button'
       >
         Analyser ma toiture
+      </Button>
+      <Button onClick={() => setPolygons([])} variant='contained'>
+        Clear
       </Button>
     </Box>
   );

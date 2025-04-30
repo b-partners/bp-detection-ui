@@ -1,14 +1,15 @@
 import { useStep } from '@/hooks';
 import { AnnotatorCanvas, AnnotatorCanvasProps } from '@bpartners/annotator-component';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { AnnotatorCustomButton } from './annotator-custom-button';
 
 interface AnnotatorCanvasCustomProps extends Omit<AnnotatorCanvasProps, 'buttonsComponent' | 'width' | 'height' | 'zoom'> {
   isLoading?: boolean;
+  customButtons?: ReactNode;
 }
 
-export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoading, ...props }) => {
+export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoading, customButtons, ...props }) => {
   const {
     params: { areaPictureDetails },
   } = useStep();
@@ -20,7 +21,13 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
         </Box>
       )}
       {!isLoading && (
-        <AnnotatorCanvas {...props} buttonsComponent={callbacks => <AnnotatorCustomButton callbacks={callbacks} />} width='100%' height='500px' zoom={20} />
+        <AnnotatorCanvas
+          {...props}
+          buttonsComponent={callbacks => <AnnotatorCustomButton customButtons={customButtons} callbacks={callbacks} />}
+          width='100%'
+          height='500px'
+          zoom={20}
+        />
       )}
       <Stack textAlign='center'>
         <Typography>Source: {areaPictureDetails?.actualLayer?.source}</Typography>

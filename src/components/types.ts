@@ -1,3 +1,5 @@
-import { Polygon } from '@bpartners/annotator-component';
+import { Point, Polygon } from '@bpartners/annotator-component';
 
-export type DomainPolygonType = Polygon & { shiftNb?: { x?: number; y?: number } };
+export type ShiftNbDomainType = Point;
+
+export type DomainPolygonType = Polygon & { shiftNb?: ShiftNbDomainType };

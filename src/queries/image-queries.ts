@@ -78,12 +78,32 @@ export const useQueryImageFromUrl = (url?: string) => {
 export const useQueryUpdateAreaPicture = () => {
   const {
     params: { areaPictureDetails },
+    setStep,
+    actualStep,
   } = useStep();
 
   const mutationFn = async (areaPictureDetailsParams: Partial<AreaPictureDetails>) => {
     const updatedAreaPictureDetails = await updateAreaPicture({ ...areaPictureDetails, ...areaPictureDetailsParams });
+    setStep({ actualStep, params: { areaPictureDetails: updatedAreaPictureDetails } });
     return getImageFile(updatedAreaPictureDetails);
   };
 
-  return useMutation({ mutationFn, mutationKey: ['updateAreaPicture'] });
+  const { isPending, data, mutate } = useMutation({ mutationFn, mutationKey: ['updateAreaPicture'] });
+
+  const extendImageToggle = () => !isPending && mutate({ isExtended: !areaPictureDetails?.isExtended });
+  const updateXShift = (n: number) => !isPending && mutate({ shiftNb: (areaPictureDetails?.shiftNb || 0) + n });
+  const nextXShift = () => !isPending && updateXShift(1);
+  const prevXShift = () => !isPending && updateXShift(-1);
+  return {
+    isPending,
+    data,
+    extendImageToggle,
+    nextXShift,
+    prevXShift,
+    shift: {
+      x: areaPictureDetails?.shiftNb,
+      y: 0,
+    },
+    isExtended: areaPictureDetails?.isExtended,
+  };
 };
