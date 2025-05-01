@@ -1,4 +1,4 @@
-import { useStep } from '@/hooks';
+import { useCheckApiKey, useStep } from '@/hooks';
 import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -57,7 +57,14 @@ const mutationFn = (actualStep: number) => async (address: string) => {
 
 export const useQueryImageFromAddress = () => {
   const { actualStep } = useStep();
-  const { isPending, data, mutate } = useMutation({ mutationKey: ['image from address'], mutationFn: mutationFn(actualStep) });
+  const checkApiKey = useCheckApiKey();
+  const { isPending, data, mutate } = useMutation({
+    mutationKey: ['image from address'],
+    mutationFn: mutationFn(actualStep),
+    onError: e => {
+      if (e.message === 'Network Error') checkApiKey();
+    },
+  });
 
   return {
     isQueryImagePending: isPending,
