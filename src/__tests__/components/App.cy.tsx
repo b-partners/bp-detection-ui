@@ -14,6 +14,7 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 describe('Component testing', () => {
   it('Test the app', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
+
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
 
     // user informations
@@ -56,6 +57,9 @@ describe('Component testing', () => {
         </ThemeProvider>
       </QueryClientProvider>
     );
+
+    cy.contains("Clé d'API invalide");
+    cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
     cy.contains('Récupération de votre adresse');
 
