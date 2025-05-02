@@ -14,6 +14,7 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 describe('Component testing', () => {
   it('Test the app', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
+
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
 
     // user informations
@@ -57,6 +58,9 @@ describe('Component testing', () => {
       </QueryClientProvider>
     );
 
+    cy.contains("Clé d'API invalide");
+    cy.dataCy('api-key-input').type('api-key-mock{enter}');
+
     cy.contains('Récupération de votre adresse');
 
     //steppers state
@@ -82,7 +86,7 @@ describe('Component testing', () => {
     cy.wait('@createDetection').then(() => cache.detectionId(detection_mock.id));
     cy.wait('@createDetectionImage');
 
-    cy.contains("Veuillez sélectionner votre toiture sur l'image suivante.");
+    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-completed');
     cy.contains('Délimitation de votre toiture').should('have.class', 'Mui-active');
@@ -97,6 +101,7 @@ describe('Component testing', () => {
     cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
     cy.dataCy(canvas_cursor_sel).click(300, 300, { force: true });
     cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
     cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
 
     cy.dataCy('zoom-out').click();
@@ -128,6 +133,8 @@ describe('Component testing', () => {
 
     cy.dataName('slope').parent('.MuiInputBase-root').click();
     cy.dataCy('slope-1').click();
+
+    cy.dataCy('send-roofer-mail-button').click();
 
     const sendPdfTimeout = 30000;
     cy.wait('@sendPdf', { timeout: sendPdfTimeout });

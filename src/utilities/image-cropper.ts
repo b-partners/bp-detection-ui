@@ -52,3 +52,47 @@ export const getPolygnImageBoundingBox = (polygon: DomainPolygonType) => {
 
   return boundingBox;
 };
+
+const imageDataToBase64 = (imageData: ImageData, width: number, height: number) => {
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = width;
+  tempCanvas.height = height;
+  const tempCtx = tempCanvas.getContext('2d');
+  tempCtx?.putImageData(imageData, 0, 0);
+  return tempCanvas.toDataURL('image/png');
+};
+
+const base64ToFile = (base64: string, filename: string) => {
+  const arr = base64.split(',');
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: 'image/png' });
+};
+
+export const createImageFromPolygon = (polygon: DomainPolygonType, canvas: HTMLCanvasElement, image: HTMLImageElement) => {
+  const normalSize = 1024;
+  const scaledSize = normalSize * 3;
+
+  const { x, y } = getPolygnImageBoundingBox(polygon);
+
+  canvas.width = scaledSize;
+  canvas.height = scaledSize;
+
+  const ctx = canvas.getContext('2d');
+  ctx?.drawImage(image, 0, 0);
+  const imageData = ctx?.getImageData(x, y, normalSize, normalSize);
+  if (!imageData) return;
+
+  const toBase64 = () => imageDataToBase64(imageData, normalSize, normalSize);
+  const toFile = () => base64ToFile(toBase64(), 'cropped-image.png');
+
+  return {
+    data: imageData.data,
+    toBase64,
+    toFile,
+  };
+};
