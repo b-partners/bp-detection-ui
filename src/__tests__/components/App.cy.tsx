@@ -102,6 +102,7 @@ describe('Component testing', () => {
     cy.dataCy(canvas_cursor_sel).click(300, 300, { force: true });
     cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
     cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
 
     cy.dataCy('zoom-out').click();
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
@@ -132,6 +133,8 @@ describe('Component testing', () => {
 
     cy.dataName('slope').parent('.MuiInputBase-root').click();
     cy.dataCy('slope-1').click();
+
+    cy.dataCy('send-roofer-mail-button').click();
 
     const sendPdfTimeout = 30000;
     cy.wait('@sendPdf', { timeout: sendPdfTimeout });

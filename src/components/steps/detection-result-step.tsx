@@ -99,7 +99,7 @@ export const DetectionResultStep = () => {
           </Stack>
           <Typography className='result'>{data?.stats?.['OBSTACLE'] || data?.stats?.['VELUX'] ? 'OUI' : 'NON'}</Typography>
         </Paper>
-        <Button loading={sendInfoToRooferPending} disabled={canSendPdf} onClick={handleSendPdf}>
+        <Button data-cy='send-roofer-mail-button' loading={sendInfoToRooferPending} disabled={canSendPdf} onClick={handleSendPdf}>
           Envoyer
         </Button>
       </Grid2>
