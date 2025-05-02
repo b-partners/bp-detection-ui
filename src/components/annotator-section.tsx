@@ -52,7 +52,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
     <Box id='annotator-section'>
       <Paper elevation={0} className='info-section'>
         <Stack>
-          <Typography>Veuillez sélectionner votre toiture sur l'image suivante.</Typography>
+          <Typography>Veuillez délimiter votre toiture sur l'image suivante.</Typography>
           {/* <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography> */}
         </Stack>
         <IconButton onClick={openTutorialDialog}>

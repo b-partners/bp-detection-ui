@@ -86,7 +86,7 @@ describe('Component testing', () => {
     cy.wait('@createDetection').then(() => cache.detectionId(detection_mock.id));
     cy.wait('@createDetectionImage');
 
-    cy.contains("Veuillez sélectionner votre toiture sur l'image suivante.");
+    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-completed');
     cy.contains('Délimitation de votre toiture').should('have.class', 'Mui-active');
