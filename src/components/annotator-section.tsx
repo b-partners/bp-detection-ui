@@ -55,8 +55,8 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           <Typography>Veuillez délimiter votre toiture sur l'image suivante.</Typography>
           {/* <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography> */}
         </Stack>
-        <IconButton onClick={openTutorialDialog}>
-          <HelpCenterOutlined />
+        <IconButton onClick={openTutorialDialog} className='help-button'>
+          <HelpCenterOutlined fontSize='large' />
         </IconButton>
       </Paper>
       {/* <Box mb={2}>
