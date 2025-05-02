@@ -64,8 +64,8 @@ export const DetectionResultStep = () => {
           <Typography>Veuillez remplir les champs Revêtement 1, Revêtement 2 et Pente pour nous permettre de mieux comprendre vos besoins.</Typography>
         </Stack>
       </Paper>
-      <Grid2 size={{ xs: 12, md: 8 }}>
-        {imageSrc && <AnnotatorCanvasCustom setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={base64 || ''} />}
+      <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
+        {imageSrc && <AnnotatorCanvasCustom height='513px' setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={base64 || ''} />}
       </Grid2>
       <Grid2 size={{ xs: 12, md: 4 }}>
         <Typography className='title' mb={2}>
