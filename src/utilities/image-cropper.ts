@@ -93,6 +93,6 @@ export const createImageFromPolygon = (polygon: DomainPolygonType, canvas: HTMLC
   return {
     data: imageData.data,
     toBase64,
-    toFile
+    toFile,
   };
 };
