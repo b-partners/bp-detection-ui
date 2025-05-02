@@ -33,6 +33,23 @@ export const MainStyle: SxProps = {
     '& > .MuiButton-root': {
       my: 2,
     },
+    '& .help-button': {
+      animation: 'ping 1s linear infinite',
+      '@keyframes ping': {
+        '0%': {
+          transform: 'scale(1)',
+          opacity: 1,
+        },
+        '50%': {
+          transform: 'scale(1.2)',
+          opacity: 0.8,
+        },
+        '100%': {
+          transform: 'scale(1)',
+          opacity: 1,
+        },
+      },
+    },
   },
   '& > .img-container > img': {
     transition: 'all 200ms linear',
