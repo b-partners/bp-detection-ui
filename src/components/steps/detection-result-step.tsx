@@ -3,8 +3,8 @@ import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { getCached } from '@/utilities';
-import { Box, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
-import { FC, useEffect, useRef } from 'react';
+import { Box, Button, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
+import { FC, useRef } from 'react';
 import { AnnotatorCanvasCustom, SlopeSelect } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -43,32 +43,12 @@ export const DetectionResultStep = () => {
   const { data: base64 } = useQueryImageFromUrl(imageSrc);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { data } = useGeojsonQueryResult();
-  const sendRooferInfo = usePostDetectionQueries();
+  const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const { register, watch } = useAnnotationFrom();
 
-  useEffect(() => {
-    watch(formData => {
-      if (formData.cover1 && formData.cover2 && formData.slope && data?.stats && !getCached.isEmailSent()) {
-        const pdfGeneratorTimeout = 1000;
-        const timeoutId = setTimeout(() => {
-          sendRooferInfo(stepResultRef);
-          clearTimeout(timeoutId);
-        }, pdfGeneratorTimeout);
-      }
-    });
-  }, [data]);
+  const handleSendPdf = () => sendInfoToRoofer(stepResultRef);
 
-  useEffect(() => {
-    const handleBeforeUnload = async (event: BeforeUnloadEvent) => {
-      if (!getCached.isEmailSent()) {
-        await sendRooferInfo(stepResultRef);
-        event.preventDefault();
-        event.returnValue = 'Êtes-vous sûr de vouloir quitter la page ? Vos résultats seront perdus.';
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [sendRooferInfo]);
+  const canSendPdf = !(watch().cover1 && watch().cover2 && watch().slope);
 
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
@@ -119,6 +99,9 @@ export const DetectionResultStep = () => {
           </Stack>
           <Typography className='result'>{data?.stats?.['OBSTACLE'] || data?.stats?.['VELUX'] ? 'OUI' : 'NON'}</Typography>
         </Paper>
+        <Button loading={sendInfoToRooferPending} disabled={canSendPdf} onClick={handleSendPdf}>
+          Envoyer
+        </Button>
       </Grid2>
     </Grid2>
   );
