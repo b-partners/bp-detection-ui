@@ -30,7 +30,7 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
         />
       )}
       <Stack textAlign='center'>
-        <Typography>Source: {areaPictureDetails?.actualLayer?.name}</Typography>
+        <Typography>Source : {areaPictureDetails?.actualLayer?.name}</Typography>
       </Stack>
     </Box>
   );
