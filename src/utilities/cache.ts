@@ -5,6 +5,7 @@ const DETECTION_ID_ITEM = 'DETECTION_ID_ITEM';
 const AREA_ITEM = 'AREA_ITEM';
 const EMAIL_SENT_ITEM = 'EMAIL_SENT_ITEM';
 const ANNOTATION_ID_ITEM = 'ANNOTATION_ID_ITEM';
+const IMAGE_URL_ITEM = 'IMAGE_URL_ITEM';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -23,6 +24,9 @@ export const cache = {
   },
   annotationId(annotationId: string) {
     localStorage.setItem(ANNOTATION_ID_ITEM, annotationId);
+  },
+  imageUrl(imageUrl: string) {
+    localStorage.setItem(IMAGE_URL_ITEM, imageUrl);
   },
 };
 
@@ -44,6 +48,9 @@ export const getCached = {
   },
   annotationId() {
     return localStorage.getItem(ANNOTATION_ID_ITEM);
+  },
+  imageUrl() {
+    return localStorage.getItem(IMAGE_URL_ITEM);
   },
 };
 

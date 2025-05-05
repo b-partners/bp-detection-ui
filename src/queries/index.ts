@@ -4,3 +4,4 @@ export * from './image-queries';
 export * from './location-query';
 export * from './post-detection-queries';
 export * from './types';
+export * from './sync-detecion-queries';
