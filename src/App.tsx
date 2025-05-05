@@ -6,6 +6,7 @@ import { MainStyle as style } from '@/style';
 import { Box, Step, StepLabel, Stepper } from '@mui/material';
 import { useEffect } from 'react';
 import { v4 } from 'uuid';
+import { GlobalNotification } from './components/global-notification';
 import { clearCached, ParamsUtilities } from './utilities';
 
 const steps = [
@@ -52,6 +53,7 @@ function App() {
       </Stepper>
       {steps[actualStep].content}
       <GlobalDialog />
+      <GlobalNotification />
     </Box>
   );
 }

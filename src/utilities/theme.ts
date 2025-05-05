@@ -35,13 +35,6 @@ export const theme = createTheme({
         },
       },
     },
-    MuiSvgIcon: {
-      styleOverrides: {
-        root: {
-          color: (palette.primary as unknown as { main: string }).main,
-        },
-      },
-    },
     MuiButton: {
       defaultProps: {
         variant: 'contained',
