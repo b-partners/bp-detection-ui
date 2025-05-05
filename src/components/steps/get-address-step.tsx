@@ -1,6 +1,5 @@
 import { useAddressFrom } from '@/forms';
-import { useStep } from '@/hooks';
-import { useLocationQuery, useQueryImageFromAddress } from '@/queries';
+import { useGetImageFromAddress, useLocationQuery } from '@/queries';
 import { clearCached } from '@/utilities';
 import { Error as ErrorIcon, LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
 import { Box, CircularProgress, debounce, IconButton, InputBase, MenuItem, Paper, Stack } from '@mui/material';
@@ -8,23 +7,12 @@ import { ChangeEvent, useEffect, useMemo } from 'react';
 import { GetAddressStepStyle as style } from './styles';
 
 export const GetAddressStep = () => {
-  const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails, prospect } = useQueryImageFromAddress();
+  const { isGetImagePending, getImageFromAddress } = useGetImageFromAddress();
 
-  const {
-    setStep,
-    params: { sessionId },
-  } = useStep();
-
-  const { mutate: findLocation, data } = useLocationQuery(sessionId || '');
+  const { findLocation, isFindLocationPending, locationData } = useLocationQuery();
 
   const searchAddressDebounceTimeout = 200;
   const search = useMemo(() => debounce(findLocation, searchAddressDebounceTimeout), []);
-
-  useEffect(() => {
-    if (imageSrc && areaPictureDetails && prospect) {
-      setStep({ actualStep: 1, params: { imageSrc, areaPictureDetails, prospect } });
-    }
-  }, [imageSrc, areaPictureDetails, setStep, prospect]);
 
   const {
     formState: { errors },
@@ -35,7 +23,7 @@ export const GetAddressStep = () => {
 
   const onSubmit = handleSubmit(
     data => {
-      queryImage(data.address);
+      getImageFromAddress(data.address);
     },
     error => {
       alert(error.address);
@@ -57,7 +45,7 @@ export const GetAddressStep = () => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const text = event.target.value;
     setValue('address', text);
-    if (!isQueryImagePending || areaPictureDetails) {
+    if (!isGetImagePending) {
       search(text);
     }
   };
@@ -67,28 +55,29 @@ export const GetAddressStep = () => {
       <Paper onSubmit={onSubmit} {...others} component='form' className='location-input' elevation={1}>
         <Stack>
           <IconButton>
-            <LocationOnIcon />
+            {isFindLocationPending && <CircularProgress size={25} />}
+            {!isFindLocationPending && <LocationOnIcon />}
           </IconButton>
         </Stack>
         <InputBase
           onChange={handleChange}
           data-cy='address-search-input'
-          disabled={isQueryImagePending}
+          disabled={isGetImagePending}
           placeholder='Adresse à analyser'
           error={!!errors['address']}
         />
         <Stack>
           <IconButton onClick={onSubmit}>
-            {isQueryImagePending && <CircularProgress size={25} />}
-            {!isQueryImagePending && errors['address'] && <ErrorIcon />}
-            {!isQueryImagePending && !errors['address'] && <SearchIcon />}
+            {isGetImagePending && <CircularProgress size={25} />}
+            {!isGetImagePending && errors['address'] && <ErrorIcon />}
+            {!isGetImagePending && !errors['address'] && <SearchIcon />}
           </IconButton>
         </Stack>
       </Paper>
-      {(!isQueryImagePending || areaPictureDetails) && data && data.length > 0 && (
+      {!isGetImagePending && locationData && locationData.length > 0 && (
         <Box className='location-list'>
           <Paper>
-            {data.map(({ description }: any) => (
+            {locationData.map(({ description }: any) => (
               <MenuItem onClick={handleClickComplete(description)} key={description}>
                 {description}
               </MenuItem>
