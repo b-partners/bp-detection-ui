@@ -42,7 +42,7 @@ export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
   const { data: base64 } = useQueryImageFromUrl(imageSrc);
   const stepResultRef = useRef<HTMLDivElement>(null);
-  const { data } = useGeojsonQueryResult();
+  const { data, refetch } = useGeojsonQueryResult();
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const { register, watch } = useAnnotationFrom();
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
@@ -96,19 +96,20 @@ export const DetectionResultStep = () => {
         <Paper>
           <SlopeSelect disabled={isEmailSent} {...register('slope')} />
         </Paper>
-        <ResultItem label="Taux d'usure" source='USURE' percentage={data?.stats?.['USURE']} />
-        <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.stats?.['MOISISSURE']} />
-        <ResultItem label="Taux d'humidité" source='HUMIDITE' percentage={data?.stats?.['HUMIDITE']} />
+        <ResultItem label="Taux d'usure" source='USURE' percentage={data?.properties?.['usure_rate'] || 0} />
+        <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.properties?.['moisissure_rate'] || 0} />
+        <ResultItem label="Taux d'humidité" source='HUMIDITE' percentage={data?.properties?.['humidite_rate'] || 0} />
         <Paper>
           <Stack direction='row' gap={1}>
             <Box className='color-legend' sx={{ bgcolor: detectionResultColors['OBSTACLE' as keyof typeof detectionResultColors] }}></Box>
             <Typography className='label'>Obstacle / Velux</Typography>
           </Stack>
-          <Typography className='result'>{data?.stats?.['OBSTACLE'] || data?.stats?.['VELUX'] ? 'OUI' : 'NON'}</Typography>
+          <Typography className='result'>{data?.properties?.obstacle ? 'OUI' : 'NON'}</Typography>
         </Paper>
         <Button data-cy='send-roofer-mail-button' loading={sendInfoToRooferPending} disabled={canSendPdf} onClick={handleSendPdf}>
           Envoyer
         </Button>
+        <Button onClick={() => refetch()}>refetch</Button>
       </Grid2>
     </Grid2>
   );

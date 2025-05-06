@@ -57,4 +57,7 @@ export const clearCached = {
   annotationId() {
     localStorage.removeItem(ANNOTATION_ID_ITEM);
   },
+  all() {
+    localStorage.clear();
+  },
 };

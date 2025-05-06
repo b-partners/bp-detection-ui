@@ -43,8 +43,7 @@ export const GetAddressStep = () => {
   );
 
   useEffect(() => {
-    clearCached.detectionId();
-    clearCached.isEmailSent();
+    clearCached.all();
   }, []);
 
   const { onChange, ...others } = register('address');
