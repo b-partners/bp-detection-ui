@@ -41,7 +41,7 @@ export const area_picture_mock: AreaPictureDetails = {
 
 export const detection_mock = {
   id: 'detection-mock-id',
-  geoJsonUrl: 'http://mock.url.com',
+  vggUrl: 'http://mock.url.com',
 };
 
 export const mercator_mock = {
