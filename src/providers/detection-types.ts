@@ -93,3 +93,7 @@ export interface SyncAreaPictureDetails {
   address: string;
   imageBase64: string;
 }
+
+export interface RoofDelimiterPolygon {
+  polygon: [number, number][];
+}

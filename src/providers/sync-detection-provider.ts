@@ -1,6 +1,6 @@
 import { cache, getCached, localDb, ParamsUtilities } from '@/utilities';
 import { v4 as uuid } from 'uuid';
-import { DetectionPayload, DetectionResult, SyncAreaPictureDetails } from './detection-types';
+import { DetectionPayload, DetectionResult, RoofDelimiterPolygon, SyncAreaPictureDetails } from './detection-types';
 
 const baseUrl = process.env.REACT_APP_GEO_DETECTION_API ?? '';
 
@@ -57,7 +57,7 @@ const createDetection = async (address: string, emailReceiver: string) => {
 
 const getImageFromAddress = async (address: string) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
-  const result = await fetch(`${baseUrl}/areaPictureDetails?address=${address}`, {
+  const result = await fetch(`${baseUrl}/image?address=${address}`, {
     method: 'GET',
     headers: { 'Content-type': 'application/json', 'x-api-key': apiKey },
   });
@@ -87,9 +87,25 @@ const sendImageForDetection = async (image: File) => {
   return await result.json();
 };
 
+const sendRoofDelimiterForDetection = async (polygon: RoofDelimiterPolygon) => {
+  const detectionId = getCached.detectionId();
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const result = await fetch(`${baseUrl}/detections/${detectionId}//roofDelimiter`, {
+    method: 'POST',
+    body: JSON.stringify(polygon),
+    headers: {
+      'x-api-key': apiKey,
+      'content-type': 'application/json',
+    },
+  });
+
+  return await result.json();
+};
+
 export const syncDetectionProvider = {
   createDetection,
   getImageFromAddress,
   getImageAsBuffer,
   sendImageForDetection,
+  sendRoofDelimiterForDetection,
 };
