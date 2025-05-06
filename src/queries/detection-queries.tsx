@@ -1,11 +1,8 @@
 import { DomainPolygonType, ErrorMessageDialog } from '@/components';
-import { useDialog, useStep } from '@/hooks';
-import { polygonMapper } from '@/mappers/polygon-mapper';
-import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
-import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
-import { AreaPictureDetails } from '@bpartners/typescript-client';
+import { useDialog } from '@/hooks';
+import { getDetectionResult, syncDetectionProvider } from '@/providers';
+import { ParamsUtilities } from '@/utilities';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
 
 interface MutationProps {
   polygons: DomainPolygonType[];
@@ -15,49 +12,11 @@ interface MutationProps {
   lastName?: string;
 }
 
-export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPictureDetails) => {
-  const {
-    params: { prospect },
-    setStep,
-    actualStep,
-  } = useStep();
+export const useQueryStartDetection = () => {
   const { open: openDialog } = useDialog();
 
-  const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
-    const { apiKey } = ParamsUtilities.getQueryParams();
-    const imageSize = await getImageSize(src);
-    const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
-    const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
-
-    const regions = (Object.values(refererGeoJson)[0] as any)?.regions;
-    const { all_points_x, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
-
-    const coordinates: any[] = [];
-
-    (all_points_x as any[])?.forEach((latitude, index) => {
-      coordinates.push({ latitude, longitude: all_points_y[index] });
-    });
-
-    const area = getAreaOfPolygon(coordinates);
-
-    cache.area(area);
-
-    if (!refererGeoJson) return null;
-
-    const mappedCoordinates: number[][] = [];
-
-    polygons[0].points.forEach(({ x, y }) => {
-      mappedCoordinates.push([y, x]);
-    });
-
-    if (prospect) {
-      const { data } = await bpProspectApi(apiKey).updateProspects(getCached.userInfo().accountHolderId || '', [
-        { ...prospect, email: receiverEmail, firstName, name: lastName, phone },
-      ]);
-      setStep({ params: { prospect: data[0], polygons }, actualStep });
-    }
-
-    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [[mappedCoordinates]], receiverEmail);
+  const mutationFn = async ({ polygons }: MutationProps) => {
+    return await syncDetectionProvider.sendRoofDelimiterForDetection({ polygon: polygons[0].points.map(({ x, y }) => [x, y]) });
   };
 
   const { isPending, data, mutate } = useMutation({

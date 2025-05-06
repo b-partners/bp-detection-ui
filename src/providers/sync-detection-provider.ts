@@ -24,24 +24,16 @@ const geoServerProperties = (address: string, emailReceiver: string): DetectionP
     modelName: 'BP_TOITURE',
   },
   emailReceiver,
-  geoJsonZone: [
-    {
-      geometry: { coordinates: [], type: 'Feature' },
-      properties: {
-        additionalProp1: {},
-      },
-      type: 'Feature',
-    },
-  ],
+  geoJsonZone: [],
   zoneName: address,
 });
 
-const createDetection = async (address: string, emailReceiver: string) => {
+const createDetection = async (address: string) => {
   const detectionId = uuid();
   cache.detectionId(detectionId);
   const { apiKey } = ParamsUtilities.getQueryParams();
 
-  const body = geoServerProperties(address, emailReceiver);
+  const body = geoServerProperties(address, '');
 
   const result = await fetch(`${baseUrl}/detections/${detectionId}/sync`, {
     body: JSON.stringify(body),
@@ -90,7 +82,7 @@ const sendImageForDetection = async (image: File) => {
 const sendRoofDelimiterForDetection = async (polygon: RoofDelimiterPolygon) => {
   const detectionId = getCached.detectionId();
   const { apiKey } = ParamsUtilities.getQueryParams();
-  const result = await fetch(`${baseUrl}/detections/${detectionId}//roofDelimiter`, {
+  const result = await fetch(`${baseUrl}/detections/${detectionId}/roofDelimiter`, {
     method: 'POST',
     body: JSON.stringify(polygon),
     headers: {

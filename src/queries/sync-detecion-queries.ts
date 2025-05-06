@@ -1,5 +1,6 @@
 import { useNotify, useStep } from '@/hooks';
 import { syncDetectionProvider } from '@/providers/sync-detection-provider';
+import { base64ToFile } from '@/utilities';
 import { useMutation } from '@tanstack/react-query';
 
 export const useGetImageFromAddress = () => {
@@ -8,7 +9,12 @@ export const useGetImageFromAddress = () => {
 
   const mutationFn = async (address: string) => {
     open({ text: `Récupération de l'image à partir de l'adresse ${address} en cours.`, type: 'info' });
-    return syncDetectionProvider.getImageFromAddress(address);
+
+    const imageAsBase64 = await syncDetectionProvider.getImageFromAddress(address);
+    await syncDetectionProvider.createDetection(address);
+    await syncDetectionProvider.sendImageForDetection(base64ToFile(imageAsBase64, address));
+
+    return imageAsBase64;
   };
 
   const {

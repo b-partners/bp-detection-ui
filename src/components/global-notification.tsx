@@ -24,7 +24,7 @@ const NofificationAlert: FC<NofificationProps> = ({ notification }) => {
   };
 
   return (
-    <Alert sx={{ minWidth: 400, maxWidth: 700 }} variant='filled' onClose={handleClose} key={id} severity={type as AlertProps['severity']}>
+    <Alert sx={{ minWidth: 400, maxWidth: 700 }} variant='filled' onClose={handleClose} severity={type as AlertProps['severity']}>
       {text}
     </Alert>
   );
@@ -34,9 +34,9 @@ export const GlobalNotification = () => {
   const { notifications } = useNotify();
 
   return (
-    <Stack id='notification-container' position='absolute' top={20} right={20}>
+    <Stack id='notification-container' position='absolute' top={20} right={20} gap={1}>
       {notifications.map(notification => (
-        <NofificationAlert notification={notification} />
+        <NofificationAlert key={notification.id} notification={notification} />
       ))}
     </Stack>
   );

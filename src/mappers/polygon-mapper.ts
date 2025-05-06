@@ -1,5 +1,4 @@
 import { GeojsonReturn, GeoShapeAttributes, Point, Polygon } from '@bpartners/annotator-component';
-import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { v4 } from 'uuid';
 import { ConverterPayload } from './types';
 
@@ -17,8 +16,8 @@ const toGeoShapeAttributes = (polygon: Polygon, offsets: Point): GeoShapeAttribu
 };
 
 export const polygonMapper = {
-  toRefererGeoJson(polygon: Polygon, image_size: number, areaPicture: AreaPictureDetails) {
-    const filename = `${v4().replace(/\-/gi, '')}_20_${(areaPicture.xTile || 0) - 1}_${(areaPicture.yTile || 0) - 1}.jpg`;
+  toRefererGeoJson(polygon: Polygon, image_size: number) {
+    const filename = `${v4().replace(/\-/gi, '')}_20.jpg`;
 
     const result: ConverterPayload = {
       size: image_size,
