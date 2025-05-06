@@ -1,6 +1,6 @@
 import { cache, getCached, localDb, ParamsUtilities } from '@/utilities';
 import { v4 as uuid } from 'uuid';
-import { DetectionPayload, DetectionResult, RoofDelimiterPolygon, SyncAreaPictureDetails } from './detection-types';
+import { DetectionPayload, DetectionResult, RoofDelimiterPolygon, RoofDelimiterResult, SyncAreaPictureDetails } from '.';
 
 const baseUrl = process.env.REACT_APP_GEO_DETECTION_API ?? '';
 
@@ -91,7 +91,7 @@ const sendRoofDelimiterForDetection = async (polygon: RoofDelimiterPolygon) => {
     },
   });
 
-  return await result.json();
+  return (await result.json()) as RoofDelimiterResult;
 };
 
 export const syncDetectionProvider = {

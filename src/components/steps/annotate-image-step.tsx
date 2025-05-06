@@ -34,7 +34,7 @@ export const AnnotateImageStep = () => {
     closeDialog();
     startDetection(
       { polygons, receiverEmail: email, phone, firstName, lastName },
-      { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) }
+      { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result as any, geoJsonResultUrl: result.vggUrl } }) }
     );
   };
   const handleClickDetectionButton = () => openDialog(<DetectionForm onValid={handleValidateForm} />, { style: DialogFormStyle });
@@ -75,7 +75,7 @@ export const AnnotateImageStep = () => {
       </Box>
       <Button
         onClick={handleClickDetectionButton}
-        disabled={polygons.length === 0 || (!isDetectionPending && geoJsonResult?.result)}
+        disabled={polygons.length === 0 || (!isDetectionPending && !!geoJsonResult)}
         loading={isDetectionPending}
         variant='contained'
         data-cy='process-detection-button'

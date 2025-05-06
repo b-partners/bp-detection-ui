@@ -1,10 +1,10 @@
 import { useStep } from '@/hooks';
-import { useQueryDetectionResult } from '@/queries';
+import { useGeojsonQueryResult } from '@/queries';
 import { LinearProgress, Paper, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
 
 export const DetectionLoadingStep = () => {
-  const { data } = useQueryDetectionResult();
+  const { data } = useGeojsonQueryResult();
 
   const setStep = useStep(({ setStep }) => setStep);
 

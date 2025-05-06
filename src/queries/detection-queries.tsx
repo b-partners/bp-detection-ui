@@ -25,6 +25,7 @@ export const useQueryStartDetection = () => {
     onError: () => {
       openDialog(<ErrorMessageDialog message="Une erreur s'est produite, veuillez réessayer." />);
     },
+    onSuccess: () => {},
   });
   return { isDetectionPending: isPending, geoJsonResult: data, startDetection: mutate };
 };

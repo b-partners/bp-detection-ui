@@ -6,7 +6,7 @@ export interface DetectionResult {
   geoJsonZone: GeoJSONZone[];
   id: string;
   step: Step;
-  geoJsonUrl: string;
+  vggUrl: string;
   shapeUrl: string;
   excelUrl: string;
   imageUrl: string;
@@ -96,4 +96,22 @@ export interface SyncAreaPictureDetails {
 
 export interface RoofDelimiterPolygon {
   polygon: [number, number][];
+}
+
+export interface RoofDelimiterResult {
+  id: string;
+  step: Step;
+  geoJsonUrl: null;
+  shapeUrl: null;
+  excelUrl: null;
+  imageUrl: string;
+  pdfUrl: null;
+  vggUrl: string;
+  addresses: any[];
+  roofDelimiter: RoofDelimiter;
+  emailReceiver: string;
+  zoneName: string;
+  geoServerProperties: GeoServerProperties;
+  detectableObjectModel: DetectableObjectModel;
+  geoJsonZone: any[];
 }
