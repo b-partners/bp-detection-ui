@@ -1,58 +1,44 @@
 import { useStep } from '@/hooks';
-import { geoJsonMapper } from '@/mappers/geojson-mapper';
-import { pointsToGeoPoints } from '@/providers';
-import { getCached } from '@/utilities';
+import { detectionResultMapper } from '@/mappers';
 import { useQuery } from '@tanstack/react-query';
-import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
+import { DetectionResultInVgg, Region } from '.';
 
-const getStatistics = (geojson: any) => {
-  const regions = (Object.values(geojson)[0] as any)?.regions || {};
+const getRegions = (detectionResult: DetectionResultInVgg) => {
+  const detections = Object.values(detectionResult);
 
-  const stats: Record<string, any> = {};
+  const regions: Region[] = [];
 
-  Object.values(regions).forEach(({ region_attributes, shape_attributes }: any) => {
-    const label = region_attributes.label;
-    const coordinates: { longitude: number; latitude: number }[] = [];
+  detections.forEach(({ regions: currentRegion }) => {
+    const regionsValues = Object.values(currentRegion);
+    regions.push(...regionsValues);
+  });
 
-    shape_attributes.all_points_x.forEach((x: number, index: number) => {
-      coordinates.push({ longitude: x, latitude: shape_attributes.all_points_y[index] });
-    });
-    const currentArea = +getAreaOfPolygon(coordinates);
-    if (stats[label]) {
-      stats[label] += currentArea;
-    } else {
-      stats[label] = currentArea;
+  return regions;
+};
+
+const isThereAnObstacle = (regions: Region[]) => {
+  for (const region of regions) {
+    if (['OBSTACLE', 'VELUX', 'CHEMINEE'].includes(region.region_attributes.label)) {
+      return true;
     }
-  });
+  }
 
-  const totalArea = getCached.area();
-
-  Object.keys(stats).forEach(key => {
-    stats[key] = +((100 / totalArea) * stats[key]).toFixed(2);
-  });
-
-  return stats;
+  return false;
 };
 
 export const useGeojsonQueryResult = () => {
-  const { areaPictureDetails, geoJsonResultUrl } = useStep(({ params }) => params);
+  const { geoJsonResultUrl } = useStep(({ params }) => params);
 
   const queryFn = async () => {
-    const geojsonText = await fetch(geoJsonResultUrl);
-    const geojsonInJson = JSON.parse(await geojsonText.text());
-    const converterPayload = geoJsonMapper.toConverterPayloadGeoJSON(geojsonInJson.features, areaPictureDetails?.xTile || 0, areaPictureDetails?.yTile || 0);
-    const convertedPayload = await pointsToGeoPoints(converterPayload);
+    const detectionResultText = await fetch(geoJsonResultUrl, { headers: { 'content-type': '*/*' } });
+    const detectionResultJson: DetectionResultInVgg = await detectionResultText.json();
 
-    const stats = getStatistics(convertedPayload);
+    const regions = getRegions(detectionResultJson);
 
-    const polygons: any = [];
+    const polygons = detectionResultMapper.toPolygon(regions);
+    const obstacle = isThereAnObstacle(regions);
 
-    Object.values(converterPayload).forEach(conveterPayload => {
-      const currentPolygons = geoJsonMapper.toPolygon(conveterPayload as any);
-      polygons.push(...currentPolygons);
-    });
-
-    return { stats, polygons };
+    return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons };
   };
 
   return useQuery({ queryKey: ['geojson-result'], queryFn, enabled: !!geoJsonResultUrl });
