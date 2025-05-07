@@ -64,6 +64,13 @@ export const processDetection = async (layers: string, address: string, coordina
     method: 'POST',
     body: JSON.stringify(geoJson),
   });
+
+  if (data.status !== 200) {
+    const error = new Error('Roofer error');
+    error.name = data.statusText;
+    throw error;
+  }
+
   const result = await data.json();
 
   return { result, geoJson };
