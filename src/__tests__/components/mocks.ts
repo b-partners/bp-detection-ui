@@ -33,6 +33,7 @@ export const area_picture_mock: AreaPictureDetails = {
     source: AreaPictureImageSource.GEOSERVER,
     name: 'actual-layer-mock',
     departementName: 'actual-layer-departement-mock',
+    precisionLevelInCm: 5,
   },
   address: '24 rue mozart mock 2',
   shiftNb: 0,
