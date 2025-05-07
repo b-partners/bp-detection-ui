@@ -1,4 +1,5 @@
-import { useCheckApiKey, useStep } from '@/hooks';
+import { ErrorMessageDialog } from '@/components';
+import { useCheckApiKey, useDialog, useStep } from '@/hooks';
 import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -58,11 +59,23 @@ const mutationFn = (actualStep: number) => async (address: string) => {
 export const useQueryImageFromAddress = () => {
   const { actualStep } = useStep();
   const checkApiKey = useCheckApiKey();
+  const { open } = useDialog();
+
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['image from address'],
-    mutationFn: mutationFn(actualStep),
+    mutationFn: async (address: string) => {
+      const result = await mutationFn(actualStep)(address);
+
+      if ((result.areaPictureDetails.actualLayer?.precisionLevelInCm || 0) < 5) {
+        throw new Error('areaPicturePrecision');
+      }
+
+      return result;
+    },
     onError: e => {
       if (e.message === 'Network Error') checkApiKey();
+      if (e.message === 'areaPicturePrecision') open(<ErrorMessageDialog message="L'adresse que vous avez spécifiée n'est pas encore prise en charge." />);
+      else open(<ErrorMessageDialog message="Une erreur s'est produite, veuillez réessayer." />);
     },
   });
 

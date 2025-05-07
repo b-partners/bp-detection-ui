@@ -5,6 +5,7 @@ export * from './annotator-section';
 export * from './annotator-shift-buttons';
 export * from './check-api-key-dialog';
 export * from './detection-form';
+export * from './error-message-dialog';
 export * from './global-dialog';
 export * from './slope-input';
 export * from './style';
