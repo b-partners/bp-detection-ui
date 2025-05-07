@@ -1,5 +1,5 @@
-import { DomainPolygonType } from '@/components';
-import { useStep } from '@/hooks';
+import { DomainPolygonType, ErrorMessageDialog } from '@/components';
+import { useDialog, useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
 import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
 import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
@@ -21,6 +21,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     setStep,
     actualStep,
   } = useStep();
+  const { open: openDialog } = useDialog();
 
   const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
@@ -62,6 +63,9 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['detection', 'processing'],
     mutationFn: mutationFn,
+    onError: () => {
+      openDialog(<ErrorMessageDialog message="Une erreur s'est produite, veuillez réessayer." />);
+    },
   });
   return { isDetectionPending: isPending, geoJsonResult: data, startDetection: mutate };
 };
