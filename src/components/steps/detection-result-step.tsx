@@ -42,7 +42,7 @@ export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
   const { data: base64 } = useQueryImageFromUrl(imageSrc);
   const stepResultRef = useRef<HTMLDivElement>(null);
-  const { data, refetch } = useGeojsonQueryResult();
+  const { data } = useGeojsonQueryResult();
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const { register, watch } = useAnnotationFrom();
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
@@ -109,7 +109,6 @@ export const DetectionResultStep = () => {
         <Button data-cy='send-roofer-mail-button' loading={sendInfoToRooferPending} disabled={canSendPdf} onClick={handleSendPdf}>
           Envoyer
         </Button>
-        <Button onClick={() => refetch()}>refetch</Button>
       </Grid2>
     </Grid2>
   );
