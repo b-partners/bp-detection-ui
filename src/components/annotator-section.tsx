@@ -1,20 +1,12 @@
 import { useDialog, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
+import { createImageFromPolygon } from '@/utilities';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
-import {
-  AnnotationTutorialDialog,
-  AnnotatorCanvasCustom,
-  AnnotatorShiftButtons,
-  DetectionForm,
-  DetectionFormInfo,
-  DialogFormStyle,
-  DialogTutorialStyle,
-  DomainPolygonType,
-} from '.';
+import { FC, useEffect, useRef, useState } from 'react';
+import { AnnotationTutorialDialog, AnnotatorCanvasCustom, DetectionForm, DetectionFormInfo, DialogFormStyle, DialogTutorialStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -23,18 +15,43 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
   const { open: openDialog, close: closeDialog } = useDialog();
-  const { data, isPending, isExtended, nextXShift, prevXShift } = useQueryUpdateAreaPicture();
+  const { data, isPending, isExtended, extendImageToggle } = useQueryUpdateAreaPicture();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const handleGetCroppedImage = () => {
+    return new Promise<{ image?: ArrayBuffer; polygons?: DomainPolygonType[] }>(resolve => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const image = new Image();
+        image.src = data?.imageAsBase64 || '';
+
+        image.onload = async () => {
+          const { toArrayBuffer, boundingBox } = createImageFromPolygon(polygons[0], canvas, image);
+
+          const mappedPolygons = polygons.map(({ points, ...polygon }) => ({
+            ...polygon,
+            points: points.map(({ x, y }) => ({ x: x - boundingBox.x, y: y - boundingBox.y })),
+          }));
+
+          resolve({ image: await toArrayBuffer(), polygons: mappedPolygons });
+        };
+      } else {
+        resolve({ image: undefined, polygons: undefined });
+      }
+    });
+  };
 
   useEffect(() => {
     setCurrentImageSrc(data?.imageAsBase64 || '');
   }, [data]);
 
-  // const handleUpdateAreaPicture = () => extendImageToggle();
+  const handleUpdateAreaPicture = () => extendImageToggle();
 
   const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
+    const croppedImage = isExtended ? handleGetCroppedImage() : Promise.resolve({ image: undefined, polygons: undefined });
     closeDialog();
     startDetection(
-      { polygons, receiverEmail: email, phone, firstName, lastName },
+      { polygons, receiverEmail: email, phone, firstName, lastName, isExtended, isExtendedImage: croppedImage, image: currentImageSrc },
       { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) }
     );
   };
@@ -53,26 +70,27 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       <Paper elevation={0} className='info-section'>
         <Stack>
           <Typography>Veuillez délimiter votre toiture sur l'image suivante.</Typography>
-          {/* <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography> */}
+          <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography>
         </Stack>
         <IconButton onClick={openTutorialDialog} className='help-button'>
           <HelpCenterOutlined fontSize='large' />
         </IconButton>
       </Paper>
-      {/* <Box mb={2}>
+      <Box mb={2}>
         <Button variant='contained' onClick={handleUpdateAreaPicture} loading={isPending}>
           {isExtended ? "Restaurer l'image" : "Recentrer l'image"}
         </Button>
-      </Box> */}
+      </Box>
       <Box minHeight='500px'>
         <AnnotatorCanvasCustom
-          customButtons={isExtended && <AnnotatorShiftButtons prevXShift={prevXShift} nextXShift={nextXShift} />}
+          // customButtons={<AnnotatorShiftButtons prevXShift={prevXShift} nextXShift={nextXShift} />}
           isLoading={isPending}
-          allowAnnotation
+          allowAnnotation={polygons.length === 0}
           setPolygons={setMappedDomainPolygons}
           polygonList={mappedAnnotatorPolygons}
           image={currentImageSrc}
         />
+        <Box ref={canvasRef} component='canvas' display='none'></Box>
       </Box>
       <Button
         onClick={handleClickDetectionButton}

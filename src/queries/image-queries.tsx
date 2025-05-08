@@ -27,26 +27,30 @@ const getImageFile = async (areaPictureDetails: AreaPictureDetails) => {
   };
 };
 
+export const sendImageQuery = async (areaPictureDetails: AreaPictureDetails, imageAsArrayBuffer: ArrayBuffer, mimeType: string | null) => {
+  const filename = `${v4().replace(/\-/gi, '')}_20_${(areaPictureDetails?.xTile || 0) - 1}_${(areaPictureDetails?.yTile || 0) - 1}.jpg`;
+  const imageAsFile = arrayBuffeToFile(imageAsArrayBuffer, filename, mimeType || 'application/octet-stream');
+  await sendImageToDetect(imageAsFile);
+};
+
 const mutationFn = (actualStep: number) => async (address: string) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, address);
 
-  const { imageAsArrayBuffer, imageAsBase64, imageUrl, image } = await getImageFile(areaPictureDetails);
+  const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
 
   // create the detection without polygon
   await processDetection(areaPictureDetails.actualLayer?.name ?? '', address);
 
-  try {
-    // send the received image as file to the backend
-    if (actualStep === 0) {
-      const filename = `${v4().replace(/\-/gi, '')}_20_${(areaPictureDetails?.xTile || 0) - 1}_${(areaPictureDetails?.yTile || 0) - 1}.jpg`;
-      const imageAsFile = arrayBuffeToFile(imageAsArrayBuffer, filename, image.headers.get('Content-Type') || 'application/octet-stream');
-      await sendImageToDetect(imageAsFile);
-    }
-    // send the received image as file to the backend
-  } catch (err) {
-    console.log({ err });
-  }
+  // try {
+  //   // send the received image as file to the backend
+  //   if (actualStep === 0) {
+  //     await sendImageQuery(areaPictureDetails, imageAsArrayBuffer, image.headers.get('Content-Type'));
+  //   }
+  //   // send the received image as file to the backend
+  // } catch (err) {
+  //   console.log({ err });
+  // }
 
   return {
     areaPictureDetails,
