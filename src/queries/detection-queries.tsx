@@ -16,7 +16,7 @@ export const useQueryStartDetection = () => {
   const { open: openDialog } = useDialog();
 
   const mutationFn = async ({ polygons }: MutationProps) => {
-    return await syncDetectionProvider.sendRoofDelimiterForDetection({ polygon: polygons[0].points.map(({ x, y }) => [x, y]) });
+    return await syncDetectionProvider.sendRoofDelimiterForDetection({ polygon: polygons[0].points.map(({ x, y }) => [y, x]) });
   };
 
   const { isPending, data, mutate } = useMutation({
