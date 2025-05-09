@@ -2,9 +2,9 @@ import { DomainPolygonType } from '@/components';
 
 const getPolygonSize = (polygon: DomainPolygonType) => {
   const size = {
-    minX: 0,
+    minX: polygon.points[0].x,
     maxX: 0,
-    minY: 0,
+    minY: polygon.points[0].y,
     maxY: 0,
     dx: 0,
     dy: 0,
@@ -17,17 +17,17 @@ const getPolygonSize = (polygon: DomainPolygonType) => {
     size.maxY = Math.max(size.maxY, point.y);
   }
 
-  size.dx = size.maxX - size.minX;
-  size.dy = size.maxY - size.minY;
+  size.dx = 1024 - (size.maxX - size.minX);
+  size.dy = 1024 - (size.maxY - size.minY);
 
-  if (size.dx > 1024 || size.dy > 1024) {
+  if (size.dx < 0 || size.dy < 0) {
     console.log(size.dx, size.dy);
   }
 
   return size;
 };
 
-export const getPolygnImageBoundingBox = (polygon: DomainPolygonType) => {
+export const getPolygonImageBoundingBox = (polygon: DomainPolygonType) => {
   const { dx, dy, minX, minY, maxX, maxY } = getPolygonSize(polygon);
   const paddingX = dx / 2;
   const paddingY = dy / 2;
@@ -53,13 +53,34 @@ export const getPolygnImageBoundingBox = (polygon: DomainPolygonType) => {
   return boundingBox;
 };
 
-const imageDataToBase64 = (imageData: ImageData, width: number, height: number) => {
+const setupTempCanvas = (imageData: ImageData, width: number, height: number) => {
   const tempCanvas = document.createElement('canvas');
   tempCanvas.width = width;
   tempCanvas.height = height;
   const tempCtx = tempCanvas.getContext('2d');
   tempCtx?.putImageData(imageData, 0, 0);
+  return tempCanvas;
+};
+
+const imageDataToBase64 = (imageData: ImageData, width: number, height: number) => {
+  const tempCanvas = setupTempCanvas(imageData, width, height);
   return tempCanvas.toDataURL('image/png');
+};
+
+const imageDataToArrayBuffer = async (imageData: ImageData, width: number, height: number): Promise<ArrayBuffer> => {
+  const tempCanvas = setupTempCanvas(imageData, width, height);
+
+  const blob: Blob = await new Promise((resolve, reject) => {
+    tempCanvas.toBlob(blob => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error('Failed to convert canvas to blob.'));
+      }
+    }, 'image/png');
+  });
+
+  return await blob.arrayBuffer();
 };
 
 const base64ToFile = (base64: string, filename: string) => {
@@ -77,22 +98,24 @@ export const createImageFromPolygon = (polygon: DomainPolygonType, canvas: HTMLC
   const normalSize = 1024;
   const scaledSize = normalSize * 3;
 
-  const { x, y } = getPolygnImageBoundingBox(polygon);
+  const { x, y } = getPolygonImageBoundingBox(polygon);
 
   canvas.width = scaledSize;
   canvas.height = scaledSize;
 
   const ctx = canvas.getContext('2d');
   ctx?.drawImage(image, 0, 0);
-  const imageData = ctx?.getImageData(x, y, normalSize, normalSize);
-  if (!imageData) return;
+  const imageData = ctx!.getImageData(x, y, normalSize, normalSize);
 
   const toBase64 = () => imageDataToBase64(imageData, normalSize, normalSize);
   const toFile = () => base64ToFile(toBase64(), 'cropped-image.png');
+  const toArrayBuffer = () => imageDataToArrayBuffer(imageData, normalSize, normalSize);
 
   return {
     data: imageData.data,
+    boundingBox: { x, y },
     toBase64,
     toFile,
+    toArrayBuffer,
   };
 };

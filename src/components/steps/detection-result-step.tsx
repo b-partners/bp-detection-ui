@@ -1,7 +1,7 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
-import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
+import { useGeojsonQueryResult, usePostDetectionQueries } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useRef, useState } from 'react';
@@ -48,7 +48,6 @@ const degradationLevels = [
 
 export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
-  const { data: base64 } = useQueryImageFromUrl(imageSrc);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { data } = useGeojsonQueryResult();
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
@@ -73,7 +72,7 @@ export const DetectionResultStep = () => {
         </Stack>
       </Paper>
       <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
-        {imageSrc && <AnnotatorCanvasCustom height='513px' setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={base64 || ''} />}
+        <AnnotatorCanvasCustom height='513px' setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={imageSrc || ''} />
         <Paper sx={{ background: '#BEB4A4 !important', px: '10rem', py: 2, borderRadius: 5, textTransform: 'uppercase' }}>
           <Typography sx={{ textAlign: 'center', width: '100%' }}>
             Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
