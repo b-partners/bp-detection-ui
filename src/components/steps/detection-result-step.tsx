@@ -72,7 +72,7 @@ export const DetectionResultStep = () => {
         </Stack>
       </Paper>
       <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
-        {imageSrc && <AnnotatorCanvasCustom height='513px' setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={imageSrc} />}
+        <AnnotatorCanvasCustom height='513px' setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={imageSrc || ''} />
         <Paper sx={{ background: '#BEB4A4 !important', px: '10rem', py: 2, borderRadius: 5, textTransform: 'uppercase' }}>
           <Typography sx={{ textAlign: 'center', width: '100%' }}>
             Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
