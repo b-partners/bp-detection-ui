@@ -2,10 +2,11 @@ import { DomainPolygonType, ErrorMessageDialog } from '@/components';
 import { useDialog, useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
 import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
-import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
+import { base64ToArrayBuffer, cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
+import { sendImageQuery } from './image-queries';
 
 interface MutationProps {
   polygons: DomainPolygonType[];
@@ -13,6 +14,9 @@ interface MutationProps {
   phone: string;
   firstName?: string;
   lastName?: string;
+  image?: string;
+  isExtended?: boolean;
+  isExtendedImage?: Promise<{ image?: ArrayBuffer; polygons?: DomainPolygonType[] }>;
 }
 
 export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPictureDetails) => {
@@ -23,8 +27,19 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
   } = useStep();
   const { open: openDialog } = useDialog();
 
-  const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
+  const mutationFn = async ({ polygons: noCroppedPolygons, receiverEmail, phone, firstName, lastName, isExtended, isExtendedImage, image }: MutationProps) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
+
+    const { image: croppedImage, polygons: croppedPolygons } = (await isExtendedImage) || {};
+
+    if (isExtended && croppedImage) {
+      await sendImageQuery(areaPictureDetails, croppedImage, 'image/*');
+    } else if (!isExtended && image) {
+      await sendImageQuery(areaPictureDetails, base64ToArrayBuffer(image), 'image/*');
+    }
+
+    const polygons = isExtended ? (croppedPolygons as any as DomainPolygonType[]) : noCroppedPolygons;
+
     const imageSize = await getImageSize(src);
     const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
     const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
