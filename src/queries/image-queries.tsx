@@ -33,7 +33,7 @@ export const sendImageQuery = async (areaPictureDetails: AreaPictureDetails, ima
   await sendImageToDetect(imageAsFile);
 };
 
-const mutationFn = (actualStep: number) => async (address: string) => {
+const mutationFn = async (address: string) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, address);
 
@@ -61,16 +61,15 @@ const mutationFn = (actualStep: number) => async (address: string) => {
 };
 
 export const useQueryImageFromAddress = () => {
-  const { actualStep } = useStep();
   const checkApiKey = useCheckApiKey();
   const { open } = useDialog();
 
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['image from address'],
     mutationFn: async (address: string) => {
-      const result = await mutationFn(actualStep)(address);
+      const result = await mutationFn(address);
 
-      if ((result.areaPictureDetails.actualLayer?.precisionLevelInCm || 0) < 5) {
+      if (result.areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
         throw new Error('areaPicturePrecision');
       }
 
