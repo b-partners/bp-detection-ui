@@ -65,8 +65,6 @@ export const DetectionResultStep = () => {
 
   const canSendPdf = isEmailSent || !(watch().cover1 && watch().cover2 && watch().slope);
 
-  console.log(data?.properties.global_rate_value, data?.properties.global_rate_type);
-
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
       <Paper elevation={0} className='info-section' sx={{ width: '100%' }}>
