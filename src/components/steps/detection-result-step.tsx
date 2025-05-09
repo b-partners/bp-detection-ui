@@ -3,7 +3,7 @@ import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { cache, getCached } from '@/utilities';
-import { Box, Button, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useRef, useState } from 'react';
 import { AnnotatorCanvasCustom, SlopeSelect } from '..';
 import { DetectionResultStepStyle as style } from './styles';
@@ -38,6 +38,14 @@ export const ANNOTATION_COVERING = [
   { value: 'autres', label: 'Autres' },
 ];
 
+const degradationLevels = [
+  { label: 'A', color: '#53b76a' },
+  { label: 'B', color: '#f7ec94' },
+  { label: 'C', color: '#ddc563' },
+  { label: 'D', color: '#ee915c' },
+  { label: 'E', color: '#e8443b' },
+];
+
 export const DetectionResultStep = () => {
   const { imageSrc } = useStep(({ params }) => params);
   const { data: base64 } = useQueryImageFromUrl(imageSrc);
@@ -66,6 +74,16 @@ export const DetectionResultStep = () => {
       </Paper>
       <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
         {imageSrc && <AnnotatorCanvasCustom height='513px' setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={base64 || ''} />}
+        <Paper sx={{ background: '#BEB4A4 !important', px: '10rem', py: 2, borderRadius: 5, textTransform: 'uppercase' }}>
+          <Typography sx={{ textAlign: 'center', width: '100%' }}>
+            Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
+          </Typography>
+        </Paper>
+        <Stack direction='row' justifyContent='center' m={1} gap={1}>
+          {degradationLevels.map(({ color, label }) => (
+            <Chip label={label} sx={{ px: 1, bgcolor: color, border: `5px solid ${data?.properties?.global_rate_type === label ? 'black' : 'transparent'}` }} />
+          ))}
+        </Stack>
       </Grid2>
       <Grid2 size={{ xs: 12, md: 4 }}>
         <Typography className='title' mb={2}>
