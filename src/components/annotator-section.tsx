@@ -42,7 +42,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   };
 
   useEffect(() => {
-    setCurrentImageSrc(data?.imageAsBase64 || '');
+    setCurrentImageSrc(data?.imageAsBase64 || imageSrc);
   }, [data]);
 
   const handleUpdateAreaPicture = () => extendImageToggle();
