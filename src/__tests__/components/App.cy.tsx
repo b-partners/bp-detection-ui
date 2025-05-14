@@ -84,7 +84,6 @@ describe('Component testing', () => {
     cy.wait('@createProspect');
     cy.wait('@createAreaPicture');
     cy.wait('@createDetection').then(() => cache.detectionId(detection_mock.id));
-    cy.wait('@createDetectionImage');
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
