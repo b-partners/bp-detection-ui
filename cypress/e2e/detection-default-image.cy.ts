@@ -6,7 +6,7 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 const timeout = 300000;
 
 describe('test detection', () => {
-  it('1024 image detection', () => {
+  it('Default image detection', () => {
     cy.prodRequestUtilities();
     //steppers state
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
