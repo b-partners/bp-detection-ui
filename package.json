@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,ts,tsx}\" \"./**/*.{json,yml,yaml}\"",
     "test": "cypress run --component",
-    "test:open": "cypress open --component"
+    "it": "cypress run --e2e",
+    "test:open": "cypress open --component",
+    "test:open:e2e": "cypress open --e2e"
   },
   "dependencies": {
     "@bpartners/annotator-component": "^0.13.0",
@@ -38,6 +40,7 @@
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.14.0",
     "@eslint/js": "^9.21.0",
     "@types/node": "^22.14.1",
     "@types/react": "^19.0.10",
@@ -45,6 +48,9 @@
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "cypress": "^14.2.0",
+    "cypress-multi-reporters": "^2.0.5",
+    "cypress-sonarqube-reporter": "^1.13.5",
+    "cypress-vite": "^1.6.0",
     "eslint": "^9.21.0",
     "eslint-plugin-cypress": "^4.3.0",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -55,6 +61,7 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
+    "vite-plugin-istanbul": "^7.0.0",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

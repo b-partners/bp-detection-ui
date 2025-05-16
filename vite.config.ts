@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
+import istanbul from 'vite-plugin-istanbul';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
@@ -9,7 +10,18 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env': env,
     },
-    plugins: [react(), viteTsconfigPaths()],
+    plugins: [
+      react(),
+      viteTsconfigPaths(),
+      istanbul({
+        requireEnv: false,
+        cypress: true,
+        forceBuildInstrument: true,
+      }),
+    ],
+    optimizeDeps: {
+      entries: ['cypress/**/*', 'src/**/*'],
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

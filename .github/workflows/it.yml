@@ -1,0 +1,71 @@
+name: IT
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - 'prod'
+  pull_request:
+    branches:
+      - 'prod'
+
+env:
+  AWS_REGION: eu-west-3
+  REACT_APP_BPARTNERS_API_URL: https://api.preprod.bpartners.app
+  REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/mercator
+  REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/pixel
+  REACT_APP_GEO_DETECTION_API: https://qncd60qbk0.execute-api.eu-west-3.amazonaws.com
+
+jobs:
+  test-it:
+    timeout-minutes: 50
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+      - id: install-aws-cli
+        uses: unfor19/install-aws-cli-action@v1.0.3
+        with:
+          version: 2
+          verbose: false
+          arch: amd64
+          rootdir: ''
+          workdir: ''
+      - name: Connect to Bpartners typescript client AWS CodeArtifact
+        run: |
+          sh ./initAWS.sh bpartners ${{ secrets.BPARTNERS_TS_CLIENT_AWS_ACCESS_KEY_ID }} ${{ secrets.BPARTNERS_TS_CLIENT_AWS_SECRET_ACCESS_KEY }} ${{ env.AWS_REGION }}
+          sh ./initNpmrc.sh bpartners bpartners-store npm-bpartners-app ${{ secrets.BP_CLIENT_AWS_ID }}
+
+      - name: Connect to BPartners annotator client AWS CodeArtifact
+        run: |
+          sh ./initAWS.sh imagery ${{ secrets.BPARTNERS_ANNOTATOR_CLIENT_AWS_ACCESS_KEY_ID }} ${{ secrets.BPARTNERS_ANNOTATOR_CLIENT_AWS_SECRET_ACCESS_KEY }} ${{ env.AWS_REGION }}
+          sh ./initNpmrc.sh imagery annotator-imagery-store npm-bpartners-imagery-app ${{ secrets.BP_ANNOTATOR_AWS_ID }}
+
+      - run: npm install --legacy-peer-deps
+
+      - run: |
+          echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} > .env
+          echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
+          echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
+
+          max_retries=5
+          attempt=1
+          until npm run it
+          do
+            if [ $attempt -ge $max_retries ]; then
+              echo "Tests failed after $attempt attempts."
+              exit 1
+            fi
+            echo "Test failed. Retrying attempt $((attempt+1)) of $max_retries..."
+            attempt=$((attempt+1))
+            sleep 5
+          done
+
+        if: always()
+      - name: Show test repports
+        if: always()
+        run: find "./dist/test-reports/cypress/e2e" -iname "*xml" -exec cat {} +

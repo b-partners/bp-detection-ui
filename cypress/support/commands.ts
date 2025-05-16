@@ -35,3 +35,17 @@
 //     }
 //   }
 // }
+const dataCy = (selector: string, otherSelectors?: string) => cy.get(`[data-cy="${selector}"] ${otherSelectors || ''}`);
+const dataName = (selector: string, otherSelectors?: string) => cy.get(`[name="${selector}"] ${otherSelectors || ''}`);
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      dataCy: typeof dataCy;
+      dataName: typeof dataName;
+    }
+  }
+}
+
+Cypress.Commands.add('dataCy', dataCy);
+Cypress.Commands.add('dataName', dataName);
