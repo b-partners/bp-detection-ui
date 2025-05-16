@@ -1,12 +1,21 @@
 import { useDialog, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
-import { createImageFromPolygon } from '@/utilities';
+import { checkPolygonSizeUnder1024, createImageFromPolygon } from '@/utilities';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
-import { AnnotationTutorialDialog, AnnotatorCanvasCustom, DetectionForm, DetectionFormInfo, DialogFormStyle, DialogTutorialStyle, DomainPolygonType } from '.';
+import {
+  AnnotationTutorialDialog,
+  AnnotatorCanvasCustom,
+  DetectionForm,
+  DetectionFormInfo,
+  DialogFormStyle,
+  DialogTutorialStyle,
+  DomainPolygonType,
+  ErrorMessageDialog,
+} from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -45,7 +54,12 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
     setCurrentImageSrc(data?.imageAsBase64 || imageSrc);
   }, [data]);
 
-  const handleUpdateAreaPicture = () => extendImageToggle();
+  const handleClearPolygon = () => setPolygons([]);
+
+  const handleExtendImage = () => {
+    handleClearPolygon();
+    extendImageToggle();
+  };
 
   const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
     const croppedImage = isExtended ? handleGetCroppedImage() : Promise.resolve({ image: undefined, polygons: undefined });
@@ -55,7 +69,16 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) }
     );
   };
-  const handleClickDetectionButton = () => openDialog(<DetectionForm onValid={handleValidateForm} />, { style: DialogFormStyle });
+
+  const handleClickDetectionButton = () => {
+    const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
+    if (!isValidPoligonSize && isExtended) {
+      return openDialog(
+        <ErrorMessageDialog message='La taille du toit que vous avez sélectionnée est trop grande et ne peut pas encore être prise en charge.' />
+      );
+    }
+    openDialog(<DetectionForm onValid={handleValidateForm} />, { style: DialogFormStyle });
+  };
 
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
   const currentShiftNumber = { x: areaPictureDetails.shiftNb || 0, y: 0 };
@@ -76,9 +99,12 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           <HelpCenterOutlined fontSize='large' />
         </IconButton>
       </Paper>
-      <Box mb={2}>
-        <Button variant='contained' onClick={handleUpdateAreaPicture} loading={isPending}>
+      <Box display='flex' alignItems='center' gap={2} mb={2}>
+        <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
           {isExtended ? "Restaurer l'image" : "Recentrer l'image"}
+        </Button>
+        <Button variant='contained' onClick={handleClearPolygon} disabled={polygons.length === 0}>
+          Effacer la sélection
         </Button>
       </Box>
       <Box minHeight='500px'>

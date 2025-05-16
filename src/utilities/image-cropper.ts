@@ -21,10 +21,19 @@ const getPolygonSize = (polygon: DomainPolygonType) => {
   size.dy = 1024 - (size.maxY - size.minY);
 
   if (size.dx < 0 || size.dy < 0) {
-    console.log(size.dx, size.dy);
+    throw new Error('Polygon too big');
   }
 
   return size;
+};
+
+export const checkPolygonSizeUnder1024 = (polygon: DomainPolygonType) => {
+  try {
+    getPolygonSize(polygon);
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 export const getPolygonImageBoundingBox = (polygon: DomainPolygonType) => {
