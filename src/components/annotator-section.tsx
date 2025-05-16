@@ -54,7 +54,12 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
     setCurrentImageSrc(data?.imageAsBase64 || imageSrc);
   }, [data]);
 
-  const handleUpdateAreaPicture = () => extendImageToggle();
+  const handleClearPolygon = () => setPolygons([]);
+
+  const handleExtendImage = () => {
+    handleClearPolygon();
+    extendImageToggle();
+  };
 
   const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
     const croppedImage = isExtended ? handleGetCroppedImage() : Promise.resolve({ image: undefined, polygons: undefined });
@@ -94,9 +99,12 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           <HelpCenterOutlined fontSize='large' />
         </IconButton>
       </Paper>
-      <Box mb={2}>
-        <Button variant='contained' onClick={handleUpdateAreaPicture} loading={isPending}>
+      <Box display='flex' alignItems='center' gap={2} mb={2}>
+        <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
           {isExtended ? "Restaurer l'image" : "Recentrer l'image"}
+        </Button>
+        <Button variant='contained' onClick={handleClearPolygon} disabled={polygons.length === 0}>
+          Effacer la sélection
         </Button>
       </Box>
       <Box minHeight='500px'>
