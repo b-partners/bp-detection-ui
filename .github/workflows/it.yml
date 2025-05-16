@@ -16,9 +16,6 @@ env:
   REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/mercator
   REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/pixel
   REACT_APP_GEO_DETECTION_API: https://qncd60qbk0.execute-api.eu-west-3.amazonaws.com
-  REACT_PROD_API_KEY: secrets.REACT_PROD_API_KEY
-  REACT_IT_TEST_EMAIL: secrets.REACT_IT_TEST_EMAIL
-  REACT_IT_TEST_PHONE: secrets.REACT_IT_TEST_PHONE
 
 jobs:
   test-it:
@@ -51,9 +48,10 @@ jobs:
       - run: npm install --legacy-peer-deps
 
       - run: |
-          echo REACT_PROD_API_KEY=${{ env.REACT_PROD_API_KEY }} > .env
-          echo REACT_IT_TEST_EMAIL=${{ env.REACT_IT_TEST_EMAIL }} >> .env
-          echo REACT_IT_TEST_PHONE=${{ env.REACT_IT_TEST_PHONE }} >> .env
+          echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} > .env
+          echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
+          echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
+
           max_retries=5
           attempt=1
           until npm run it
@@ -70,4 +68,4 @@ jobs:
         if: always()
       - name: Show test repports
         if: always()
-        run: find "./dist/src/__tests__/it" -iname "*xml" -exec cat {} +
+        run: find "./dist/test-reports/cypress/e2e" -iname "*xml" -exec cat {} +
