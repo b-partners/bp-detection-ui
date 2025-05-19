@@ -54,21 +54,19 @@ jobs:
 
           max_retries=3
           attempt=1
-          last_log=""
 
-          until output=$(npm run it 2>&1); do
-              last_log="$output"
-
-              if [ $attempt -ge $max_retries ]; then
-                  echo "Tests failed after $attempt attempts."
-                  echo "$last_log" > test-final.log
-                  exit 1
-              fi
-
-              echo "Test failed. Retrying attempt $((attempt+1)) of $max_retries..."
-              attempt=$((attempt+1))
-              sleep 5
+          until output=$(npm run it 2>&1) || [ $attempt -ge $max_retries ]; do
+            echo "Test failed. Retrying attempt $((attempt+1)) of $max_retries..."
+            attempt=$((attempt+1))
+            sleep 5
           done
+
+          echo "$output" > test-final.log
+
+          if [ $attempt -ge $max_retries ] && [ $? -ne 0 ]; then
+            echo "Tests failed after $max_retries attempts."
+            exit 1
+          fi
 
           cat test-final.log
 
