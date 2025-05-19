@@ -54,18 +54,38 @@ jobs:
 
           max_retries=3
           attempt=1
-          until npm run it
-          do
-            if [ $attempt -ge $max_retries ]; then
-              echo "Tests failed after $attempt attempts."
-              exit 1
-            fi
-            echo "Test failed. Retrying attempt $((attempt+1)) of $max_retries..."
-            attempt=$((attempt+1))
-            sleep 5
+          last_log=""
+
+          until output=$(npm run it 2>&1); do
+              last_log="$output"
+
+              if [ $attempt -ge $max_retries ]; then
+                  echo "Tests failed after $attempt attempts."
+                  echo "$last_log" > test-final.log
+                  exit 1
+              fi
+
+              echo "Test failed. Retrying attempt $((attempt+1)) of $max_retries..."
+              attempt=$((attempt+1))
+              sleep 5
           done
 
-        if: always()
+          cat test-final.log
+
+      - name: Instatus UI request
+        if: failure() && !contains(cat test-final.log, '__API__INSTATUS__ERROR__')
+        run: |
+          curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
+              -H "Content-Type: application/json" \
+              -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
+
+      - name: Instatus API request
+        if: failure() && contains(cat test-final.log, '__API__INSTATUS__ERROR__')
+        run: |
+          curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_API_EXCEPTION_TEMPLATE_ID }}" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
+
       - name: Show test repports
         if: always()
         run: find "./dist/test-reports/cypress/e2e" -iname "*xml" -exec cat {} +
