@@ -72,19 +72,18 @@ jobs:
 
           cat test-final.log
 
-      - name: Instatus UI request
-        if: failure() && !contains(cat test-final.log, '__API__INSTATUS__ERROR__')
+      - name: Instatus request
+        if: failure()
         run: |
-          curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
+          if ! grep -q "__API__INSTATUS__ERROR__" test-final.log; then
+            curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
               -H "Content-Type: application/json" \
               -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
-
-      - name: Instatus API request
-        if: failure() && contains(cat test-final.log, '__API__INSTATUS__ERROR__')
-        run: |
-          curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_API_EXCEPTION_TEMPLATE_ID }}" \
-            -H "Content-Type: application/json" \
-            -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
+          else
+            curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_API_EXCEPTION_TEMPLATE_ID }}" \
+              -H "Content-Type: application/json" \
+              -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
+          fi
 
       - name: Show test repports
         if: always()
