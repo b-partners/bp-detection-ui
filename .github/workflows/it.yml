@@ -47,7 +47,8 @@ jobs:
 
       - run: npm install --legacy-peer-deps
 
-      - run: |
+      - name: Run IT
+        run: |
           echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} > .env
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
@@ -67,9 +68,8 @@ jobs:
             echo "Tests failed after $max_retries attempts."
             exit 1
           fi
-
-          cat test-final.log
-
+      - name: Test Result
+        run: cat test-final.log
       - name: Instatus request
         if: failure()
         run: |
