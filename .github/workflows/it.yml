@@ -52,7 +52,7 @@ jobs:
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
 
-          max_retries=5
+          max_retries=3
           attempt=1
           until npm run it
           do

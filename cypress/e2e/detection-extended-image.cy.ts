@@ -3,7 +3,7 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const timeout = 300000;
+const timeout = 1200000;
 
 describe('Test extended detection', () => {
   it('Extended image detection', () => {

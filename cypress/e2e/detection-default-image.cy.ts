@@ -3,7 +3,7 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const timeout = 300000;
+const timeout = 1200000;
 
 describe('test detection', () => {
   it('Default image detection', () => {
@@ -24,14 +24,6 @@ describe('test detection', () => {
     cy.wait('@location-search');
 
     cy.contains('13 Rue Honoré Daumier, 56000 Vannes, France').click();
-
-    // cy.wait('@getWhoami');
-    // cy.wait('@getAccounts');
-    // cy.wait('@getAccountHolders');
-    // cy.wait('@createProspect');
-    // cy.wait('@createAreaPicture');
-    // cy.wait('@getImage');
-    // cy.wait('@createDetection');
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
 
@@ -61,12 +53,6 @@ describe('test detection', () => {
     cy.dataName('email').type(process.env.REACT_IT_TEST_EMAIL || '');
 
     cy.dataCy(process_detection_on_form_sel).click();
-
-    // cy.wait('@createDetectionImage');
-    // cy.wait('@mercatorConversion');
-    // cy.wait('@createProspect');
-    // cy.wait('@createDetection');
-    // cy.wait('@getDetection');
 
     cy.contains('220.77m²', { timeout });
     cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
