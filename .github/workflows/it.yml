@@ -69,6 +69,7 @@ jobs:
             exit 1
           fi
       - name: Test Result
+        if: always()
         run: cat test-final.log
       - name: Instatus request
         if: failure()
