@@ -47,25 +47,43 @@ jobs:
 
       - run: npm install --legacy-peer-deps
 
-      - run: |
+      - name: Run IT
+        run: |
           echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} > .env
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
 
-          max_retries=5
+          max_retries=3
           attempt=1
-          until npm run it
-          do
-            if [ $attempt -ge $max_retries ]; then
-              echo "Tests failed after $attempt attempts."
-              exit 1
-            fi
+
+          until output=$(npm run it 2>&1) || [ $attempt -ge $max_retries ]; do
             echo "Test failed. Retrying attempt $((attempt+1)) of $max_retries..."
             attempt=$((attempt+1))
             sleep 5
           done
 
+          echo "$output" > test-final.log
+
+          if [ $attempt -ge $max_retries ] && [ $? -ne 0 ]; then
+            echo "Tests failed after $max_retries attempts."
+            exit 1
+          fi
+      - name: Test Result
         if: always()
+        run: cat test-final.log
+      - name: Instatus request
+        if: failure()
+        run: |
+          if ! grep -q "__API__INSTATUS__ERROR__" test-final.log; then
+            curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
+              -H "Content-Type: application/json" \
+              -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
+          else
+            curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_API_EXCEPTION_TEMPLATE_ID }}" \
+              -H "Content-Type: application/json" \
+              -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
+          fi
+
       - name: Show test repports
         if: always()
         run: find "./dist/test-reports/cypress/e2e" -iname "*xml" -exec cat {} +

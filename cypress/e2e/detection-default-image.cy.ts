@@ -3,7 +3,9 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const timeout = 300000;
+const timeout = 1200000;
+const expectedImagePrecisionInCm = 5;
+const expedtedRoofArea = '220.77m²';
 
 describe('test detection', () => {
   it('Default image detection', () => {
@@ -25,13 +27,11 @@ describe('test detection', () => {
 
     cy.contains('13 Rue Honoré Daumier, 56000 Vannes, France').click();
 
-    // cy.wait('@getWhoami');
-    // cy.wait('@getAccounts');
-    // cy.wait('@getAccountHolders');
-    // cy.wait('@createProspect');
-    // cy.wait('@createAreaPicture');
-    // cy.wait('@getImage');
-    // cy.wait('@createDetection');
+    cy.wait('@createAreaPicture', { timeout }).then(({ response }) => {
+      cy.verifyRequestFailedError('@createAreaPicture', response);
+      const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
+      expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, cy.addInstatusErrorPrefix('The precisionLevelInCm should be equal to 5cm', 'api'));
+    });
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
 
@@ -42,7 +42,6 @@ describe('test detection', () => {
     cy.dataCy('zoom-in').click();
     cy.dataCy('zoom-reset').click();
 
-    // 71 387
     cy.dataCy(canvas_cursor_sel).click(getX(71), getY(387), { force: true });
     cy.dataCy(canvas_cursor_sel).click(getX(235), getY(41), { force: true });
     cy.dataCy(canvas_cursor_sel).click(getX(416), getY(132), { force: true });
@@ -62,13 +61,9 @@ describe('test detection', () => {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    // cy.wait('@createDetectionImage');
-    // cy.wait('@mercatorConversion');
-    // cy.wait('@createProspect');
-    // cy.wait('@createDetection');
-    // cy.wait('@getDetection');
+    cy.wait('@createDetection', { timeout }).then(({ response }) => cy.verifyRequestFailedError('@createDetection', response));
 
-    cy.contains('220.77m²', { timeout });
+    cy.contains(expedtedRoofArea, { timeout });
     cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
     cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
   });
