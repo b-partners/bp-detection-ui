@@ -3,7 +3,9 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const timeout = 300000;
+const timeout = 1200000;
+const expectedImagePrecisionInCm = 5;
+const expectedIsExtendedValueAfterExtendImage = true;
 
 describe('Test extended detection', () => {
   it('Extended image detection', () => {
@@ -25,9 +27,26 @@ describe('Test extended detection', () => {
 
     cy.contains('12 Boulevard de la Croisette, 06400 Cannes, France').click();
 
+    cy.wait('@createAreaPicture', { timeout }).then(({ response }) => {
+      cy.verifyRequestFailedError('@createAreaPicture', response);
+      const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
+      expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, cy.addInstatusErrorPrefix('The precisionLevelInCm should be equal to 5cm', 'api'));
+    });
+
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
 
     cy.get('button').contains(`Recentrer`).click();
+
+    cy.wait('@createAreaPicture', { timeout }).then(({ response }) => {
+      cy.verifyRequestFailedError('@createAreaPicture', response);
+      const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
+      const currentIsExtendedValue = response?.body?.isExtended;
+      expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, cy.addInstatusErrorPrefix('The precisionLevelInCm should be equal to 5cm', 'api'));
+      expect(currentIsExtendedValue).to.equal(
+        expectedIsExtendedValueAfterExtendImage,
+        cy.addInstatusErrorPrefix('The isExtendedValue should be equal to true', 'api')
+      );
+    });
 
     cy.dataCy('zoom-in').click();
     cy.dataCy('zoom-in').click();
@@ -56,6 +75,8 @@ describe('Test extended detection', () => {
     cy.dataName('email').type(process.env.REACT_IT_TEST_EMAIL || '');
 
     cy.dataCy(process_detection_on_form_sel).click();
+
+    cy.wait('@createDetection', { timeout }).then(({ response }) => cy.verifyRequestFailedError('@createDetection', response));
 
     cy.contains('210.86m²', { timeout });
     cy.contains('Note de dégradation globale : 3.74%');

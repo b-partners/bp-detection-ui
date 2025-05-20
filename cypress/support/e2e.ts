@@ -1,4 +1,5 @@
 import './commands';
+import './in-status-commands';
 
 const prodRequestUtilities = () => {
   cy.intercept('POST', '/address/autocomplete*').as('location-search');
@@ -28,12 +29,20 @@ const prodRequestUtilities = () => {
   cy.visit('https://roof.birdia.fr');
 };
 
+const uiInstatusCode = '__UI__INSTATUS__ERROR__';
+const apiInstatusCode = '__API__INSTATUS__ERROR__';
+
+const verifyUiRequestError = () => {};
+const addApiErrorPrefix = (message: string) => {};
+
 declare global {
   namespace Cypress {
     interface Chainable {
       prodRequestUtilities: typeof prodRequestUtilities;
+      verifyUiRequestError: typeof verifyUiRequestError;
     }
   }
 }
 
 Cypress.Commands.add('prodRequestUtilities', prodRequestUtilities);
+Cypress.Commands.add('verifyUiRequestError', verifyUiRequestError);
