@@ -17,6 +17,7 @@ interface MutationProps {
   image?: string;
   isExtended?: boolean;
   isExtendedImage?: Promise<{ image?: ArrayBuffer; polygons?: DomainPolygonType[] }>;
+  withoutImage?: boolean;
 }
 
 export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPictureDetails) => {
@@ -27,14 +28,24 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
   } = useStep();
   const { open: openDialog } = useDialog();
 
-  const mutationFn = async ({ polygons: noCroppedPolygons, receiverEmail, phone, firstName, lastName, isExtended, isExtendedImage, image }: MutationProps) => {
+  const mutationFn = async ({
+    polygons: noCroppedPolygons,
+    receiverEmail,
+    phone,
+    firstName,
+    lastName,
+    isExtended,
+    isExtendedImage,
+    image,
+    withoutImage = false,
+  }: MutationProps) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
 
     const { image: croppedImage, polygons: croppedPolygons } = (await isExtendedImage) || {};
 
-    if (isExtended && croppedImage) {
+    if (isExtended && croppedImage && !withoutImage) {
       await sendImageQuery(areaPictureDetails, croppedImage, 'image/*');
-    } else if (!isExtended && image) {
+    } else if (!isExtended && image && !withoutImage) {
       await sendImageQuery(areaPictureDetails, base64ToArrayBuffer(image), 'image/*');
     }
 
@@ -61,9 +72,15 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 
     const mappedCoordinates: number[][] = [];
 
-    polygons[0].points.forEach(({ x, y }) => {
-      mappedCoordinates.push([y, x]);
-    });
+    if (!withoutImage) {
+      polygons[0].points.forEach(({ x, y }) => {
+        mappedCoordinates.push([y, x]);
+      });
+    } else {
+      (all_points_x as any[])?.forEach((x, index) => {
+        mappedCoordinates.push([all_points_y[index], x]);
+      });
+    }
 
     if (prospect) {
       const { data } = await bpProspectApi(apiKey).updateProspects(getCached.userInfo().accountHolderId || '', [
@@ -72,7 +89,13 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       setStep({ params: { prospect: data[0], polygons }, actualStep });
     }
 
-    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [[mappedCoordinates]], receiverEmail);
+    return await processDetection(
+      areaPictureDetails.actualLayer?.name ?? '',
+      `${areaPictureDetails.address}`,
+      [[mappedCoordinates]],
+      receiverEmail,
+      withoutImage
+    );
   };
 
   const { isPending, data, mutate } = useMutation({
