@@ -1,7 +1,7 @@
 import { useDetectionForm } from '@/forms';
 import { useDialog } from '@/hooks';
 import { Info } from '@mui/icons-material';
-import { Button, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from '@mui/material';
+import { Alert, Button, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from '@mui/material';
 import { FC } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { BpInput } from './bp-input';
@@ -15,9 +15,10 @@ export interface DetectionFormInfo {
 
 interface DetectionFormProps {
   onValid(detectionFrom: DetectionFormInfo): void;
+  withoutImage?: boolean;
 }
 
-export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
+export const DetectionForm: FC<DetectionFormProps> = ({ onValid, withoutImage = false }) => {
   const { close: closeDialog } = useDialog();
   const form = useDetectionForm();
 
@@ -26,10 +27,19 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid }) => {
   return (
     <FormProvider {...form}>
       <DialogTitle>
-        <Typography>Veuillez saisir les informations suivantes.</Typography>
-        <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
-          <Info />
-        </Tooltip>
+        <Stack width="100%">
+          <Stack width="100%" direction='row' justifyContent='space-between'>
+            <Typography>Veuillez saisir les informations suivantes.</Typography>
+            <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
+              <Info />
+            </Tooltip>
+          </Stack>
+          {withoutImage && (
+            <Alert icon={false} color='info'>
+              La toiture que vous avez sélectionnée est assez grande, la détection sur cette zone prendra un peu plus de temps.
+            </Alert>
+          )}
+        </Stack>
       </DialogTitle>
       <DialogContent>
         <Stack component='form' onSubmit={handleSubmit}>

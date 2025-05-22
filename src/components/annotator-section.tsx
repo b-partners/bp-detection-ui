@@ -72,7 +72,11 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
     );
   };
 
-  const handleClickDetectionButton = () => openDialog(<DetectionForm onValid={handleValidateForm} />, { style: DialogFormStyle });
+  const handleClickDetectionButton = () => {
+    const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
+
+    openDialog(<DetectionForm onValid={handleValidateForm} withoutImage={!isValidPoligonSize} />, { style: DialogFormStyle });
+  };
 
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
   const currentShiftNumber = { x: areaPictureDetails.shiftNb || 0, y: 0 };
