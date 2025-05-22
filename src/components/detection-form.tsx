@@ -27,8 +27,8 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid, withoutImage = 
   return (
     <FormProvider {...form}>
       <DialogTitle>
-        <Stack width="100%">
-          <Stack width="100%" direction='row' justifyContent='space-between'>
+        <Stack width='100%'>
+          <Stack width='100%' direction='row' justifyContent='space-between'>
             <Typography>Veuillez saisir les informations suivantes.</Typography>
             <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
               <Info />
