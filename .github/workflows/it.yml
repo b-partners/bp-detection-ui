@@ -53,7 +53,7 @@ jobs:
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
           echo "$(npm run it)" >> test-final.log
-          
+
       - name: Instatus request
         if: failure()
         run: |
