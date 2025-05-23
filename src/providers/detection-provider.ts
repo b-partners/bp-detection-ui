@@ -101,7 +101,9 @@ export const getDetectionResult = async (apiKey: string) => {
   });
   const result = await data.json();
 
-  if (!result.vggUrl) throw new Error('Not done');
+  console.log(result);
+
+  if (!result.vggUrl && !result.geoJson) throw new Error('Not done');
 
   return result;
 };

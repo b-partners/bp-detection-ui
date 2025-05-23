@@ -13,6 +13,7 @@ interface State {
     sessionId?: string;
     prospect?: Prospect;
     polygons?: DomainPolygonType[];
+    useGeoJson?: boolean;
   };
 }
 
