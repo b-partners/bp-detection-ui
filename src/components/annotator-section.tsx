@@ -24,7 +24,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
   const { open: openDialog, close: closeDialog } = useDialog();
-  const { data, isPending, isExtended, extendImageToggle } = useQueryUpdateAreaPicture();
+  const { data, isPending, isExtended, extendImageToggle, refetchImage: handleGetNewImage } = useQueryUpdateAreaPicture();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleGetCroppedImage = () => {
@@ -94,6 +94,10 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         <Stack>
           <Typography>Veuillez délimiter votre toiture sur l'image suivante.</Typography>
           <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez recentrer l'image en cliquant sur le bouton Recentrer l'image</Typography>
+          <Typography>
+            Si l'image reçue ne correspond pas à l'adresse que vous avez demandée, cliquez sur le bouton Actualiser l’image pour obtenir une image correspondant
+            à votre adresse.
+          </Typography>
         </Stack>
         <IconButton onClick={openTutorialDialog} className='help-button'>
           <HelpCenterOutlined fontSize='large' />
@@ -103,7 +107,10 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
           {isExtended ? "Restaurer l'image" : "Recentrer l'image"}
         </Button>
-        <Button variant='contained' onClick={handleClearPolygon} disabled={polygons.length === 0}>
+        <Button variant='contained' onClick={handleGetNewImage} disabled={isPending}>
+          Actualiser l’image
+        </Button>
+        <Button variant='contained' onClick={handleClearPolygon} disabled={polygons.length === 0 || isPending}>
           Effacer la sélection
         </Button>
       </Box>

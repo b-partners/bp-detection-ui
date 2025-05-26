@@ -100,8 +100,15 @@ export const useQueryUpdateAreaPicture = () => {
     actualStep,
   } = useStep();
 
-  const mutationFn = async (areaPictureDetailsParams: Partial<AreaPictureDetails>) => {
-    const updatedAreaPictureDetails = await updateAreaPicture({ ...areaPictureDetails, ...areaPictureDetailsParams });
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const mutationFn = async (areaPictureDetailsParams?: Partial<AreaPictureDetails>) => {
+    let updatedAreaPictureDetails: AreaPictureDetails = areaPictureDetails as AreaPictureDetails;
+    if (areaPictureDetailsParams) {
+      updatedAreaPictureDetails = await updateAreaPicture({ ...areaPictureDetails, ...areaPictureDetailsParams });
+    } else {
+      const { areaPictureDetails: newAreaPictureDetails } = await getImageFromAddress(apiKey, areaPictureDetails?.address || '');
+      updatedAreaPictureDetails = newAreaPictureDetails;
+    }
     setStep({ actualStep, params: { areaPictureDetails: updatedAreaPictureDetails } });
     return getImageFile(updatedAreaPictureDetails);
   };
@@ -112,12 +119,15 @@ export const useQueryUpdateAreaPicture = () => {
   const updateXShift = (n: number) => !isPending && mutate({ shiftNb: (areaPictureDetails?.shiftNb || 0) + n });
   const nextXShift = () => !isPending && updateXShift(1);
   const prevXShift = () => !isPending && updateXShift(-1);
+  const refetchImage = () => !isPending && mutate(undefined);
+
   return {
     isPending,
     data,
     extendImageToggle,
     nextXShift,
     prevXShift,
+    refetchImage,
     shift: {
       x: areaPictureDetails?.shiftNb,
       y: 0,
