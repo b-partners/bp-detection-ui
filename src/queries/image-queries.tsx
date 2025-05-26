@@ -42,16 +42,6 @@ const mutationFn = async (address: string) => {
   // create the detection without polygon
   await processDetection(areaPictureDetails.actualLayer?.name ?? '', address);
 
-  // try {
-  //   // send the received image as file to the backend
-  //   if (actualStep === 0) {
-  //     await sendImageQuery(areaPictureDetails, imageAsArrayBuffer, image.headers.get('Content-Type'));
-  //   }
-  //   // send the received image as file to the backend
-  // } catch (err) {
-  //   console.log({ err });
-  // }
-
   return {
     areaPictureDetails,
     fileUrl: imageUrl,
