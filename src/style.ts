@@ -15,6 +15,7 @@ export const MainStyle: SxProps = {
     alignItems: 'center',
     px: 2,
     mb: 2,
+    py: 2,
     bgcolor: grey[300],
     justifyContent: 'space-between',
   },

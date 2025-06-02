@@ -40,7 +40,7 @@ export const getCached = {
     return +(localStorage.getItem(AREA_ITEM) || '0');
   },
   isEmailSent() {
-    return !!localStorage.getItem(EMAIL_SENT_ITEM);
+    return JSON.parse(localStorage.getItem(EMAIL_SENT_ITEM) || 'false');
   },
   annotationId() {
     return localStorage.getItem(ANNOTATION_ID_ITEM);
