@@ -79,7 +79,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     mutationKey: ['detection', 'processing'],
     mutationFn: mutationFn,
     onError: () => {
-      openDialog(<ErrorMessageDialog message="Une erreur s'est produite, veuillez réessayer." />);
+      openDialog(<ErrorMessageDialog message='La détection sur cette zone a échoué, veuillez réessayer' />);
     },
   });
   return { isDetectionPending: isPending, geoJsonResult: data, startDetection: mutate };

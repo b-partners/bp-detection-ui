@@ -37,6 +37,10 @@ const mutationFn = async (address: string) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, address);
 
+  if (areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
+    throw new Error('areaPicturePrecision');
+  }
+
   const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
 
   // create the detection without polygon
@@ -56,19 +60,17 @@ export const useQueryImageFromAddress = () => {
 
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['image from address'],
-    mutationFn: async (address: string) => {
-      const result = await mutationFn(address);
+    mutationFn,
+    onError: (e: any) => {
+      if (e?.status === 404 || e.message === 'Network Error') return checkApiKey();
+      let errorMessage = '';
 
-      if (result.areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
-        throw new Error('areaPicturePrecision');
-      }
+      if (e.message === 'areaPicturePrecision') errorMessage = "L'adresse que vous avez spécifiée n'est pas encore prise en charge.";
+      else if (e.message === 'getImageError') errorMessage = "Erreur lors de la récupération de l'image.";
+      else if (e.message === 'Roofer error') errorMessage = "Erreur lors de l'initialisation de la détection.";
+      else errorMessage = "Une erreur s'est produite, veuillez réessayer.";
 
-      return result;
-    },
-    onError: e => {
-      if (e.message === 'Network Error') checkApiKey();
-      if (e.message === 'areaPicturePrecision') open(<ErrorMessageDialog message="L'adresse que vous avez spécifiée n'est pas encore prise en charge." />);
-      else open(<ErrorMessageDialog message="Une erreur s'est produite, veuillez réessayer." />);
+      open(<ErrorMessageDialog message={errorMessage} />);
     },
   });
 
