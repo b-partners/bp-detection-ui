@@ -62,7 +62,7 @@ export const DetectionResultStep = () => {
     }
   };
 
-  const canSendPdf = isEmailSent || !(watch().cover1 && watch().cover2 && watch().slope);
+  const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope;
 
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
@@ -123,7 +123,7 @@ export const DetectionResultStep = () => {
           </Stack>
           <Typography className='result'>{data?.properties?.obstacle ? 'OUI' : 'NON'}</Typography>
         </Paper>
-        <Button data-cy='send-roofer-mail-button' loading={sendInfoToRooferPending} disabled={canSendPdf} onClick={handleSendPdf}>
+        <Button data-cy='send-roofer-mail-button' loading={sendInfoToRooferPending} disabled={!canSendPdf} onClick={handleSendPdf}>
           Envoyer
         </Button>
       </Grid2>

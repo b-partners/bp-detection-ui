@@ -29,11 +29,7 @@ const prodRequestUtilities = () => {
   cy.visit('https://roof.birdia.fr');
 };
 
-const uiInstatusCode = '__UI__INSTATUS__ERROR__';
-const apiInstatusCode = '__API__INSTATUS__ERROR__';
-
 const verifyUiRequestError = () => {};
-const addApiErrorPrefix = (message: string) => {};
 
 declare global {
   namespace Cypress {

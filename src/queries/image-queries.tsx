@@ -37,20 +37,14 @@ const mutationFn = async (address: string) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, address);
 
+  if (areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
+    throw new Error('areaPicturePrecision');
+  }
+
   const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
 
   // create the detection without polygon
   await processDetection(areaPictureDetails.actualLayer?.name ?? '', address);
-
-  // try {
-  //   // send the received image as file to the backend
-  //   if (actualStep === 0) {
-  //     await sendImageQuery(areaPictureDetails, imageAsArrayBuffer, image.headers.get('Content-Type'));
-  //   }
-  //   // send the received image as file to the backend
-  // } catch (err) {
-  //   console.log({ err });
-  // }
 
   return {
     areaPictureDetails,
@@ -66,19 +60,17 @@ export const useQueryImageFromAddress = () => {
 
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['image from address'],
-    mutationFn: async (address: string) => {
-      const result = await mutationFn(address);
+    mutationFn,
+    onError: (e: any) => {
+      if (e?.status === 404 || e.message === 'Network Error') return checkApiKey();
+      let errorMessage = '';
 
-      if (result.areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
-        throw new Error('areaPicturePrecision');
-      }
+      if (e.message === 'areaPicturePrecision') errorMessage = "L'adresse que vous avez spécifiée n'est pas encore prise en charge.";
+      else if (e.message === 'getImageError') errorMessage = "Erreur lors de la récupération de l'image.";
+      else if (e.message === 'Roofer error') errorMessage = "Erreur lors de l'initialisation de la détection.";
+      else errorMessage = "Une erreur s'est produite, veuillez réessayer.";
 
-      return result;
-    },
-    onError: e => {
-      if (e.message === 'Network Error') checkApiKey();
-      if (e.message === 'areaPicturePrecision') open(<ErrorMessageDialog message="L'adresse que vous avez spécifiée n'est pas encore prise en charge." />);
-      else open(<ErrorMessageDialog message="Une erreur s'est produite, veuillez réessayer." />);
+      open(<ErrorMessageDialog message={errorMessage} />);
     },
   });
 
@@ -110,8 +102,15 @@ export const useQueryUpdateAreaPicture = () => {
     actualStep,
   } = useStep();
 
-  const mutationFn = async (areaPictureDetailsParams: Partial<AreaPictureDetails>) => {
-    const updatedAreaPictureDetails = await updateAreaPicture({ ...areaPictureDetails, ...areaPictureDetailsParams });
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const mutationFn = async (areaPictureDetailsParams?: Partial<AreaPictureDetails>) => {
+    let updatedAreaPictureDetails: AreaPictureDetails = areaPictureDetails as AreaPictureDetails;
+    if (areaPictureDetailsParams) {
+      updatedAreaPictureDetails = await updateAreaPicture({ ...areaPictureDetails, ...areaPictureDetailsParams });
+    } else {
+      const { areaPictureDetails: newAreaPictureDetails } = await getImageFromAddress(apiKey, areaPictureDetails?.address || '');
+      updatedAreaPictureDetails = newAreaPictureDetails;
+    }
     setStep({ actualStep, params: { areaPictureDetails: updatedAreaPictureDetails } });
     return getImageFile(updatedAreaPictureDetails);
   };
@@ -122,12 +121,15 @@ export const useQueryUpdateAreaPicture = () => {
   const updateXShift = (n: number) => !isPending && mutate({ shiftNb: (areaPictureDetails?.shiftNb || 0) + n });
   const nextXShift = () => !isPending && updateXShift(1);
   const prevXShift = () => !isPending && updateXShift(-1);
+  const refetchImage = () => !isPending && mutate(undefined);
+
   return {
     isPending,
     data,
     extendImageToggle,
     nextXShift,
     prevXShift,
+    refetchImage,
     shift: {
       x: areaPictureDetails?.shiftNb,
       y: 0,

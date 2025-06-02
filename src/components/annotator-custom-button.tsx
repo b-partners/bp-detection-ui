@@ -14,9 +14,8 @@ export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callback
     params: { areaPictureDetails },
   } = useStep();
   return (
-    <Stack direction='row' width='100%' justifyContent='space-between'>
+    <Stack direction='row' width='100%' alignItems='center' justifyContent='space-between'>
       <Stack flexGrow={1} textAlign='center'>
-        <Typography>{areaPictureDetails?.address}</Typography>
         <Typography>
           (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.latitude})
         </Typography>
