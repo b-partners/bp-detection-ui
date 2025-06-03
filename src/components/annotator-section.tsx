@@ -10,7 +10,7 @@ import { AnnotationTutorialDialog, AnnotatorCanvasCustom, DetectionForm, Detecti
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
-  const { setStep, params } = useStep();
+  const { setStep } = useStep();
   const [polygons, setPolygons] = useState<DomainPolygonType[]>([]);
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
@@ -117,7 +117,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       </Box>
       <Box minHeight='500px'>
         <AnnotatorCanvasCustom
-          // customButtons={<AnnotatorShiftButtons prevXShift={prevXShift} nextXShift={nextXShift} />}
           isLoading={isPending}
           allowAnnotation={polygons.length === 0}
           setPolygons={setMappedDomainPolygons}

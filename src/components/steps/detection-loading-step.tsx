@@ -10,7 +10,10 @@ export const DetectionLoadingStep = () => {
 
   useEffect(() => {
     if (data) {
-      setStep({ actualStep: 3, params: { geoJsonResultUrl: data.vggUrl || data.geoJsonUrl, imageSrc: data.imageUrl || params.imageSrc } });
+      setStep({
+        actualStep: 3,
+        params: { geoJsonResultUrl: data.vggUrl || data.geoJsonZone?.[0]?.properties?.vgg_file_url, imageSrc: data.imageUrl || params.imageSrc },
+      });
     }
   }, [data, setStep]);
 
