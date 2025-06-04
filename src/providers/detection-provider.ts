@@ -38,6 +38,8 @@ const getProcessDetectionUrl = (withoutImage = false) => {
 
   if (!withoutImage) {
     base += '/roofer';
+  } else {
+    base += '/sync';
   }
 
   return base;

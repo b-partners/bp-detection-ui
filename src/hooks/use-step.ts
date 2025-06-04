@@ -14,6 +14,7 @@ interface State {
     prospect?: Prospect;
     polygons?: DomainPolygonType[];
     useGeoJson?: boolean;
+    detection?: any;
   };
 }
 

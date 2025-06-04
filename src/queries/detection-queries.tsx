@@ -104,15 +104,22 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     onError: () => {
       openDialog(<ErrorMessageDialog message='La détection sur cette zone a échoué, veuillez réessayer' />);
     },
+    onSuccess(data) {
+      setStep({ params: { detection: data?.result }, actualStep });
+    },
   });
   return { isDetectionPending: isPending, geoJsonResult: data, startDetection: mutate };
 };
 
 export const useQueryDetectionResult = () => {
   const { apiKey } = ParamsUtilities.getQueryParams();
+  const {
+    params: { useGeoJson, detection },
+  } = useStep();
 
   const { data, isPending } = useQuery({
     queryKey: ['detection', 'result'],
+    enabled: !useGeoJson,
     queryFn: () => {
       return getDetectionResult(apiKey);
     },
@@ -120,5 +127,5 @@ export const useQueryDetectionResult = () => {
     retry: Number.MAX_SAFE_INTEGER,
   });
 
-  return { data, isPending };
+  return { data: useGeoJson ? detection : data, isPending };
 };
