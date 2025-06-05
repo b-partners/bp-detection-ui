@@ -32,9 +32,28 @@ const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: str
   };
 };
 
-export const processDetection = async (layers: string, address: string, coordinates?: Array<Array<Array<Array<number>>>>, emailReceiver?: string) => {
+const getProcessDetectionUrl = (withoutImage = false) => {
+  const detectionId = getCached.detectionId();
+  let base = `${baseUrl}/detections/${detectionId}`;
+
+  if (!withoutImage) {
+    base += '/roofer';
+  } else {
+    base += '/sync';
+  }
+
+  return base;
+};
+
+export const processDetection = async (
+  layers: string,
+  address: string,
+  coordinates?: Array<Array<Array<Array<number>>>>,
+  emailReceiver?: string,
+  withoutImage = false
+) => {
   const cachedDetectionId = getCached.detectionId();
-  const detectionId = cachedDetectionId || v4();
+  const detectionId = withoutImage !== true ? cachedDetectionId || v4() : v4();
   const { apiKey } = ParamsUtilities.getQueryParams();
   cache.detectionId(detectionId);
 
@@ -59,7 +78,7 @@ export const processDetection = async (layers: string, address: string, coordina
       : []
   );
 
-  const data = await fetch(`${baseUrl}/detections/${detectionId}/roofer`, {
+  const data = await fetch(getProcessDetectionUrl(withoutImage), {
     headers: { 'x-api-key': apiKey || '', 'content-type': 'application/json' },
     method: 'POST',
     body: JSON.stringify(geoJson),
@@ -84,7 +103,7 @@ export const getDetectionResult = async (apiKey: string) => {
   });
   const result = await data.json();
 
-  if (!result.vggUrl) throw new Error('Not done');
+  if (!result.vggUrl && !result.geoJsonUrl) throw new Error('Not done');
 
   return result;
 };
