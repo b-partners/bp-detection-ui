@@ -35,7 +35,7 @@ describe('Test extended detection', () => {
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
 
-    cy.get('button').contains(`Recentrer`).click();
+    cy.get('button').contains(`Elargir la zone`).click();
 
     cy.wait('@createAreaPicture', { timeout }).then(({ response }) => {
       cy.verifyRequestFailedError('@createAreaPicture', response);
