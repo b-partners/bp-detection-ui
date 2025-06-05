@@ -29,7 +29,7 @@ const isThereAnObstacle = (regions: Region[]) => {
 export const useGeojsonQueryResult = () => {
   const { geoJsonResultUrl } = useStep(({ params }) => params);
 
-  const queryFn = async () => {
+  const queryFnVgg = async () => {
     const detectionResultText = await fetch(geoJsonResultUrl, { headers: { 'content-type': '*/*' } });
     const detectionResultJson: DetectionResultInVgg = await detectionResultText.json();
 
@@ -41,5 +41,5 @@ export const useGeojsonQueryResult = () => {
     return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons };
   };
 
-  return useQuery({ queryKey: ['geojson-result'], queryFn, enabled: !!geoJsonResultUrl });
+  return useQuery({ queryKey: ['geojson-result'], queryFn: queryFnVgg, enabled: !!geoJsonResultUrl });
 };

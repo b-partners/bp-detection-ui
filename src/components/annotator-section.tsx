@@ -6,16 +6,7 @@ import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
-import {
-  AnnotationTutorialDialog,
-  AnnotatorCanvasCustom,
-  DetectionForm,
-  DetectionFormInfo,
-  DialogFormStyle,
-  DialogTutorialStyle,
-  DomainPolygonType,
-  ErrorMessageDialog,
-} from '.';
+import { AnnotationTutorialDialog, AnnotatorCanvasCustom, DetectionForm, DetectionFormInfo, DialogFormStyle, DialogTutorialStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -27,8 +18,9 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const { data, isPending, isExtended, extendImageToggle, refetchImage: handleGetNewImage } = useQueryUpdateAreaPicture();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const handleGetCroppedImage = () => {
-    return new Promise<{ image?: ArrayBuffer; polygons?: DomainPolygonType[] }>(resolve => {
+  const handleGetCroppedImage = () =>
+    new Promise<{ image?: ArrayBuffer; polygons?: DomainPolygonType[] }>(resolve => {
+      const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
       const canvas = canvasRef.current;
       if (canvas) {
         const image = new Image();
@@ -39,7 +31,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
 
           const mappedPolygons = polygons.map(({ points, ...polygon }) => ({
             ...polygon,
-            points: points.map(({ x, y }) => ({ x: x - boundingBox.x, y: y - boundingBox.y })),
+            points: points.map(({ x, y }) => ({ x: x - (isValidPoligonSize ? boundingBox.x : 0), y: y - (isValidPoligonSize ? boundingBox.y : 0) })),
           }));
 
           resolve({ image: await toArrayBuffer(), polygons: mappedPolygons });
@@ -48,7 +40,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         resolve({ image: undefined, polygons: undefined });
       }
     });
-  };
 
   useEffect(() => {
     setCurrentImageSrc(data?.imageAsBase64 || imageSrc);
@@ -62,22 +53,32 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   };
 
   const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
+    const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
     const croppedImage = isExtended ? handleGetCroppedImage() : Promise.resolve({ image: undefined, polygons: undefined });
     closeDialog();
     startDetection(
-      { polygons, receiverEmail: email, phone, firstName, lastName, isExtended, isExtendedImage: croppedImage, image: currentImageSrc },
-      { onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any } }) }
+      {
+        polygons,
+        receiverEmail: email,
+        phone,
+        firstName,
+        lastName,
+        isExtended,
+        isExtendedImage: croppedImage,
+        image: currentImageSrc,
+        withoutImage: !isValidPoligonSize,
+      },
+      {
+        onSuccess: result =>
+          setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any, imageSrc: currentImageSrc, useGeoJson: !isValidPoligonSize } }),
+      }
     );
   };
 
   const handleClickDetectionButton = () => {
     const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
-    if (!isValidPoligonSize && isExtended) {
-      return openDialog(
-        <ErrorMessageDialog message='La taille du toit que vous avez sélectionnée est trop grande et ne peut pas encore être prise en charge.' />
-      );
-    }
-    openDialog(<DetectionForm onValid={handleValidateForm} />, { style: DialogFormStyle });
+
+    openDialog(<DetectionForm onValid={handleValidateForm} withoutImage={!isValidPoligonSize} />, { style: DialogFormStyle });
   };
 
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
@@ -116,7 +117,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       </Box>
       <Box minHeight='500px'>
         <AnnotatorCanvasCustom
-          // customButtons={<AnnotatorShiftButtons prevXShift={prevXShift} nextXShift={nextXShift} />}
           isLoading={isPending}
           allowAnnotation={polygons.length === 0}
           setPolygons={setMappedDomainPolygons}
