@@ -52,18 +52,14 @@ jobs:
           echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} > .env
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
-          echo "$(npm run it)" >> test-final.log
+          echo npm run it
 
       - name: Instatus request
-        if: failure()
+        if: failure() && github.event_name == 'schedule' && github.ref == 'refs/heads/prod'
         run: |
           curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
             -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
-
-      - name: Test Result
-        if: always()
-        run: cat test-final.log
 
       - name: Show test repports
         if: always()
