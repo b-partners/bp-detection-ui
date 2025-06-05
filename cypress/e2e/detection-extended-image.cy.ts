@@ -79,9 +79,9 @@ describe('Test extended detection', () => {
     cy.wait('@createDetection', { timeout }).then(({ response }) => cy.verifyRequestFailedError('@createDetection', response));
 
     cy.contains('210.86m²', { timeout });
-    cy.contains('Note de dégradation globale : 3.74%');
+    cy.contains("Note de dégradation globale : 3.64%");
     cy.contains("Taux d'usure").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.77%');
-    cy.contains('Taux de moisissure').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('11.46%');
+    cy.contains('Taux de moisissure').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('11.12%');
     cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0%');
     cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
   });

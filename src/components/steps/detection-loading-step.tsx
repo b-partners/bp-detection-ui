@@ -6,11 +6,17 @@ import { useEffect } from 'react';
 export const DetectionLoadingStep = () => {
   const { data } = useQueryDetectionResult();
 
-  const setStep = useStep(({ setStep }) => setStep);
+  const { setStep } = useStep();
 
   useEffect(() => {
     if (data) {
-      setStep({ actualStep: 3, params: { geoJsonResultUrl: data.vggUrl, imageSrc: data.imageUrl } });
+      setStep({
+        actualStep: 3,
+        params: {
+          geoJsonResultUrl: data.vggUrl || data.geoJsonZone?.[0]?.properties?.vgg_file_url,
+          imageSrc: data.imageUrl || data.geoJsonZone?.[0]?.properties?.original_image_url,
+        },
+      });
     }
   }, [data, setStep]);
 

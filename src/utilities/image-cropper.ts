@@ -1,6 +1,6 @@
 import { DomainPolygonType } from '@/components';
 
-const getPolygonSize = (polygon: DomainPolygonType) => {
+const getPolygonSize = (polygon: DomainPolygonType, throwErrorPolygonSize = true) => {
   const size = {
     minX: polygon.points[0].x,
     maxX: 0,
@@ -20,15 +20,24 @@ const getPolygonSize = (polygon: DomainPolygonType) => {
   size.dx = 1024 - (size.maxX - size.minX);
   size.dy = 1024 - (size.maxY - size.minY);
 
-  if (size.dx < 0 || size.dy < 0) {
-    console.log(size.dx, size.dy);
+  if (throwErrorPolygonSize && (size.dx < 0 || size.dy < 0)) {
+    throw new Error('Polygon too big');
   }
 
   return size;
 };
 
+export const checkPolygonSizeUnder1024 = (polygon: DomainPolygonType) => {
+  try {
+    getPolygonSize(polygon);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export const getPolygonImageBoundingBox = (polygon: DomainPolygonType) => {
-  const { dx, dy, minX, minY, maxX, maxY } = getPolygonSize(polygon);
+  const { dx, dy, minX, minY, maxX, maxY } = getPolygonSize(polygon, false);
   const paddingX = dx / 2;
   const paddingY = dy / 2;
   const imageSize = 1024 * 3;
