@@ -60,7 +60,3 @@ jobs:
           curl -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
             -H "x-api-key: ${{ secrets.INSTATUS_API_KEY }}"
-
-      - name: Show test repports
-        if: always()
-        run: find "./dist/test-reports/cypress/e2e" -iname "*xml" -exec cat {} +
