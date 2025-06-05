@@ -106,7 +106,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       </Paper>
       <Box display='flex' alignItems='center' gap={2} mb={2}>
         <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
-          {isExtended ? "Rétrécir la zone" : "Elargir la zone"}
+          {isExtended ? 'Rétrécir la zone' : 'Elargir la zone'}
         </Button>
         <Button variant='contained' onClick={handleGetNewImage} disabled={isPending}>
           Actualiser l’image
