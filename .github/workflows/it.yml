@@ -52,7 +52,9 @@ jobs:
           echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} > .env
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
-          echo npm run it
+          if [ "${{ secrets.RUN_IT }}" = "1" ]; then
+            npm run it
+          fi
 
       - name: Instatus request
         if: failure() && github.event_name == 'schedule' && github.ref == 'refs/heads/prod'
