@@ -29,6 +29,9 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
 
     return { areaPictureDetails, prospect: prospect?.[0] };
   } catch (error: any) {
+    if (error?.response?.data?.message?.includes('Provided geojson polygon is too large to be processed synchronously')) {
+      throw new Error('polygonTooBig');
+    }
     if (
       error.status === 400 &&
       error?.response?.data?.message?.includes('Roof analysis consumption ') &&
