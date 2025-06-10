@@ -90,7 +90,7 @@ export const processDetection = async (
     throw error;
   };
 
-  if (data.status !== 200 && data.status !== 400) throwRooferError();
+  if (data.status !== 200 && data.status !== 400 && data.status !== 501) throwRooferError();
 
   const result = await data.json();
 
@@ -102,6 +102,7 @@ export const processDetection = async (
     throw new Error('detectionLimitExceeded');
   }
 
+  if (result?.message?.includes('Provided geojson polygon is too large to be processed synchronously')) throw new Error('polygonTooBig');
   if (data.status !== 200) throwRooferError();
 
   return { result, geoJson };
