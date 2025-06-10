@@ -84,13 +84,25 @@ export const processDetection = async (
     body: JSON.stringify(geoJson),
   });
 
-  if (data.status !== 200) {
+  const throwRooferError = () => {
     const error = new Error('Roofer error');
     error.name = data.statusText;
     throw error;
-  }
+  };
+
+  if (data.status !== 200 && data.status !== 400) throwRooferError();
 
   const result = await data.json();
+
+  if (
+    data.status === 400 &&
+    result?.message?.includes('Roof analysis consumption ') &&
+    result?.message?.includes(' limit exceeded for free trial period for User.id=')
+  ) {
+    throw new Error('detectionLimitExceeded');
+  }
+
+  if (data.status !== 200) throwRooferError();
 
   return { result, geoJson };
 };
