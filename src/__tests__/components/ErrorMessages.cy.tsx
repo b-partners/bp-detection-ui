@@ -315,7 +315,7 @@ describe('Error message testing', () => {
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
-  it('Test process detection error', () => {
+  it.only('Test process detection error', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -424,5 +424,21 @@ describe('Error message testing', () => {
 
     cy.contains('La détection sur cette zone a échoué, veuillez réessayer');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
+
+    cy.intercept('POST', `**/detections/**/roofer`, {
+      statusCode: 501,
+      body: { message: 'Provided geojson polygon is too large to be processed synchronously' },
+    }).as('createDetection');
+
+    cy.dataCy(process_detection_sel).click();
+
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('123987456');
+    cy.dataName('email').type('john@gmail.com');
+
+    cy.dataCy(process_detection_on_form_sel).click();
+
+    cy.contains('La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge.');
   });
 });
