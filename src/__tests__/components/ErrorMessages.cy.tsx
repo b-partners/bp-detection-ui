@@ -195,6 +195,70 @@ describe('Error message testing', () => {
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
+  it('Test detection free limit', () => {
+    cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
+
+    cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
+
+    // user informations
+    cy.intercept('GET', '/whoami', whoami_mock).as('getWhoami');
+    cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts`, [account_mock]).as('getAccounts');
+    cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts/${account_mock.id}/accountHolders`, [account_holder_mock]).as('getAccountHolders');
+    // user informations
+
+    // prospect & areaPictures & get image
+    cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
+    cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
+    cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
+      fixture: 'bp-detection-image.jpeg',
+      headers: { 'content-type': 'image/jpeg' },
+    }).as('getImage');
+    // prospect & areaPictures & get image
+
+    // detection
+    cy.intercept('POST', `**/detections/**/roofer`, {
+      statusCode: 400,
+      body: { message: 'Roof analysis consumption 13 limit exceeded for free trial period for User.id=' + 'mock-id' },
+    }).as('createDetection');
+    cy.intercept('GET', `**/detections/**`, detection_mock).as('getDetection');
+    cy.intercept('POST', `**/detections/**/image`, detection_mock).as('createDetectionImage');
+    cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
+      'getDetectionResultGeojson'
+    );
+    // detection
+
+    cy.mount(
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+
+    cy.contains("Clé d'API invalide");
+    cy.dataCy('api-key-input').type('api-key-mock{enter}');
+
+    cy.contains('Récupération de votre adresse');
+
+    //steppers state
+    cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
+    cy.contains('Délimitation de votre toiture').should('not.have.class', 'Mui-active');
+    //steppers state
+
+    cy.dataCy(search_input_sel).type('24 rue mozart');
+    cy.wait('@location-search');
+
+    cy.contains('24 rue mozart mock');
+    cy.contains('24 rue mozart mock 1');
+    cy.contains('24 rue mozart mock 2');
+    cy.contains('24 rue mozart mock 3');
+
+    cy.contains('24 rue mozart mock 2').click();
+
+    cy.contains('La limite des analyses gratuites a été atteinte.');
+    cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
+  });
+
   it('Test others errors', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 

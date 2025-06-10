@@ -29,7 +29,13 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
 
     return { areaPictureDetails, prospect: prospect?.[0] };
   } catch (error: any) {
-    if (error.status === 404) {
+    if (
+      error.status === 400 &&
+      error?.response?.data?.message?.includes('Roof analysis consumption ') &&
+      error?.response?.data?.message?.includes(' limit exceeded for free trial period for User.id=')
+    ) {
+      throw new Error('detectionLimitExceeded');
+    } else if (error.status === 404) {
       throw error;
     } else {
       throw new Error('getImageError');
