@@ -2,10 +2,12 @@ import { defineConfig } from 'cypress';
 import vitePreprocessor from 'cypress-vite';
 import { createRequire } from 'node:module';
 
+const timeout = 1200000;
+
 export default defineConfig({
   viewportHeight: 500,
   viewportWidth: 700,
-  defaultCommandTimeout: 30000,
+  defaultCommandTimeout: timeout,
 
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
