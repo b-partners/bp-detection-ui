@@ -101,8 +101,10 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['detection', 'processing'],
     mutationFn: mutationFn,
-    onError: () => {
-      openDialog(<ErrorMessageDialog message='La détection sur cette zone a échoué, veuillez réessayer' />);
+    onError: e => {
+      let errorMessage = 'La détection sur cette zone a échoué, veuillez réessayer';
+      if (e.message === 'polygonTooBig') errorMessage = 'La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge.';
+      openDialog(<ErrorMessageDialog message={errorMessage} />);
     },
     onSuccess(data) {
       setStep({ params: { detection: data?.result }, actualStep });
