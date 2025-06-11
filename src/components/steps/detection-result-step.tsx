@@ -1,7 +1,7 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
-import { useGeojsonQueryResult, usePostDetectionQueries } from '@/queries';
+import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useRef, useState } from 'react';
@@ -62,7 +62,9 @@ export const DetectionResultStep = () => {
     }
   };
 
-  const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope;
+  const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(imageSrc);
+
+  const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading;
 
   return (
     <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
@@ -72,7 +74,14 @@ export const DetectionResultStep = () => {
         </Stack>
       </Paper>
       <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
-        <AnnotatorCanvasCustom height='513px' setPolygons={() => {}} pointRadius={0} polygonList={data?.polygons || []} image={imageSrc || ''} />
+        <AnnotatorCanvasCustom
+          height='513px'
+          setPolygons={() => {}}
+          pointRadius={0}
+          polygonList={data?.polygons || []}
+          isLoading={isImageLoading}
+          image={image || ''}
+        />
         <Paper sx={{ background: '#BEB4A4 !important', px: '10rem', py: 2, borderRadius: 5, textTransform: 'uppercase' }}>
           <Typography sx={{ textAlign: 'center', width: '100%' }}>
             Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
