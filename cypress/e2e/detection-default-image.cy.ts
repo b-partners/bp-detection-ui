@@ -57,7 +57,8 @@ const HaveTheCorrectImagePrecision5Cm = {
     cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
     cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
   },
-  no: () => cy.contains("Erreur lors de l'initialisation de la détection."),
+  no: () => cy.contains("L'adresse que vous avez spécifiée n'est pas encore prise en charge."),
+  detectionInitializationError: () => cy.contains("Erreur lors de l'initialisation de la détection."),
   limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
 };
 
@@ -77,7 +78,7 @@ const HaveCreateAreaPitureSucceeded = {
         HaveTheCorrectImagePrecision5Cm.limitExceededForFreeTrial();
       } else if (response?.statusCode === 200) {
         HaveTheCorrectImagePrecision5Cm.yes();
-      } else HaveTheCorrectImagePrecision5Cm.no();
+      } else HaveTheCorrectImagePrecision5Cm.detectionInitializationError();
     });
   },
   no: getImageError,
