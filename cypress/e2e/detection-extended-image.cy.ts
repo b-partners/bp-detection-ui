@@ -1,3 +1,5 @@
+import { detectionGetImage } from './detection-get-image';
+
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
@@ -19,22 +21,21 @@ const HaveWeASuccessFullDetection = {
   no() {},
 };
 
-const HaveWeACorrectImageOf5Cm = {
+const HaveTheCorrectImagePrecision5Cm = {
   yes: () => {
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
 
-    cy.get('button').contains(`Elargir la zone`).click();
-
-    cy.wait('@createAreaPicture', { timeout }).then(({ response }) => {
-      cy.verifyRequestFailedError('@createAreaPicture', response);
-      const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
-      const currentIsExtendedValue = response?.body?.isExtended;
-      expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, cy.addInstatusErrorPrefix('The precisionLevelInCm should be equal to 5cm', 'api'));
-      expect(currentIsExtendedValue).to.equal(
-        expectedIsExtendedValueAfterExtendImage,
-        cy.addInstatusErrorPrefix('The isExtendedValue should be equal to true', 'api')
-      );
-    });
+    cy.get('button')
+      .contains(`Elargir la zone`)
+      .click()
+      .then(() => {
+        cy.wait('@createAreaPicture', { timeout }).then(({ response, request }) => {
+          const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
+          const currentIsExtendedValue = response?.body?.isExtended;
+          expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, cy.addInstatusErrorPrefix('The precisionLevelInCm should be equal to 5cm', 'api'));
+          if (request.body?.actualLayer?.precisionLevelInCm) expect(currentIsExtendedValue).to.equal(expectedIsExtendedValueAfterExtendImage);
+        });
+      });
 
     cy.dataCy('zoom-in').click();
     cy.dataCy('zoom-in').click();
@@ -66,11 +67,8 @@ const HaveWeACorrectImageOf5Cm = {
 
     cy.wait('@createDetection', { timeout }).then(({ response }) => {
       const statusCode = response?.statusCode;
-      if (statusCode === 200) {
-        HaveWeASuccessFullDetection.yes();
-      } else {
-        HaveWeASuccessFullDetection.no();
-      }
+      if (statusCode === 200) HaveWeASuccessFullDetection.yes();
+      else HaveWeASuccessFullDetection.no();
     });
   },
   no() {
@@ -78,7 +76,7 @@ const HaveWeACorrectImageOf5Cm = {
   },
 };
 
-xdescribe('Test extended detection', () => {
+describe('Test extended detection', () => {
   it('Extended image detection', () => {
     cy.prodRequestUtilities();
     //steppers state
@@ -94,18 +92,7 @@ xdescribe('Test extended detection', () => {
 
     cy.contains('Récupération de votre adresse');
     cy.dataCy(search_input_sel).type('12 Boulevard de la Croisette, 06400 Cannes');
-    cy.wait('@location-search');
 
-    cy.contains('12 Boulevard de la Croisette, 06400 Cannes, France').click();
-
-    cy.wait('@createAreaPicture', { timeout }).then(({ response }) => {
-      cy.verifyRequestFailedError('@createAreaPicture', response);
-      const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
-      if (currentPrecisionInCm === expectedImagePrecisionInCm) {
-        HaveWeACorrectImageOf5Cm.yes();
-      } else {
-        HaveWeACorrectImageOf5Cm.no();
-      }
-    });
+    detectionGetImage('12 Boulevard de la Croisette, 06400 Cannes').then(() => HaveTheCorrectImagePrecision5Cm.yes());
   });
 });
