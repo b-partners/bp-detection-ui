@@ -42,7 +42,7 @@ const getProcessDetectionUrl = (withoutImage = false) => {
     base += '/sync';
   }
 
-  return base;
+  return base.replace(/\/+/g, '/');
 };
 
 export const processDetection = async (
