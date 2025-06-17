@@ -2,7 +2,7 @@ import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
 import { RooferInformations } from './type';
 
-const baseUrl = process.env.REACT_APP_GEO_DETECTION_API ?? '';
+const baseUrl = (process.env.REACT_APP_GEO_DETECTION_API ?? '').replace(/\/$/g, '');
 
 const geoServerProperties = (layers: string) => ({
   geoServerUrl: 'http://35.181.83.111/geoserver/cite/wms',
@@ -42,7 +42,7 @@ const getProcessDetectionUrl = (withoutImage = false) => {
     base += '/sync';
   }
 
-  return base.replace(/\/+/g, '/');
+  return base;
 };
 
 export const processDetection = async (
