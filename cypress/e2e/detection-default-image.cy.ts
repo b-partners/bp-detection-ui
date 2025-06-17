@@ -21,6 +21,15 @@ const HaveResultFromSearchLocation = {
   },
 };
 
+const HaveRoofDelimiterSucceeded = {
+  yes: () => {
+    cy.contains(expedtedRoofArea, { timeout });
+    cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
+    cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
+  },
+  no: () => cy.contains('La détection sur cette zone a échoué, veuillez réessayer'),
+};
+
 const HaveTheCorrectImagePrecision5Cm = {
   yes() {
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
@@ -51,15 +60,14 @@ const HaveTheCorrectImagePrecision5Cm = {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createDetection', { timeout }).then(({ response }) => cy.verifyRequestFailedError('@createDetection', response));
-
-    cy.contains(expedtedRoofArea, { timeout });
-    cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
-    cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
+    cy.wait('@createDetection', { timeout }).then(({ response }) => {
+      if (response?.statusCode !== 200) HaveRoofDelimiterSucceeded.no();
+      else HaveRoofDelimiterSucceeded.yes();
+    });
   },
   no: () => cy.contains("L'adresse que vous avez spécifiée n'est pas encore prise en charge."),
-  detectionInitializationError: () => cy.contains("Erreur lors de l'initialisation de la détection."),
-  limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
+  no_detectionInitializationError: () => cy.contains("Erreur lors de l'initialisation de la détection."),
+  no_limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
 };
 
 const haveRequestSuccesYesFunction = (alias: string, decision: TDecision) => {
@@ -75,10 +83,10 @@ const HaveCreateAreaPitureSucceeded = {
   yes: () => {
     cy.wait('@createDetection', { timeout }).then(({ response }) => {
       if (response?.statusCode === 400 && response?.body?.message?.includes('limit exceeded for free trial period')) {
-        HaveTheCorrectImagePrecision5Cm.limitExceededForFreeTrial();
+        HaveTheCorrectImagePrecision5Cm.no_limitExceededForFreeTrial();
       } else if (response?.statusCode === 200) {
         HaveTheCorrectImagePrecision5Cm.yes();
-      } else HaveTheCorrectImagePrecision5Cm.detectionInitializationError();
+      } else HaveTheCorrectImagePrecision5Cm.no_detectionInitializationError();
     });
   },
   no: getImageError,
@@ -127,11 +135,8 @@ describe('test detection', () => {
     cy.contains('Récupération de votre adresse');
     cy.dataCy(search_input_sel).type('13 Rue Honoré Daumier, 56000 Vannes');
     cy.wait('@location-search', { timeout }).then(({ response }) => {
-      if (response?.statusCode !== 200) {
-        HaveResultFromSearchLocation.no();
-      } else {
-        HaveResultFromSearchLocation.yes();
-      }
+      if (response?.statusCode !== 200) HaveResultFromSearchLocation.no();
+      else HaveResultFromSearchLocation.yes();
     });
 
     haveRequestSuccesYesFunction('@getWhoami', HaveGetWhoamiSucceeded);
