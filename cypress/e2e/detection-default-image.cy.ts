@@ -1,24 +1,20 @@
+import { detectionGetImage } from './detection-get-image';
+
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 const timeout = 1200000;
-const expectedImagePrecisionInCm = 5;
 const expedtedRoofArea = '220.77m²';
 
-type TDecision = {
-  yes: () => void;
-  no: () => void;
-};
-
-const HaveResultFromSearchLocation = {
-  yes() {
-    cy.contains('13 Rue Honoré Daumier, 56000 Vannes, France').click();
+const HaveRoofDelimiterSucceeded = {
+  yes: () => {
+    cy.contains(expedtedRoofArea, { timeout });
+    cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
+    cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
   },
-  no() {
-    cy.dataCy(search_input_sel).clear().type('13 Rue Honoré Daumier, 56000 Vannes, France{enter}');
-  },
+  no: () => cy.contains('La détection sur cette zone a échoué, veuillez réessayer'),
 };
 
 const HaveTheCorrectImagePrecision5Cm = {
@@ -51,63 +47,11 @@ const HaveTheCorrectImagePrecision5Cm = {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createDetection', { timeout }).then(({ response }) => cy.verifyRequestFailedError('@createDetection', response));
-
-    cy.contains(expedtedRoofArea, { timeout });
-    cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
-    cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
-  },
-  no: () => cy.contains("L'adresse que vous avez spécifiée n'est pas encore prise en charge."),
-  detectionInitializationError: () => cy.contains("Erreur lors de l'initialisation de la détection."),
-  limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
-};
-
-const haveRequestSuccesYesFunction = (alias: string, decision: TDecision) => {
-  cy.wait(alias, { timeout }).then(({ response }) => {
-    if (response?.statusCode !== 200) decision.no();
-    else decision.yes();
-  });
-};
-
-const getImageError = () => cy.contains("Erreur lors de la récupération de l'image.");
-
-const HaveCreateAreaPitureSucceeded = {
-  yes: () => {
     cy.wait('@createDetection', { timeout }).then(({ response }) => {
-      if (response?.statusCode === 400 && response?.body?.message?.includes('limit exceeded for free trial period')) {
-        HaveTheCorrectImagePrecision5Cm.limitExceededForFreeTrial();
-      } else if (response?.statusCode === 200) {
-        HaveTheCorrectImagePrecision5Cm.yes();
-      } else HaveTheCorrectImagePrecision5Cm.detectionInitializationError();
+      if (response?.statusCode !== 200) HaveRoofDelimiterSucceeded.no();
+      else HaveRoofDelimiterSucceeded.yes();
     });
   },
-  no: getImageError,
-};
-
-const HaveCreateProspectSucceeded = {
-  yes: () =>
-    cy.wait('@createAreaPicture', { timeout }).then(({ response }) => {
-      cy.verifyRequestFailedError('@createAreaPicture', response);
-      const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
-      if (response?.statusCode !== 200) getImageError();
-      else if (currentPrecisionInCm !== expectedImagePrecisionInCm) HaveTheCorrectImagePrecision5Cm.no();
-      else HaveCreateAreaPitureSucceeded.yes();
-    }),
-  no: getImageError,
-};
-const HaveCreateAccountHolderSucceeded = {
-  yes: () => haveRequestSuccesYesFunction('@createProspect', HaveCreateProspectSucceeded),
-  no: getImageError,
-};
-
-const HaveGetAccountsSucceeded = {
-  yes: () => haveRequestSuccesYesFunction('@getAccountHolders', HaveCreateAccountHolderSucceeded),
-  no: getImageError,
-};
-
-const HaveGetWhoamiSucceeded = {
-  yes: () => haveRequestSuccesYesFunction('@getAccounts', HaveGetAccountsSucceeded),
-  no: getImageError,
 };
 
 describe('test detection', () => {
@@ -126,14 +70,6 @@ describe('test detection', () => {
 
     cy.contains('Récupération de votre adresse');
     cy.dataCy(search_input_sel).type('13 Rue Honoré Daumier, 56000 Vannes');
-    cy.wait('@location-search', { timeout }).then(({ response }) => {
-      if (response?.statusCode !== 200) {
-        HaveResultFromSearchLocation.no();
-      } else {
-        HaveResultFromSearchLocation.yes();
-      }
-    });
-
-    haveRequestSuccesYesFunction('@getWhoami', HaveGetWhoamiSucceeded);
+    detectionGetImage('13 Rue Honoré Daumier, 56000 Vannes').then(() => HaveTheCorrectImagePrecision5Cm.yes());
   });
 });
