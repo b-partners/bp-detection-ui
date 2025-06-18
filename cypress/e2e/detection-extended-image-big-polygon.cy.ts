@@ -1,6 +1,5 @@
 import { detectionGetImage } from './detection-get-image';
 
-const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
@@ -11,14 +10,16 @@ const expectedIsExtendedValueAfterExtendImage = true;
 
 const HaveWeASuccessFullDetection = {
   yes() {
-    cy.contains('210.86m²', { timeout });
-    cy.contains('Note de dégradation globale : 3.64%');
-    cy.contains("Taux d'usure").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.77%');
-    cy.contains('Taux de moisissure').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('11.12%');
+    cy.contains('546.40m²', { timeout });
+    cy.contains('Note de dégradation globale : 21.17%');
+    cy.contains("Taux d'usure").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('1.3%');
+    cy.contains('Taux de moisissure').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('68.81%');
     cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0%');
     cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
   },
-  no() {},
+  no() {
+    cy.contains('La détection sur cette zone a échoué, veuillez réessayer');
+  },
 };
 
 const HaveTheCorrectImagePrecision5Cm = {
@@ -44,13 +45,20 @@ const HaveTheCorrectImagePrecision5Cm = {
     const getX = (x: number) => Math.floor(x + 70);
     const getY = (y: number) => Math.floor(y + 4);
 
-    cy.dataCy(canvas_cursor_sel).click(getX(244), getY(175), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(225), getY(244), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(232), getY(256), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(305), getY(276), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(334), getY(215), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(336), getY(202), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(244), getY(175), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(243), getY(156), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(221), getY(237), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(229), getY(249), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(261), getY(259), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(417), getY(275), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(492), getY(278), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(435), getY(171), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(436), getY(180), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(375), getY(174), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(358), getY(200), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(329), getY(204), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(334), getY(185), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(292), getY(167), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(243), getY(156), { force: true });
 
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
 
@@ -63,9 +71,11 @@ const HaveTheCorrectImagePrecision5Cm = {
     cy.dataName('phone').type(process.env.REACT_IT_TEST_PHONE || '');
     cy.dataName('email').type(process.env.REACT_IT_TEST_EMAIL || '');
 
+    cy.intercept('POST', '/detections/**/sync').as('createSynchronousDetection');
+
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createDetection', { timeout }).then(({ response }) => {
+    cy.wait('@createSynchronousDetection', { timeout }).then(({ response }) => {
       const statusCode = response?.statusCode;
       if (statusCode === 200) HaveWeASuccessFullDetection.yes();
       else HaveWeASuccessFullDetection.no();
@@ -78,21 +88,6 @@ const HaveTheCorrectImagePrecision5Cm = {
 
 describe('Test extended detection', () => {
   it('Extended image detection', () => {
-    cy.prodRequestUtilities();
-    //steppers state
-    cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Délimitation de votre toiture').should('not.have.class', 'Mui-active');
-    //steppers state
-
-    cy.contains("Clé d'API invalide");
-    cy.contains("Votre clé d'API est invalide. Veuillez specifier une clé valide");
-
-    cy.dataCy('api-key-input').type(process.env.REACT_PROD_API_KEY || '');
-    cy.contains('Valider').click();
-
-    cy.contains('Récupération de votre adresse');
-    cy.dataCy(search_input_sel).type('12 Boulevard de la Croisette, 06400 Cannes');
-
-    detectionGetImage('12 Boulevard de la Croisette, 06400 Cannes').then(() => HaveTheCorrectImagePrecision5Cm.yes());
+    detectionGetImage('1 Rue de la Vau Saint-Jacques, 79200 Parthenay').then(() => HaveTheCorrectImagePrecision5Cm.yes());
   });
 });
