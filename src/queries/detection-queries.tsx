@@ -74,7 +74,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 
     if (!withoutImage) {
       polygons[0].points.forEach(({ x, y }) => {
-        mappedCoordinates.push([y, x]);
+        mappedCoordinates.push([x, y]);
       });
     } else {
       (all_points_x as any[])?.forEach((x, index) => {
