@@ -57,7 +57,7 @@ jobs:
           fi
 
       - name: Check previous test status
-        if: github.ref == 'refs/heads/prod'
+        if:  always() && github.ref == 'refs/heads/prod'
         run: |
           response=$(curl -s -X GET "${{ secrets.INSTATUS_STATUS_URL }}")
 
@@ -77,7 +77,7 @@ jobs:
           curl -X PUT "${{ secrets.INSTATUS_STATUS_URL }}"
 
       - name: Instatus request
-        if: failure() && github.event_name == 'schedule' && github.ref == 'refs/heads/prod'
+        if: failure() && github.event_name == 'schedule' && github.ref == 'refs/heads/prod' && env.isResolve == 'false' 
         run: |
           response=$(curl -s -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
