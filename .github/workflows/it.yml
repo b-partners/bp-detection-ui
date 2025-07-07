@@ -70,7 +70,7 @@ jobs:
       - name: Resolve last Instatus if there was an error
         if: success() && env.isResolve == 'false' && github.ref == 'refs/heads/prod'
         run: |
-          curl -X POST https://api.instatus.com/v2/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ env.instatusId }}/incident-updates/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_RESOLVE_TEMPLATE_ID }}
+          curl -X POST "https://api.instatus.com/v2/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ env.instatusId }}/incident-updates/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_RESOLVE_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.INSTATUS_API_KEY }}"
 
