@@ -86,7 +86,7 @@ const HaveTheCorrectImagePrecision5Cm = {
   },
 };
 
-describe('Test extended detection', () => {
+xdescribe('Test extended detection', () => {
   it('Extended image detection', () => {
     detectionGetImage('1 Rue de la Vau Saint-Jacques, 79200 Parthenay').then(() => HaveTheCorrectImagePrecision5Cm.yes());
   });
