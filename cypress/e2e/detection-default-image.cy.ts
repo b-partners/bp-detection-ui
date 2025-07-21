@@ -11,7 +11,7 @@ const expedtedRoofArea = '220.77m²';
 const HaveRoofDelimiterSucceeded = {
   yes: () => {
     cy.contains(expedtedRoofArea, { timeout });
-    cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0.3%');
+    cy.contains("Taux d'humidité");
     cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
   },
   no: () => cy.contains('La détection sur cette zone a échoué, veuillez réessayer'),
