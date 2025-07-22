@@ -2,10 +2,10 @@ import { useAnnotationFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
-import { cache, getCached } from '@/utilities';
+import { cache, checkPolygonSizeUnder1024, createImageFromPolygon, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
-import { FC, useRef, useState } from 'react';
-import { AnnotatorCanvasCustom, SlopeSelect } from '..';
+import { FC, useEffect, useRef, useState } from 'react';
+import { AnnotatorCanvasCustom, DomainPolygonType, SlopeSelect } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -47,12 +47,15 @@ const degradationLevels = [
 ];
 
 export const DetectionResultStep = () => {
-  const { imageSrc } = useStep(({ params }) => params);
+  const { imageSrc, useGeoJson } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { data } = useGeojsonQueryResult();
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const { register, watch } = useAnnotationFrom();
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [annotatorCanvasState, setAnnotatorCanvasState] = useState<{ image: string; polygons: any[] }>({ image: '', polygons: [] });
 
   const handleSendPdf = () => {
     if (!isEmailSent) {
@@ -62,7 +65,39 @@ export const DetectionResultStep = () => {
     }
   };
 
-  const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(imageSrc);
+  const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(annotatorCanvasState.image);
+
+  const handleGetCroppedImage = () =>
+    new Promise<{ image?: string; polygons?: DomainPolygonType[] }>(resolve => {
+      const roofDelimiterPolygon = getCached.roofDelimiterPolygon();
+      const isValidPoligonSize = checkPolygonSizeUnder1024(roofDelimiterPolygon);
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const image = new Image();
+        image.src = imageSrc || '';
+
+        image.onload = async () => {
+          const { toBase64, boundingBox } = createImageFromPolygon(roofDelimiterPolygon, canvas, image);
+
+          const mappedPolygons = data?.polygons?.map(({ points, ...polygon }) => ({
+            ...polygon,
+            points: points.map(({ x, y }) => ({ x: x - (isValidPoligonSize ? boundingBox.x : 0), y: y - (isValidPoligonSize ? boundingBox.y : 0) })),
+          }));
+
+          resolve({ image: toBase64(), polygons: mappedPolygons });
+        };
+      } else {
+        resolve({ image: undefined, polygons: undefined });
+      }
+    });
+
+  useEffect(() => {
+    if (!useGeoJson) {
+      setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
+    } else {
+      handleGetCroppedImage().then(({ image, polygons }) => setAnnotatorCanvasState({ image: image || '', polygons: polygons || [] }));
+    }
+  }, [useGeoJson, imageSrc]);
 
   const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading;
 
@@ -82,6 +117,7 @@ export const DetectionResultStep = () => {
           isLoading={isImageLoading}
           image={image || ''}
         />
+        <Box ref={canvasRef} component='canvas' display='none'></Box>
         <Paper sx={{ background: '#BEB4A4 !important', px: '10rem', py: 2, borderRadius: 5, textTransform: 'uppercase' }}>
           <Typography sx={{ textAlign: 'center', width: '100%' }}>
             Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>

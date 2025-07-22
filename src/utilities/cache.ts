@@ -1,3 +1,5 @@
+import { DomainPolygonType } from '@/components';
+
 const USER_ID_ITEM = 'USER_ID_ITEM';
 const ACCOUNT_ID_ITEM = 'ACCOUNT_ID_ITEM';
 const ACCOUNT_HOLDER_ID_ITEM = 'ACCOUNT_HOLDER_ID_ITEM';
@@ -5,6 +7,7 @@ const DETECTION_ID_ITEM = 'DETECTION_ID_ITEM';
 const AREA_ITEM = 'AREA_ITEM';
 const EMAIL_SENT_ITEM = 'EMAIL_SENT_ITEM';
 const ANNOTATION_ID_ITEM = 'ANNOTATION_ID_ITEM';
+const ROOF_DELIMITER_POLYGON_ITEM = 'ROOF_DELIMITER_POLYGON_ITEM';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -23,6 +26,10 @@ export const cache = {
   },
   annotationId(annotationId: string) {
     localStorage.setItem(ANNOTATION_ID_ITEM, annotationId);
+  },
+  roofDelimiterPolygon(polygon: DomainPolygonType) {
+    localStorage.setItem(ROOF_DELIMITER_POLYGON_ITEM, JSON.stringify(polygon));
+    return polygon;
   },
 };
 
@@ -44,6 +51,14 @@ export const getCached = {
   },
   annotationId() {
     return localStorage.getItem(ANNOTATION_ID_ITEM);
+  },
+  roofDelimiterPolygon() {
+    const res = localStorage.getItem(ROOF_DELIMITER_POLYGON_ITEM) || 'undefined';
+    try {
+      return JSON.parse(res);
+    } catch {
+      return undefined;
+    }
   },
 };
 

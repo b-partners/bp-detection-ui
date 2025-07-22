@@ -28,30 +28,15 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
   } = useStep();
   const { open: openDialog } = useDialog();
 
-  const mutationFn = async ({
-    polygons: noCroppedPolygons,
-    receiverEmail,
-    phone,
-    firstName,
-    lastName,
-    isExtended,
-    isExtendedImage,
-    image,
-    withoutImage = false,
-  }: MutationProps) => {
+  const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName, isExtended, image }: MutationProps) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
 
-    const { image: croppedImage, polygons: croppedPolygons } = (await isExtendedImage) || {};
-
-    if (isExtended && croppedImage && !withoutImage) {
-      await sendImageQuery(areaPictureDetails, croppedImage, 'image/*');
-    } else if (!isExtended && image && !withoutImage) {
+    if (!isExtended && image) {
       await sendImageQuery(areaPictureDetails, base64ToArrayBuffer(image), 'image/*');
     }
 
-    const polygons = isExtended ? (croppedPolygons as any as DomainPolygonType[]) : noCroppedPolygons;
-
     const imageSize = await getImageSize(src);
+    cache.roofDelimiterPolygon(polygons[0]);
     const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
     const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
 
@@ -72,7 +57,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 
     const mappedCoordinates: number[][] = [];
 
-    if (!withoutImage) {
+    if (!isExtended) {
       polygons[0].points.forEach(({ x, y }) => {
         mappedCoordinates.push([x, y]);
       });
@@ -94,7 +79,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       `${areaPictureDetails.address}`,
       [[mappedCoordinates]],
       receiverEmail,
-      withoutImage
+      isExtended
     );
   };
 
