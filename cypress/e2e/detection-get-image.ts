@@ -75,7 +75,7 @@ class GetImageStepUtilities {
 }
 
 const HaveResultFromSearchLocation = {
-  yes: (address: string) => cy.contains(address).click(),
+  yes: () => cy.get('.location-list > .MuiPaper-root > :nth-child(1)').click(),
   no: (address: string) => cy.dataCy(search_input_sel).clear().type(`${address}{enter}`),
 };
 
@@ -106,8 +106,8 @@ export const detectionGetImage = (address: string) =>
     cy.contains('Récupération de votre adresse');
     cy.dataCy(search_input_sel).type(address);
     cy.wait('@location-search', { timeout: e2eTimeout }).then(({ response }) => {
-      if (response?.statusCode !== 200) HaveResultFromSearchLocation.no(address);
-      else HaveResultFromSearchLocation.yes(address + ', France');
+      if (response?.statusCode !== 200 || response?.body?.length === 0) HaveResultFromSearchLocation.no(address);
+      else HaveResultFromSearchLocation.yes();
     });
 
     const getImageStepUtilities = new GetImageStepUtilities(resolve);
