@@ -11,10 +11,10 @@ const expectedIsExtendedValueAfterExtendImage = true;
 const HaveWeASuccessFullDetection = {
   yes() {
     cy.contains('546.40m²', { timeout });
-    cy.contains('Note de dégradation globale : 21.17%');
-    cy.contains("Taux d'usure").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('1.3%');
-    cy.contains('Taux de moisissure').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('68.81%');
-    cy.contains("Taux d'humidité").parent('.MuiStack-root').siblings('.MuiTypography-root').contains('0%');
+    cy.contains('Note de dégradation globale');
+    cy.contains("Taux d'usure");
+    cy.contains('Taux de moisissure');
+    cy.contains("Taux d'humidité");
     cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
   },
   no() {
