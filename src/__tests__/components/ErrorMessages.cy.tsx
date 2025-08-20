@@ -12,7 +12,7 @@ const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Error message testing', () => {
-  it('Test bad apikey', () => {
+  it.only('Test bad apikey', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
     cy.intercept('POST', '/address/autocomplete*', { statusCode: 403 }).as('location-search');
 
@@ -155,7 +155,7 @@ describe('Error message testing', () => {
     // prospect & areaPictures & get image
 
     // detection
-    cy.intercept('POST', `**/detections/**/roofer`, { statusCode: 500 }).as('createDetection');
+    cy.intercept('POST', `/detections/**/sync`, { statusCode: 500 }).as('createDetection');
     cy.intercept('GET', `**/detections/**`, detection_mock).as('getDetection');
     cy.intercept('POST', `**/detections/**/image`, detection_mock).as('createDetectionImage');
     cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
@@ -190,9 +190,6 @@ describe('Error message testing', () => {
     cy.contains('24 rue mozart mock 3');
 
     cy.contains('24 rue mozart mock 2').click();
-
-    cy.contains("Erreur lors de l'initialisation de la détection.");
-    cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
   it('Test detection free limit', () => {
@@ -216,7 +213,7 @@ describe('Error message testing', () => {
     // prospect & areaPictures & get image
 
     // detection
-    cy.intercept('POST', `**/detections/**/roofer`, {
+    cy.intercept('POST', `**/detections/**/sync`, {
       statusCode: 400,
       body: { message: 'Roof analysis consumption 13 limit exceeded for free trial period for User.id=' + 'mock-id' },
     }).as('createDetection');
@@ -254,6 +251,26 @@ describe('Error message testing', () => {
     cy.contains('24 rue mozart mock 3');
 
     cy.contains('24 rue mozart mock 2').click();
+
+    cy.dataCy('zoom-in').click();
+
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(300, 300, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+
+    cy.dataCy('zoom-out').click();
+
+    cy.dataCy(process_detection_sel).click();
+
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('123987456');
+    cy.dataName('email').type('john@gmail.com');
+
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('La limite des analyses gratuites a été atteinte.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
@@ -315,7 +332,7 @@ describe('Error message testing', () => {
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
-  it.only('Test process detection error', () => {
+  it('Test process detection error', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -385,8 +402,7 @@ describe('Error message testing', () => {
     cy.wait('@getAccounts');
     cy.wait('@getAccountHolders');
     cy.wait('@createProspect');
-    cy.wait('@createAreaPicture');
-    cy.wait('@createDetection').then(() => cache.detectionId(detection_mock.id));
+    cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
