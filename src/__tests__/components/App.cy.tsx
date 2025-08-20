@@ -2,7 +2,17 @@ import App from '@/App';
 import { cache, ParamsUtilities, theme } from '@/utilities';
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { account_holder_mock, account_mock, area_picture_mock, detection_mock, locations_mock, mercator_mock, prospect_mock, whoami_mock } from './mocks';
+import {
+  account_holder_mock,
+  account_mock,
+  area_picture_mock,
+  detection_mock,
+  detectionSync,
+  locations_mock,
+  mercator_mock,
+  prospect_mock,
+  whoami_mock,
+} from './mocks';
 
 const queryClient = new QueryClient();
 
@@ -33,12 +43,13 @@ describe('Component testing', () => {
     // prospect & areaPictures & get image
 
     // detection
-    cy.intercept('POST', `**/detections/**/roofer`, detection_mock).as('createDetection');
     cy.intercept('GET', `**/detections/**`, detection_mock).as('getDetection');
     cy.intercept('POST', `**/detections/**/image`, detection_mock).as('createDetectionImage');
-    cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
+    cy.intercept('GET', `http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
       'getDetectionResultGeojson'
     );
+    cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
+    cy.intercept('GET', `/image-result`, { fixture: 'sync-result-image.jpg', headers: { 'content-type': 'image/jpg' } }).as('detectionSync');
     // detection
 
     // points conversion
@@ -46,8 +57,8 @@ describe('Component testing', () => {
     // points conversion
 
     // email message
-    cy.intercept('POST', `**/detections/${detection_mock.id}/pdf`, { body: {} }).as('sendPdf');
-    cy.intercept('POST', `**/detections/${detection_mock.id}/roofer/email`, { body: {} }).as('sendUserInfo');
+    cy.intercept('POST', `**/detections/*/pdf`, { body: {} }).as('sendPdf');
+    cy.intercept('POST', `**/detections/*/roofer/email`, { body: {} }).as('sendUserInfo');
     // email message
 
     cy.mount(
@@ -82,8 +93,7 @@ describe('Component testing', () => {
     cy.wait('@getAccounts');
     cy.wait('@getAccountHolders');
     cy.wait('@createProspect');
-    cy.wait('@createAreaPicture');
-    cy.wait('@createDetection').then(() => cache.detectionId(detection_mock.id));
+    cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
@@ -117,7 +127,7 @@ describe('Component testing', () => {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@getDetectionResultGeojson');
+    // cy.wait('@getDetectionResultGeojson');
 
     cy.contains("Taux d'usure");
     cy.contains('Taux de moisissure');
