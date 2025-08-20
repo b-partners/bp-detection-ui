@@ -1,4 +1,4 @@
-import { useStep } from '@/hooks';
+import { createImage, getCropepedImageAndPolygons, useStep } from '@/hooks';
 import { detectionResultMapper } from '@/mappers';
 import { useQuery } from '@tanstack/react-query';
 import { DetectionResultInVgg, Region } from '.';
@@ -26,7 +26,7 @@ const isThereAnObstacle = (regions: Region[]) => {
   return false;
 };
 
-export const useGeojsonQueryResult = () => {
+export const useGeojsonQueryResult = (imageUrl?: string) => {
   const { geoJsonResultUrl } = useStep(({ params }) => params);
 
   const queryFnVgg = async () => {
@@ -38,7 +38,11 @@ export const useGeojsonQueryResult = () => {
     const polygons = detectionResultMapper.toPolygon(regions);
     const obstacle = isThereAnObstacle(regions);
 
-    return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons };
+    if (!imageUrl) return null;
+    const image = await createImage(imageUrl);
+    const { image: createdImage, polygons: mappedPolygons } = getCropepedImageAndPolygons(polygons, image);
+
+    return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons: mappedPolygons, createdImage };
   };
 
   return useQuery({ queryKey: ['geojson-result'], queryFn: queryFnVgg, enabled: !!geoJsonResultUrl });

@@ -24,12 +24,9 @@ const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
   </Paper>
 );
 
-
-
 export const DetectionResultStep = () => {
   const { imageSrc, useGeoJson } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
-  const { data } = useGeojsonQueryResult();
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const { register, watch } = useAnnotationFrom();
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
@@ -46,6 +43,7 @@ export const DetectionResultStep = () => {
   };
 
   const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(annotatorCanvasState.image);
+  const { data, isLoading: isGeoJsonResultLoading } = useGeojsonQueryResult(image);
 
   useEffect(() => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
@@ -66,8 +64,8 @@ export const DetectionResultStep = () => {
           setPolygons={() => {}}
           pointRadius={0}
           polygonList={data?.polygons || []}
-          isLoading={isImageLoading}
-          image={image || ''}
+          isLoading={isImageLoading || isGeoJsonResultLoading}
+          image={data?.createdImage || ''}
         />
         <Box ref={canvasRef} component='canvas' display='none'></Box>
         <Paper className='degratation-rate-title'>
