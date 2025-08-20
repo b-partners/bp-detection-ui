@@ -55,6 +55,14 @@ export const DetectionResultStepStyle: SxProps = {
     height: 20,
     width: 20,
   },
+  '& .degratation-rate-title': {
+    background: '#BEB4A4 !important',
+    px: '10rem',
+    py: 2,
+    borderRadius: 5,
+    textTransform: 'uppercase',
+    '& .MuiTypography-root': { textAlign: 'center', width: '100%' },
+  },
 };
 
 export const GetAddressStepStyle: SxProps = {
