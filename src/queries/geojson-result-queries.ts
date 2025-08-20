@@ -45,5 +45,5 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
     return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons: mappedPolygons, createdImage };
   };
 
-  return useQuery({ queryKey: ['geojson-result'], queryFn: queryFnVgg, enabled: !!geoJsonResultUrl });
+  return useQuery({ queryKey: [geoJsonResultUrl, imageUrl], queryFn: queryFnVgg, enabled: !!geoJsonResultUrl && !!imageUrl });
 };
