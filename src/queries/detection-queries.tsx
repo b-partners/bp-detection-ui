@@ -2,11 +2,10 @@ import { DomainPolygonType, ErrorMessageDialog } from '@/components';
 import { useDialog, useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
 import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
-import { base64ToArrayBuffer, cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
+import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
-import { sendImageQuery } from './image-queries';
 
 interface MutationProps {
   polygons: DomainPolygonType[];
@@ -28,12 +27,8 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
   } = useStep();
   const { open: openDialog } = useDialog();
 
-  const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName, isExtended, image }: MutationProps) => {
+  const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
-
-    if (!isExtended && image) {
-      await sendImageQuery(areaPictureDetails, base64ToArrayBuffer(image), 'image/*');
-    }
 
     const imageSize = await getImageSize(src);
     cache.roofDelimiterPolygon(polygons[0]);
@@ -57,15 +52,9 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 
     const mappedCoordinates: number[][] = [];
 
-    if (!isExtended) {
-      polygons[0].points.forEach(({ x, y }) => {
-        mappedCoordinates.push([x, y]);
-      });
-    } else {
-      (all_points_x as any[])?.forEach((x, index) => {
-        mappedCoordinates.push([all_points_y[index], x]);
-      });
-    }
+    (all_points_x as any[])?.forEach((x, index) => {
+      mappedCoordinates.push([all_points_y[index], x]);
+    });
 
     if (prospect) {
       const { data } = await bpProspectApi(apiKey).updateProspects(getCached.userInfo().accountHolderId || '', [
@@ -74,13 +63,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       setStep({ params: { prospect: data[0], polygons }, actualStep });
     }
 
-    return await processDetection(
-      areaPictureDetails.actualLayer?.name ?? '',
-      `${areaPictureDetails.address}`,
-      [[mappedCoordinates]],
-      receiverEmail,
-      isExtended
-    );
+    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [[mappedCoordinates]], receiverEmail);
   };
 
   const { isPending, data, mutate } = useMutation({

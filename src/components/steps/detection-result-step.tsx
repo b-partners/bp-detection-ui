@@ -2,10 +2,10 @@ import { useAnnotationFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
-import { cache, checkPolygonSizeUnder1024, createImageFromPolygon, getCached } from '@/utilities';
+import { cache, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
-import { AnnotatorCanvasCustom, DomainPolygonType, SlopeSelect } from '..';
+import { AnnotatorCanvasCustom, SlopeSelect } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -67,36 +67,8 @@ export const DetectionResultStep = () => {
 
   const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(annotatorCanvasState.image);
 
-  const handleGetCroppedImage = () =>
-    new Promise<{ image?: string; polygons?: DomainPolygonType[] }>(resolve => {
-      const roofDelimiterPolygon = getCached.roofDelimiterPolygon();
-      const isValidPoligonSize = checkPolygonSizeUnder1024(roofDelimiterPolygon);
-      const canvas = canvasRef.current;
-      if (canvas) {
-        const image = new Image();
-        image.src = imageSrc || '';
-
-        image.onload = async () => {
-          const { toBase64, boundingBox } = createImageFromPolygon(roofDelimiterPolygon, canvas, image);
-
-          const mappedPolygons = data?.polygons?.map(({ points, ...polygon }) => ({
-            ...polygon,
-            points: points.map(({ x, y }) => ({ x: x - (isValidPoligonSize ? boundingBox.x : 0), y: y - (isValidPoligonSize ? boundingBox.y : 0) })),
-          }));
-
-          resolve({ image: toBase64(), polygons: mappedPolygons });
-        };
-      } else {
-        resolve({ image: undefined, polygons: undefined });
-      }
-    });
-
   useEffect(() => {
-    if (!useGeoJson) {
-      setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
-    } else {
-      handleGetCroppedImage().then(({ image, polygons }) => setAnnotatorCanvasState({ image: image || '', polygons: polygons || [] }));
-    }
+    setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
   }, [useGeoJson, imageSrc]);
 
   const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading;
