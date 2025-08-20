@@ -28,9 +28,11 @@ export const polygonMapper = {
       base64_img_data: null,
     };
 
+    const offsets = { x: areaPicture.xOffset || 0, y: areaPicture.yOffset || 0 };
+
     result.regions = {
       '1': {
-        shape_attributes: toGeoShapeAttributes(polygon, { x: 0, y: 0 }),
+        shape_attributes: toGeoShapeAttributes(polygon, !areaPicture.isExtended ? offsets : { x: 0, y: 0 }),
         region_attributes: {
           label: 'polygon',
           confidence: 0.7055366635322571,

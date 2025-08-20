@@ -1,6 +1,6 @@
 import { useDialog, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
-import { checkPolygonSizeUnder1024, createImageFromPolygon } from '@/utilities';
+import { checkPolygonSizeUnder1024 } from '@/utilities';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
@@ -18,29 +18,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const { data, isPending, isExtended, extendImageToggle, refetchImage: handleGetNewImage } = useQueryUpdateAreaPicture();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const handleGetCroppedImage = () =>
-    new Promise<{ image?: ArrayBuffer; polygons?: DomainPolygonType[] }>(resolve => {
-      const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
-      const canvas = canvasRef.current;
-      if (canvas) {
-        const image = new Image();
-        image.src = data?.imageAsBase64 || '';
-
-        image.onload = async () => {
-          const { toArrayBuffer, boundingBox } = createImageFromPolygon(polygons[0], canvas, image);
-
-          const mappedPolygons = polygons.map(({ points, ...polygon }) => ({
-            ...polygon,
-            points: points.map(({ x, y }) => ({ x: x - (isValidPoligonSize ? boundingBox.x : 0), y: y - (isValidPoligonSize ? boundingBox.y : 0) })),
-          }));
-
-          resolve({ image: await toArrayBuffer(), polygons: mappedPolygons });
-        };
-      } else {
-        resolve({ image: undefined, polygons: undefined });
-      }
-    });
-
   useEffect(() => {
     setCurrentImageSrc(data?.imageAsBase64 || imageSrc);
   }, [data]);
@@ -53,8 +30,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   };
 
   const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
-    const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
-    const croppedImage = isExtended ? handleGetCroppedImage() : Promise.resolve({ image: undefined, polygons: undefined });
     closeDialog();
     startDetection(
       {
@@ -64,13 +39,11 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         firstName,
         lastName,
         isExtended,
-        isExtendedImage: croppedImage,
         image: currentImageSrc,
-        withoutImage: !isValidPoligonSize,
+        withoutImage: true,
       },
       {
-        onSuccess: result =>
-          setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any, imageSrc: currentImageSrc, useGeoJson: !isValidPoligonSize } }),
+        onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any, imageSrc: currentImageSrc, useGeoJson: true } }),
       }
     );
   };

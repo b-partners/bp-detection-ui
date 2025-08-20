@@ -1,6 +1,6 @@
 import { useStep } from '@/hooks';
 import { AnnotatorCanvas, AnnotatorCanvasProps } from '@bpartners/annotator-component';
-import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { AnnotatorCustomButton } from './annotator-custom-button';
 
@@ -19,9 +19,7 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
       <Typography paddingY={2}>Adresse: {areaPictureDetails?.address}</Typography>
       <Box position='relative' sx={{ minHeight: '600px' }}>
         {(isLoading || props.image.length === 0) && (
-          <Box width='100%' height='600px' display='flex' justifyContent='center' alignItems='center' bgcolor={theme => theme.palette.grey[100]}>
-            <CircularProgress size={25} />
-          </Box>
+          <Box width='100%' height='600px' display='flex' justifyContent='center' alignItems='center' bgcolor={theme => theme.palette.grey[100]}></Box>
         )}
         {!isLoading && (
           <AnnotatorCanvas
