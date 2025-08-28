@@ -4,7 +4,7 @@ import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtili
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { v4 } from 'uuid';
-import { getImageFromAddress, processDetection, sendImageToDetect, updateAreaPicture } from '../providers';
+import { getImageFromAddress, sendImageToDetect, updateAreaPicture } from '../providers';
 
 const getImageFile = async (areaPictureDetails: AreaPictureDetails) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
@@ -42,9 +42,6 @@ const mutationFn = async (address: string) => {
   }
 
   const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
-
-  // create the detection without polygon
-  await processDetection(areaPictureDetails.actualLayer?.name ?? '', address);
 
   return {
     areaPictureDetails,

@@ -1,10 +1,10 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep } from '@/hooks';
-import { detectionResultColors } from '@/mappers';
+import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
 import { useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { AnnotatorCanvasCustom, SlopeSelect } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -24,35 +24,15 @@ const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
   </Paper>
 );
 
-export const ANNOTATION_COVERING = [
-  { value: 'tuiles-canal', label: 'Tuiles canal' },
-  { value: 'tuiles-plates', label: 'Tuiles plates' },
-  { value: 'ardoise', label: 'Ardoise' },
-  { value: 'zinc', label: 'Zinc' },
-  { value: 'shingle', label: 'Shingle' },
-  { value: 'beton', label: 'Béton' },
-  { value: 'bac-acier', label: 'Bac acier' },
-  { value: 'bardeaux-bitumineux', label: 'Bardeaux bitumineux' },
-  { value: 'fibro-ciment', label: 'Fibro-ciment' },
-  { value: 'membrane-elastomere', label: 'Membrane élastomère' },
-  { value: 'autres', label: 'Autres' },
-];
-
-const degradationLevels = [
-  { label: 'A', color: '#53b76a' },
-  { label: 'B', color: '#f7ec94' },
-  { label: 'C', color: '#ddc563' },
-  { label: 'D', color: '#ee915c' },
-  { label: 'E', color: '#e8443b' },
-];
-
 export const DetectionResultStep = () => {
-  const { imageSrc } = useStep(({ params }) => params);
+  const { imageSrc, useGeoJson } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
-  const { data } = useGeojsonQueryResult();
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const { register, watch } = useAnnotationFrom();
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [annotatorCanvasState, setAnnotatorCanvasState] = useState<{ image: string; polygons: any[] }>({ image: '', polygons: [] });
 
   const handleSendPdf = () => {
     if (!isEmailSent) {
@@ -62,7 +42,12 @@ export const DetectionResultStep = () => {
     }
   };
 
-  const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(imageSrc);
+  const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(annotatorCanvasState.image);
+  const { data, isLoading: isGeoJsonResultLoading } = useGeojsonQueryResult(image);
+
+  useEffect(() => {
+    setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
+  }, [useGeoJson, imageSrc]);
 
   const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading;
 
@@ -79,11 +64,12 @@ export const DetectionResultStep = () => {
           setPolygons={() => {}}
           pointRadius={0}
           polygonList={data?.polygons || []}
-          isLoading={isImageLoading}
-          image={image || ''}
+          isLoading={isImageLoading || isGeoJsonResultLoading}
+          image={data?.createdImage || ''}
         />
-        <Paper sx={{ background: '#BEB4A4 !important', px: '10rem', py: 2, borderRadius: 5, textTransform: 'uppercase' }}>
-          <Typography sx={{ textAlign: 'center', width: '100%' }}>
+        <Box ref={canvasRef} component='canvas' display='none'></Box>
+        <Paper className='degratation-rate-title'>
+          <Typography>
             Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
           </Typography>
         </Paper>

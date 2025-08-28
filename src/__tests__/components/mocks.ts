@@ -72,3 +72,78 @@ export const mercator_mock = {
     },
   },
 };
+
+export const detectionSync = {
+  id: '20dc6136-54d7-496f-b4ce-f2ea873aeb81',
+  step: {
+    name: 'MACHINE_DETECTION',
+    status: {
+      progression: 'FINISHED',
+      health: 'SUCCEEDED',
+      creationDatetime: '2025-08-04T06:40:09.567566528Z',
+    },
+    statistics: [],
+    updatedAt: '2025-08-04T06:40:09.567576210Z',
+  },
+  geoJsonUrl: null,
+  shapeUrl: null,
+  excelUrl: null,
+  imageUrl: null,
+  pdfUrl: null,
+  vggUrl: null,
+  addresses: [],
+  roofDelimiter: null,
+  emailReceiver: '',
+  zoneName: '1 Rue de la Vau Saint-Jacques, 79200 Parthenay, France',
+  geoServerProperties: {
+    geoServerUrl: 'http://35.181.83.111/geoserver/cite/wms',
+    geoServerParameter: {
+      service: 'WMS',
+      request: 'GetMap',
+      layers: 'cite:PCRS',
+      styles: '',
+      format: 'image/jpeg',
+      transparent: true,
+      version: '1.0.0',
+      width: 1024,
+      height: 1024,
+      srs: 'EPSG:3857',
+    },
+  },
+  detectableObjectModel: {
+    modelName: 'BP_TOITURE',
+  },
+  geoJsonZone: [
+    {
+      type: 'Feature',
+      geometry: {
+        coordinates: [
+          [
+            [
+              [-0.249430350959301, 46.65204236181756],
+              [-0.2494625374674797, 46.65196687496678],
+              [-0.2494722604751587, 46.65191992577473],
+              [-0.24946488440036774, 46.651904276035],
+              [-0.2493824064731598, 46.65189530044693],
+              [-0.24929624050855637, 46.65188701528739],
+              [-0.2492208033800125, 46.65187965070007],
+              [-0.249202698469162, 46.651925679354385],
+              [-0.24924695491790771, 46.65196756539577],
+              [-0.2492409199476242, 46.65200139640551],
+              [-0.24931635707616806, 46.65202671211325],
+              [-0.249430350959301, 46.65204236181756],
+            ],
+          ],
+        ],
+        type: 'MultiPolygon',
+      },
+      properties: {
+        vgg_file_url: 'http://localhost:8080/vgg',
+        zoom: 20,
+        original_image_url: 'http://localhost:8080/image-result',
+        id: '7f077387-587a-4d76-bf66-523668e7276b',
+      },
+    },
+  ],
+  geoJsonOutput: 'GEO_JSON',
+};
