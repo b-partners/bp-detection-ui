@@ -38,6 +38,8 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
       error?.response?.data?.message?.includes(' limit exceeded for free trial period for User.id=')
     ) {
       throw new Error('detectionLimitExceeded');
+    } else if (error?.message?.includes('legalFileNotApproved')) {
+      throw new Error('legalFileNotApproved');
     } else if (error.status === 404) {
       throw error;
     } else {

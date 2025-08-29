@@ -64,6 +64,7 @@ export const useQueryImageFromAddress = () => {
 
       if (e.message === 'areaPicturePrecision') errorMessage = "L'adresse que vous avez spécifiée n'est pas encore prise en charge.";
       else if (e.message === 'detectionLimitExceeded') errorMessage = 'La limite des analyses gratuites a été atteinte.';
+      else if (e.message === 'legalFileNotApproved') errorMessage = 'Veuillez accepter le cgu';
       else if (e.message === 'getImageError') errorMessage = "Erreur lors de la récupération de l'image.";
       else if (e.message === 'Roofer error') errorMessage = "Erreur lors de l'initialisation de la détection.";
       else errorMessage = "Une erreur s'est produite, veuillez réessayer.";

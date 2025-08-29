@@ -23,8 +23,12 @@ export const userInfoProvider = async (apiKey: string) => {
     const currentAccountHolder = accountHolders[0];
     userInfo.accountHolderId = currentAccountHolder?.id ?? '';
   }
+
+  const { approved, legalFiles } = await legalFilesProvider.checkLegalFiles();
+  if (!approved) throw new Error('legalFileNotApproved');
+
   cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
-  return { ...userInfo };
+  return { ...userInfo, legalFiles };
 };
 
 export const legalFilesProvider = {
