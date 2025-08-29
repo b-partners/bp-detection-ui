@@ -17,7 +17,7 @@ const prodRequestUtilities = () => {
   // prospect & areaPictures & get image
 
   // detection
-  cy.intercept('POST', `/detections/**/roofer`).as('createDetection');
+  cy.intercept('POST', `/detections/**/sync`).as('createDetection');
   cy.intercept('GET', '/detections/roofer/image**').as('getDetectionResultImage');
   cy.intercept('GET', /\/detections\/[\w\d\-^\/]+$/).as('getDetection');
   cy.intercept('GET', '/vgg**').as('getDetectionResultVgg');
