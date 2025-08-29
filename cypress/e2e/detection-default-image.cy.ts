@@ -70,6 +70,6 @@ describe('test detection', () => {
 
     cy.contains('Récupération de votre adresse');
     cy.dataCy(search_input_sel).type('13 Rue Honoré Daumier, 56000 Vannes');
-    detectionGetImage('13 Rue Honoré Daumier, 56000 Vannes').then(() => HaveTheCorrectImagePrecision5Cm.yes());
+    detectionGetImage('13 Rue Honoré Daumier, 56000 Vannes', () => HaveTheCorrectImagePrecision5Cm.yes());
   });
 });
