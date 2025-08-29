@@ -1,5 +1,5 @@
-import { cache, getCached } from '@/utilities';
-import { Account } from '@bpartners/typescript-client';
+import { cache, getCached, ParamsUtilities } from '@/utilities';
+import { Account, LegalFile } from '@bpartners/typescript-client';
 import { bpSecurityApi, bpUserAccountApi } from '.';
 
 const getCurrentAccount = (accounts: Account[]) => {
@@ -25,4 +25,28 @@ export const userInfoProvider = async (apiKey: string) => {
   }
   cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
   return { ...userInfo };
+};
+
+export const legalFilesProvider = {
+  acceptLegalFiles: async (legalFileId: string) => {
+    const { apiKey } = ParamsUtilities.getQueryParams();
+    const { userId } = getCached.userInfo();
+    if (!userId || !apiKey) throw new Error('User id or apikey is undefined');
+
+    await bpUserAccountApi(apiKey).approveLegalFile(userId, legalFileId);
+  },
+  checkLegalFiles: async () => {
+    const { apiKey } = ParamsUtilities.getQueryParams();
+    const { userId } = getCached.userInfo();
+    const result: { approved: boolean; legalFiles: LegalFile[] } = { approved: false, legalFiles: [] };
+    if (!apiKey || !userId) return result;
+
+    const { data: lfTemp } = await bpUserAccountApi(apiKey).getLegalFiles(userId);
+    result.legalFiles = lfTemp;
+
+    const notApprovedLegalFiles = lfTemp.filter(legalFile => legalFile.toBeConfirmed && !legalFile.approvalDatetime);
+    if (notApprovedLegalFiles.length === 0) result.approved = true;
+
+    return result;
+  },
 };
