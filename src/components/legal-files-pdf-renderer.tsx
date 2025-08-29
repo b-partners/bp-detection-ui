@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Document, Page } from 'react-pdf/dist/esm/entry.vite';
 import { LegalFileDialogStyle as style } from './style';
 
-export const LegalFilesPdfRenderer = () => {
+const useQueryLegalFiles = () => {
   const [currentLegalFile, setCurrentLegalFile] = useState<LegalFile>();
   const { close } = useDialog();
   const {
@@ -21,11 +21,9 @@ export const LegalFilesPdfRenderer = () => {
     mutationKey: ['update-legal-files'],
     mutationFn: legalFilesProvider.acceptLegalFiles as MutationFunction<RefetchOptions | undefined, string>,
     onSuccess: () => {
-      if (legalFiles && (legalFiles?.legalFiles?.length || 0) > 1) setCurrentLegalFile(legalFiles.legalFiles[1]);
-      if (legalFiles && legalFiles?.legalFiles?.length === 1) {
-        close();
-        return;
-      }
+      if (!legalFiles) return;
+      if (legalFiles.legalFiles.length < 2) return close();
+      setCurrentLegalFile(legalFiles.legalFiles[1]);
       refetch();
     },
   });
@@ -34,9 +32,17 @@ export const LegalFilesPdfRenderer = () => {
     if (legalFiles?.legalFiles?.[0]) setCurrentLegalFile(legalFiles?.legalFiles?.[0]);
   }, [legalFiles]);
 
-  const handleAcceptCurrentLegalFiles = () => {
-    acceptLegalFile(currentLegalFile?.id || '');
+  const acceptCurrentLegalFile = () => acceptLegalFile(currentLegalFile?.id || '');
+
+  return {
+    isLoading: isQueryLegalFiles || isAcceptLegalFilesPending,
+    currentLegalFile,
+    acceptCurrentLegalFile,
   };
+};
+
+export const LegalFilesPdfRenderer = () => {
+  const { acceptCurrentLegalFile, currentLegalFile, isLoading } = useQueryLegalFiles();
 
   const [lastPage, setLastPage] = useState(0);
   const [page, setPage] = useState(1);
@@ -48,7 +54,7 @@ export const LegalFilesPdfRenderer = () => {
       <DialogTitle>Conditions générales d'utilisation</DialogTitle>
       <DialogContent sx={style.dialogContent}>
         <Box>
-          {!isQueryLegalFiles && legalFiles && legalFiles.legalFiles.length > 0 && (
+          {!isLoading && currentLegalFile && (
             <Document onLoadSuccess={({ numPages }) => setLastPage(numPages)} renderMode='canvas' file={currentLegalFile?.fileUrl} loading={<></>}>
               <Page pageNumber={page} />
             </Document>
@@ -57,14 +63,14 @@ export const LegalFilesPdfRenderer = () => {
       </DialogContent>
       <DialogActions sx={style.dialogActions}>
         <Stack justifyContent='space-between' width='100%' direction='row'>
-          <Button onClick={handleAcceptCurrentLegalFiles} loading={isAcceptLegalFilesPending}>
+          <Button onClick={acceptCurrentLegalFile} loading={isLoading}>
             Accepter
           </Button>
           <Stack direction='row' gap={2}>
-            <Button disabled={page === 1 || isAcceptLegalFilesPending} onClick={prevPage} startIcon={<ChevronLeft />}>
+            <Button disabled={page === 1 || isLoading} onClick={prevPage} startIcon={<ChevronLeft />}>
               Précédent
             </Button>
-            <Button disabled={page === lastPage || isAcceptLegalFilesPending} onClick={nextPage} endIcon={<ChevronRight />}>
+            <Button disabled={page === lastPage || isLoading} onClick={nextPage} endIcon={<ChevronRight />}>
               Suivant
             </Button>
           </Stack>
