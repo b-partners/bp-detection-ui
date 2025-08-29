@@ -37,7 +37,8 @@ export const legalFilesProvider = {
     const { userId } = getCached.userInfo();
     if (!userId || !apiKey) throw new Error('User id or apikey is undefined');
 
-    await bpUserAccountApi(apiKey).approveLegalFile(userId, legalFileId);
+    const { data } = await bpUserAccountApi(apiKey).approveLegalFile(userId, legalFileId);
+    return data;
   },
   checkLegalFiles: async () => {
     const { apiKey } = ParamsUtilities.getQueryParams();
@@ -46,10 +47,14 @@ export const legalFilesProvider = {
     if (!apiKey || !userId) return result;
 
     const { data: lfTemp } = await bpUserAccountApi(apiKey).getLegalFiles(userId);
-    result.legalFiles = lfTemp;
 
-    const notApprovedLegalFiles = lfTemp.filter(legalFile => legalFile.toBeConfirmed && !legalFile.approvalDatetime);
-    if (notApprovedLegalFiles.length === 0) result.approved = true;
+    const notApprovedLegalFiles = lfTemp.filter(legalFile => legalFile.toBeConfirmed || !legalFile.approvalDatetime);
+    if (notApprovedLegalFiles.length === 0) {
+      result.legalFiles = lfTemp;
+      result.approved = true;
+      return result;
+    }
+    result.legalFiles = notApprovedLegalFiles;
 
     return result;
   },
