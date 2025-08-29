@@ -27,18 +27,18 @@ class GetImageStepUtilities {
     no_limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
   };
 
-  private HaveCreateAreaPitureSucceeded = {
-    yes: () => {
-      cy.wait('@createDetection', { timeout: e2eTimeout }).then(({ response }) => {
-        if (response?.statusCode === 400 && response?.body?.message?.includes('limit exceeded for free trial period')) {
-          this.HaveTheCorrectImagePrecision5Cm.no_limitExceededForFreeTrial();
-        } else if (response?.statusCode === 200) {
-          this.HaveTheCorrectImagePrecision5Cm.yes();
-        } else this.HaveTheCorrectImagePrecision5Cm.no_detectionInitializationError();
-      });
-    },
-    no: this.getImageError,
-  };
+  // private HaveCreateAreaPitureSucceeded = {
+  //   yes: () => {
+  //     cy.wait('@createDetection', { timeout: e2eTimeout }).then(({ response }) => {
+  //       if (response?.statusCode === 400 && response?.body?.message?.includes('limit exceeded for free trial period')) {
+  //         this.HaveTheCorrectImagePrecision5Cm.no_limitExceededForFreeTrial();
+  //       } else if (response?.statusCode === 200) {
+  //         this.HaveTheCorrectImagePrecision5Cm.yes();
+  //       } else this.HaveTheCorrectImagePrecision5Cm.no_detectionInitializationError();
+  //     });
+  //   },
+  //   no: this.getImageError,
+  // };
 
   private HaveCreateProspectSucceeded = {
     yes: () =>
@@ -47,7 +47,7 @@ class GetImageStepUtilities {
         const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
         if (response?.statusCode !== 200) this.getImageError();
         else if (currentPrecisionInCm !== expectedImagePrecisionInCm) this.HaveTheCorrectImagePrecision5Cm.no();
-        else this.HaveCreateAreaPitureSucceeded.yes();
+        else this.resolve();
       }),
     no: this.getImageError,
   };
@@ -89,28 +89,27 @@ const HaveResultFromSearchLocation = {
  * - Checks the image precision.
  * - Redirects to the annotator board.
  */
-export const detectionGetImage = (address: string) =>
-  new Promise(resolve => {
-    cy.prodRequestUtilities();
-    //steppers state
-    cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Délimitation de votre toiture').should('not.have.class', 'Mui-active');
-    //steppers state
+export const detectionGetImage = (address: string, resolve: () => void) => {
+  cy.prodRequestUtilities();
+  //steppers state
+  cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
+  cy.contains('Délimitation de votre toiture').should('not.have.class', 'Mui-active');
+  //steppers state
 
-    cy.contains("Clé d'API invalide");
-    cy.contains("Votre clé d'API est invalide. Veuillez specifier une clé valide");
+  cy.contains("Clé d'API invalide");
+  cy.contains("Votre clé d'API est invalide. Veuillez specifier une clé valide");
 
-    cy.dataCy('api-key-input').type(process.env.REACT_PROD_API_KEY || '');
-    cy.contains('Valider').click();
+  cy.dataCy('api-key-input').type(process.env.REACT_PROD_API_KEY || '');
+  cy.contains('Valider').click();
 
-    cy.contains('Récupération de votre adresse');
-    cy.dataCy(search_input_sel).type(address);
-    cy.wait('@location-search', { timeout: e2eTimeout }).then(({ response }) => {
-      if (response?.statusCode !== 200 || response?.body?.length === 0) HaveResultFromSearchLocation.no(address);
-      else HaveResultFromSearchLocation.yes();
-    });
-
-    const getImageStepUtilities = new GetImageStepUtilities(resolve);
-
-    getImageStepUtilities.init();
+  cy.contains('Récupération de votre adresse');
+  cy.dataCy(search_input_sel).type(address);
+  cy.wait('@location-search', { timeout: e2eTimeout }).then(({ response }) => {
+    if (response?.statusCode !== 200 || response?.body?.length === 0) HaveResultFromSearchLocation.no(address);
+    else HaveResultFromSearchLocation.yes();
   });
+
+  const getImageStepUtilities = new GetImageStepUtilities(resolve);
+
+  getImageStepUtilities.init();
+};

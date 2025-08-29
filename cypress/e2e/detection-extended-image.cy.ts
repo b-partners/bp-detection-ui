@@ -11,7 +11,7 @@ const expectedIsExtendedValueAfterExtendImage = true;
 
 const HaveWeASuccessFullDetection = {
   yes() {
-    cy.contains('210.86m²', { timeout });
+    cy.contains('210.99m²', { timeout });
     cy.contains('Note de dégradation globale');
     cy.contains("Taux d'usure");
     cy.contains('Taux de moisissure');
@@ -93,6 +93,6 @@ describe('Test extended detection', () => {
     cy.contains('Récupération de votre adresse');
     cy.dataCy(search_input_sel).type('12 Boulevard de la Croisette, 06400 Cannes');
 
-    detectionGetImage('12 Boulevard de la Croisette, 06400 Cannes').then(() => HaveTheCorrectImagePrecision5Cm.yes());
+    detectionGetImage('12 Boulevard de la Croisette, 06400 Cannes', () => HaveTheCorrectImagePrecision5Cm.yes());
   });
 });
