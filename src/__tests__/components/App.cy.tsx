@@ -61,6 +61,8 @@ describe('Component testing', () => {
     cy.intercept('POST', `**/detections/*/roofer/email`, { body: {} }).as('sendUserInfo');
     // email message
 
+    cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
+
     cy.mount(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
