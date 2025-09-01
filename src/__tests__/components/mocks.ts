@@ -147,3 +147,24 @@ export const detectionSync = {
   ],
   geoJsonOutput: 'GEO_JSON',
 };
+
+export const legalFiles_mock = [
+  {
+    id: '05c96052-c2a1-4f1e-9e43-53ecd8642099',
+    name: 'cgu_20-11-23.pdf',
+    fileUrl: '/assets/legal-file.pdf',
+    toBeConfirmed: true,
+  },
+  {
+    id: '9214432d-7b7a-4fa2-9660-d00d4e0109a0',
+    name: 'cgu_09-10-23.pdf',
+    fileUrl: '/assets/legal-file.pdf',
+    toBeConfirmed: true,
+  },
+];
+
+export const legalFilesOneNonApproved_mock = [{ ...legalFiles_mock[0], toBeConfirmed: false }, legalFiles_mock[1]];
+export const legalFilesAllApproved_mock = [
+  { ...legalFiles_mock[0], toBeConfirmed: false },
+  { ...legalFiles_mock[1], toBeConfirmed: false },
+];

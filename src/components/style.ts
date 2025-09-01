@@ -16,3 +16,18 @@ export const DialogFormStyle: SxProps = {
 export const DialogTutorialStyle: SxProps = {
   '& .MuiDialogContent-root': {},
 };
+
+export const LegalFileDialogStyle: Record<'dialogContent' | 'dialogActions', SxProps> = {
+  dialogContent: {
+    minHeight: 500,
+    minWidth: 500,
+    '& .react-pdf__Page__textContent, & .react-pdf__Page__annotations': {
+      display: 'none',
+    },
+  },
+  dialogActions: {
+    '& svg': {
+      color: '#fff !important',
+    },
+  },
+};
