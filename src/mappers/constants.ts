@@ -12,6 +12,7 @@ export const detectionResultColors = {
   HUMIDITE: '#1E90FF',
   USURE: '#FF7F50',
   MOISISSURE: '#32FF7E',
+  HAUTEUR: '#000000',
 };
 
 export const ANNOTATION_COVERING = [

@@ -129,8 +129,7 @@ describe('Component testing', () => {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    // cy.wait('@getDetectionResultGeojson');
-
+    cy.contains('Hauteur');
     cy.contains("Taux d'usure");
     cy.contains('Taux de moisissure');
     cy.contains("Taux d'humidité");

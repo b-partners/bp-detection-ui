@@ -61,8 +61,8 @@ export const legalFilesProvider = {
       result.legalFiles = notApprovedLegalFiles;
 
       return result;
-    } catch {
-      return result;
+    } catch (err) {
+      return { approved: true, legalFiles: [] };
     }
   },
 };

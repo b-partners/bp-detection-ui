@@ -97,7 +97,7 @@ export const getDetectionResult = async (apiKey: string) => {
   });
   const result = await data.json();
 
-  if (!result.vggUrl && !result.geoJsonUrl) throw new Error('Not done');
+  if (!result?.properties?.vgg_file_url && !result?.roofDelimiter?.roofSlopeInDegree) throw new Error('Not done');
 
   return result;
 };

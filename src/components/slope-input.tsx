@@ -1,5 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectProps, Tooltip } from '@mui/material';
 import { FC } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 const PENTES = [
   { url: '/assets/images/pentes/pente0.png', value: 0, title: 'Toit Plat' },
@@ -23,12 +24,14 @@ const PENTES = [
   { url: '/assets/images/pentes/pente18.png', value: 18, title: 'Pente 18/12' },
 ];
 
-export const SlopeSelect: FC<SelectProps> = props => {
+export const SlopeSelect: FC<SelectProps> = () => {
+  const { register, watch } = useFormContext();
   return (
     <FormControl fullWidth>
       <InputLabel id='demo-simple-select-label'>Pente</InputLabel>
       <Select
-        {...props}
+        {...register('slope')}
+        value={watch()?.slope || 0}
         fullWidth
         labelId='demo-simple-select-label'
         id='demo-simple-select'

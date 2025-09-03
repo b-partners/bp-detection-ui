@@ -36,8 +36,8 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
 
     const regions = (Object.values(refererGeoJson)[0] as any)?.regions;
-    const { all_points_x, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
-
+    const { all_points_x: xpoints, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
+    const all_points_x = xpoints.slice(0, xpoints.length - 1);
     const coordinates: any[] = [];
 
     (all_points_x as any[])?.forEach((latitude, index) => {
@@ -82,20 +82,26 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
 };
 
 export const useQueryDetectionResult = () => {
-  const { apiKey } = ParamsUtilities.getQueryParams();
-  const {
-    params: { useGeoJson, detection },
-  } = useStep();
+  const { setStep } = useStep();
 
+  const { apiKey } = ParamsUtilities.getQueryParams();
   const { data, isPending } = useQuery({
     queryKey: ['detection', 'result'],
-    enabled: !useGeoJson,
-    queryFn: () => {
-      return getDetectionResult(apiKey);
+    queryFn: async () => {
+      const data = await getDetectionResult(apiKey);
+      setStep({
+        actualStep: 3,
+        params: {
+          geoJsonResultUrl: data.vggUrl || data.geoJsonZone?.[0]?.properties?.vgg_file_url,
+          imageSrc: data.imageUrl || data.geoJsonZone?.[0]?.properties?.original_image_url,
+          roofDelimiter: data?.roofDelimiter,
+        },
+      });
+      return data;
     },
-    retryDelay: 8000,
+    retryDelay: 5000,
     retry: Number.MAX_SAFE_INTEGER,
   });
 
-  return { data: useGeoJson ? detection : data, isPending };
+  return { data, isPending };
 };
