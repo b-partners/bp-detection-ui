@@ -40,11 +40,6 @@ export const area_picture_mock: AreaPictureDetails = {
   filename: 'filename_1000_1000_zoom.jpg',
 };
 
-export const detection_mock = {
-  id: 'detection-mock-id',
-  vggUrl: 'http://mock.url.com',
-};
-
 export const mercator_mock = {
   '20_123456_123456.jpg': {
     size: null,
@@ -92,7 +87,10 @@ export const detectionSync = {
   pdfUrl: null,
   vggUrl: null,
   addresses: [],
-  roofDelimiter: null,
+  roofDelimiter: {
+    roofHeightInMeter: 9.2,
+    roofSlopeInDegree: 21,
+  },
   emailReceiver: '',
   zoneName: '1 Rue de la Vau Saint-Jacques, 79200 Parthenay, France',
   geoServerProperties: {
@@ -146,6 +144,10 @@ export const detectionSync = {
     },
   ],
   geoJsonOutput: 'GEO_JSON',
+};
+
+export const detection_mock = {
+  ...detectionSync,
 };
 
 export const legalFiles_mock = [
