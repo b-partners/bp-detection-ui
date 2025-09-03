@@ -15,6 +15,7 @@ export const DetectionLoadingStep = () => {
         params: {
           geoJsonResultUrl: data.vggUrl || data.geoJsonZone?.[0]?.properties?.vgg_file_url,
           imageSrc: data.imageUrl || data.geoJsonZone?.[0]?.properties?.original_image_url,
+          roofDelimiter: data?.roofDelimiter,
         },
       });
     }
