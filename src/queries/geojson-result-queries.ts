@@ -35,12 +35,13 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
 
     const regions = getRegions(detectionResultJson);
 
-    const polygons = detectionResultMapper.toPolygon(regions);
+    const filteredPolygons = detectionResultMapper.toPolygon(regions);
+    const nonFilteredPolygons = detectionResultMapper.toPolygon(regions.slice(), false);
     const obstacle = isThereAnObstacle(regions);
 
     if (!imageUrl) return null;
     const image = await createImage(imageUrl);
-    const { image: createdImage, polygons: mappedPolygons } = getCropepedImageAndPolygons(polygons, image);
+    const { image: createdImage, polygons: mappedPolygons } = getCropepedImageAndPolygons(filteredPolygons, nonFilteredPolygons, image);
 
     return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons: mappedPolygons, createdImage };
   };
