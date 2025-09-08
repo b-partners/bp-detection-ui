@@ -63,7 +63,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       setStep({ params: { prospect: data[0], polygons }, actualStep });
     }
 
-    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [[mappedCoordinates]], receiverEmail);
+    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [mappedCoordinates], receiverEmail);
   };
 
   const { isPending, data, mutate } = useMutation({

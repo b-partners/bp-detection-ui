@@ -22,6 +22,7 @@ const geoServerProperties = (layers: string) => ({
 
 const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: string, geoJsonZone?: any) => {
   return {
+    needsImageOutput: true,
     geoServerProperties: geoServerProperties(layers),
     emailReceiver,
     detectableObjectModel: {
@@ -32,7 +33,7 @@ const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: str
   };
 };
 
-export const processDetection = async (layers: string, address: string, coordinates?: Array<Array<Array<Array<number>>>>, emailReceiver?: string) => {
+export const processDetection = async (layers: string, address: string, coordinates?: Array<Array<Array<number>>>, emailReceiver?: string) => {
   const detectionId = v4();
   const { apiKey } = ParamsUtilities.getQueryParams();
   cache.detectionId(detectionId);
@@ -46,7 +47,7 @@ export const processDetection = async (layers: string, address: string, coordina
           {
             geometry: {
               coordinates,
-              type: 'MultiPolygon',
+              type: 'Polygon',
             },
             properties: {
               zoom: 20,
