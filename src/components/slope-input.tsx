@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectProps, Tooltip } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, SelectProps, TextField, Tooltip } from '@mui/material';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -25,36 +25,6 @@ const PENTES = [
 ];
 
 export const SlopeSelect: FC<SelectProps> = () => {
-  const { register, watch } = useFormContext();
-  return (
-    <FormControl fullWidth>
-      <InputLabel id='demo-simple-select-label'>Pente</InputLabel>
-      <Select
-        {...register('slope')}
-        value={watch()?.slope || 0}
-        fullWidth
-        labelId='demo-simple-select-label'
-        id='demo-simple-select'
-        label='Pente'
-        MenuProps={{
-          sx: {
-            '& ul': {
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-            },
-          },
-        }}
-      >
-        {PENTES.map((slope, key) => {
-          return (
-            <MenuItem value={slope.value} data-cy={`slope-${slope.value}`} key={`${key}-${slope.value}`}>
-              <Tooltip title={slope.title}>
-                <img width={'50px'} src={slope.url} alt={slope.title} />
-              </Tooltip>
-            </MenuItem>
-          );
-        })}
-      </Select>
-    </FormControl>
-  );
+  const { register } = useFormContext();
+  return <TextField type='number' {...register('slope')} label='Pente (%)' id='demo-simple-select' fullWidth />;
 };
