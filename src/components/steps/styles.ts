@@ -59,7 +59,7 @@ export const DetectionResultStepStyle: SxProps = {
     py: 2,
     display: 'flex',
     width: '100%',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     '& .MuiTypography-root': {
       textAlign: 'center',
       width: 'fit-content',

@@ -101,10 +101,10 @@ export const DetectionResultStep = () => {
               />
             )}
             {data?.properties && showLLMResult && <LlmResult width='90%' height='513px' roofAnalyseProperties={data?.properties} />}
-            <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Box className='degratation-rate-title'>
+            <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
             <Typography>
               Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
             </Typography>

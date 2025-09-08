@@ -1,8 +1,8 @@
-import { useStep } from '@/hooks';
 import { ScaleCallbacks } from '@bpartners/annotator-component';
 import { ZoomIn, ZoomInMap, ZoomOut } from '@mui/icons-material';
-import { IconButton, Stack, Typography } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import { FC, ReactNode } from 'react';
+import { annotatorCustomButtonStyle } from './style';
 
 interface AnnotatorCustomButtonProps extends Record<'callbacks', ScaleCallbacks> {
   customButtons?: ReactNode;
@@ -10,16 +10,8 @@ interface AnnotatorCustomButtonProps extends Record<'callbacks', ScaleCallbacks>
 
 export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callbacks, customButtons }) => {
   const { scaleDown, scaleReste, scaleUp } = callbacks;
-  const {
-    params: { areaPictureDetails },
-  } = useStep();
   return (
-    <Stack direction='row' width='100%' alignItems='center' justifyContent='space-between'>
-      <Stack flexGrow={1} textAlign='center'>
-        <Typography>
-          (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.latitude})
-        </Typography>
-      </Stack>
+    <Stack sx={annotatorCustomButtonStyle} direction='row' width='100%' alignItems='center' justifyContent='flex-end'>
       <Stack direction='row'>
         {customButtons}
         <IconButton data-cy='zoom-in' onClick={scaleUp}>
