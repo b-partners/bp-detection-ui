@@ -6,7 +6,7 @@ import { cache, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotatorCanvasCustom, SlopeSelect } from '..';
+import { AnnotatorCanvasCustom } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -139,7 +139,9 @@ export const DetectionResultStep = () => {
             </TextField>
           </Paper>
           <Paper>
-            {!isHeightAndSlopePending && <SlopeSelect disabled={isEmailSent} />}
+            {!isHeightAndSlopePending && (
+              <TextField disabled={isEmailSent} type='number' {...register('slope')} label='Pente (%)' id='demo-simple-select' fullWidth />
+            )}
             {isHeightAndSlopePending && <Typography>Chargement de la pente en cours... </Typography>}
           </Paper>
           <Paper>
