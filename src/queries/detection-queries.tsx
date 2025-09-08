@@ -90,7 +90,7 @@ export const useQueryDetectionResult = () => {
     queryFn: async () => {
       const data = await getDetectionResult(apiKey);
       setStep({
-        actualStep: 3,
+        actualStep: 2,
         params: {
           geoJsonResultUrl: data.vggUrl || data.geoJsonZone?.[0]?.properties?.vgg_file_url,
           imageSrc: data.imageUrl || data.geoJsonZone?.[0]?.properties?.original_image_url,

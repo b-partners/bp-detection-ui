@@ -45,7 +45,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       {
         onSuccess: result =>
           setStep({
-            actualStep: 3,
+            actualStep: 2,
             params: {
               geoJsonResultUrl: result?.result.geoJsonZone?.[0]?.properties?.vgg_file_url || '',
               geojsonBody: result?.geoJson as any,
