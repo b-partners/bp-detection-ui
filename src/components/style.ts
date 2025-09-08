@@ -31,3 +31,29 @@ export const LegalFileDialogStyle: Record<'dialogContent' | 'dialogActions', SxP
     },
   },
 };
+
+export const llmResultStyle: SxProps = {
+  textAlign: 'justify',
+  padding: 5,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  overflowY: 'scroll',
+  overflowX: 'hidden',
+  '& h1': {
+    mb: 5,
+  },
+  '& li': {
+    mb: 2,
+  },
+  '& strong': {
+    display: 'block',
+  },
+};
+
+export const llmButtonStyle: SxProps = {
+  color: 'white',
+  '& svg': {
+    color: 'white',
+  },
+};

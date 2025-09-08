@@ -8,5 +8,7 @@ export * from './detection-form';
 export * from './error-message-dialog';
 export * from './global-dialog';
 export * from './legal-files-pdf-renderer';
+export * from './llm-result';
+export * from './llm-switch-button';
 export * from './style';
 export * from './types';

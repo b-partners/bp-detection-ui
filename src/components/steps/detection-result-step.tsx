@@ -1,12 +1,12 @@
 import { useAnnotationFrom } from '@/forms';
-import { useStep } from '@/hooks';
+import { useStep, useToggle } from '@/hooks';
 import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
 import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryHeightAndSlope, useQueryImageFromUrl } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotatorCanvasCustom } from '..';
+import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -25,7 +25,7 @@ const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
   </Paper>
 );
 
-const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
+export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
   switch (covering) {
     case 'BATI_ARDOISE':
       return ANNOTATION_COVERING[2];
@@ -46,6 +46,7 @@ export const DetectionResultStep = () => {
   const { register, watch, setValue: setFormValue } = form;
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { toggleValue: tootleLLMResultView, value: showLLMResult } = useToggle(false);
 
   const { data: heightAndSlope, isPending: isHeightAndSlopePending } = useQueryHeightAndSlope();
 
@@ -88,14 +89,20 @@ export const DetectionResultStep = () => {
           </Stack>
         </Paper>
         <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
-          <AnnotatorCanvasCustom
-            height='513px'
-            setPolygons={() => {}}
-            pointRadius={0}
-            polygonList={data?.polygons || []}
-            isLoading={isImageLoading || isGeoJsonResultLoading}
-            image={data?.createdImage || ''}
-          />
+          <Box position='relative'>
+            {!showLLMResult && (
+              <AnnotatorCanvasCustom
+                height='513px'
+                setPolygons={() => {}}
+                pointRadius={0}
+                polygonList={data?.polygons || []}
+                isLoading={isImageLoading || isGeoJsonResultLoading}
+                image={data?.createdImage || ''}
+              />
+            )}
+            {data?.properties && showLLMResult && <LlmResult width='90%' height='513px' roofAnalyseProperties={data?.properties} />}
+            <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
+          </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Paper className='degratation-rate-title'>
             <Typography>
