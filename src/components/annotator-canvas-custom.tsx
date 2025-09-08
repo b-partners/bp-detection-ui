@@ -3,6 +3,7 @@ import { AnnotatorCanvas, AnnotatorCanvasProps } from '@bpartners/annotator-comp
 import { Box, Typography } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { AnnotatorCustomButton } from './annotator-custom-button';
+import { addressStyle } from './style';
 
 interface AnnotatorCanvasCustomProps extends Omit<AnnotatorCanvasProps, 'buttonsComponent' | 'width' | 'height' | 'zoom'> {
   isLoading?: boolean;
@@ -16,7 +17,9 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
   } = useStep();
   return (
     <>
-      <Typography paddingY={2}>Adresse: {areaPictureDetails?.address}</Typography>
+      <Box sx={addressStyle}>
+        <Typography>Adresse: {areaPictureDetails?.address}</Typography>
+      </Box>
       <Box position='relative' sx={{ minHeight: '500px' }}>
         {(isLoading || props.image.length === 0) && (
           <Box width='100%' height='600px' display='flex' justifyContent='center' alignItems='center' bgcolor={theme => theme.palette.grey[100]}></Box>

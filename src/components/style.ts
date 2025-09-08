@@ -77,3 +77,17 @@ export const annotatorCustomButtonStyle: SxProps = {
     },
   },
 };
+
+export const addressStyle: SxProps = {
+  '& .MuiTypography-root': {
+    color: t => (t as any).palette.primary.main,
+    border: t => `2px solid ${(t as any).palette.primary.main}`,
+    fontWeight: 'bold',
+    width: 'fit-content',
+    height: 'fit-content',
+    marginBottom: 2,
+    px: 1,
+    borderRadius: 3,
+    py: 0.5,
+  },
+};
