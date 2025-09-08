@@ -1,6 +1,6 @@
 import { useStep } from '@/hooks';
 import { AnnotatorCanvas, AnnotatorCanvasProps } from '@bpartners/annotator-component';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { AnnotatorCustomButton } from './annotator-custom-button';
 
@@ -30,9 +30,6 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
             zoom={20}
           />
         )}
-        <Stack textAlign='center'>
-          <Typography>Source : {areaPictureDetails?.actualLayer?.name}</Typography>
-        </Stack>
       </Box>
     </>
   );

@@ -3,7 +3,7 @@ import { useStep, useToggle } from '@/hooks';
 import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
 import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryHeightAndSlope, useQueryImageFromUrl } from '@/queries';
 import { cache, getCached } from '@/utilities';
-import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
@@ -104,18 +104,20 @@ export const DetectionResultStep = () => {
             <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
-          <Paper className='degratation-rate-title'>
+          <Box className='degratation-rate-title'>
             <Typography>
               Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
             </Typography>
-          </Paper>
-          <Stack direction='row' justifyContent='center' m={1} gap={1}>
+          </Box>
+          <Stack className='degratation-levels' direction='row' justifyContent='center' m={1} gap={1}>
             {degradationLevels.map(({ color, label }) => (
-              <Chip
+              <Box
                 key={label}
-                label={label}
-                sx={{ px: 1, bgcolor: color, border: `5px solid ${data?.properties?.global_rate_type === label ? 'black' : 'transparent'}` }}
-              />
+                className={`degratation-levels-box ${data?.properties?.global_rate_type === label ? 'degratation-levels-box-selected' : ''}`}
+                sx={{ bgcolor: color, border: `5px solid ${data?.properties?.global_rate_type === label ? 'black' : 'transparent'}` }}
+              >
+                {label}
+              </Box>
             ))}
           </Stack>
         </Grid2>
