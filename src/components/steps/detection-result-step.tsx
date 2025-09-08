@@ -1,7 +1,7 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep } from '@/hooks';
 import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
-import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
+import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryHeightAndSlope, useQueryImageFromUrl } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
@@ -39,13 +39,15 @@ const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
 };
 
 export const DetectionResultStep = () => {
-  const { imageSrc, useGeoJson, roofDelimiter } = useStep(({ params }) => params);
+  const { imageSrc, useGeoJson } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const form = useAnnotationFrom();
   const { register, watch, setValue: setFormValue } = form;
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const { data: heightAndSlope, isPending: isHeightAndSlopePending } = useQueryHeightAndSlope();
 
   const [annotatorCanvasState, setAnnotatorCanvasState] = useState<{ image: string; polygons: any[] }>({ image: '', polygons: [] });
 
@@ -66,6 +68,10 @@ export const DetectionResultStep = () => {
       setFormValue('cover2', fromAnalyseResultToDomain(data.properties.revetement_2)?.value);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (heightAndSlope?.slope) setFormValue('slope', heightAndSlope?.slope);
+  }, [heightAndSlope]);
 
   useEffect(() => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
@@ -133,14 +139,20 @@ export const DetectionResultStep = () => {
             </TextField>
           </Paper>
           <Paper>
-            <SlopeSelect disabled={isEmailSent} />
+            {!isHeightAndSlopePending && <SlopeSelect disabled={isEmailSent} />}
+            {isHeightAndSlopePending && <Typography>Chargement de la pente en cours... </Typography>}
           </Paper>
           <Paper>
-            <Stack direction='row' gap={1}>
-              <Box className='color-legend' sx={{ bgcolor: detectionResultColors['HAUTEUR' as keyof typeof detectionResultColors] }}></Box>
-              <Typography className='label'>Hauteur du bâtiment</Typography>
-            </Stack>
-            <Typography className='result'>{roofDelimiter?.roofHeightInMeter || 0}m</Typography>
+            {!isHeightAndSlopePending && (
+              <>
+                <Stack direction='row' gap={1}>
+                  <Box className='color-legend' sx={{ bgcolor: detectionResultColors['HAUTEUR' as keyof typeof detectionResultColors] }}></Box>
+                  <Typography className='label'>Hauteur du bâtiment</Typography>
+                </Stack>
+                <Typography className='result'>{heightAndSlope?.height || 0}m</Typography>
+              </>
+            )}
+            {isHeightAndSlopePending && <Typography>Chargement de la hauteur du bâtiment en cours... </Typography>}
           </Paper>
           <ResultItem label="Taux d'usure" source='USURE' percentage={data?.properties?.['usure_rate'] || 0} />
           <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.properties?.['moisissure_rate'] || 0} />

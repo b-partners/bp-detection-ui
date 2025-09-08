@@ -1,10 +1,10 @@
 import { DomainPolygonType, ErrorMessageDialog } from '@/components';
 import { useDialog, useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
-import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
+import { bpProspectApi, pointsToGeoPoints, processDetection } from '@/providers';
 import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
 
 interface MutationProps {
@@ -79,29 +79,4 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     },
   });
   return { isDetectionPending: isPending, geoJsonResult: data, startDetection: mutate };
-};
-
-export const useQueryDetectionResult = () => {
-  const { setStep } = useStep();
-
-  const { apiKey } = ParamsUtilities.getQueryParams();
-  const { data, isPending } = useQuery({
-    queryKey: ['detection', 'result'],
-    queryFn: async () => {
-      const data = await getDetectionResult(apiKey);
-      setStep({
-        actualStep: 2,
-        params: {
-          geoJsonResultUrl: data.vggUrl || data.geoJsonZone?.[0]?.properties?.vgg_file_url,
-          imageSrc: data.imageUrl || data.geoJsonZone?.[0]?.properties?.original_image_url,
-          roofDelimiter: data?.roofDelimiter,
-        },
-      });
-      return data;
-    },
-    retryDelay: 5000,
-    retry: Number.MAX_SAFE_INTEGER,
-  });
-
-  return { data, isPending };
 };
