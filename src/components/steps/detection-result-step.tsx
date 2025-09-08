@@ -138,7 +138,7 @@ export const DetectionResultStep = () => {
           <Paper>
             <Stack direction='row' gap={1}>
               <Box className='color-legend' sx={{ bgcolor: detectionResultColors['HAUTEUR' as keyof typeof detectionResultColors] }}></Box>
-              <Typography className='label'>Hauteur</Typography>
+              <Typography className='label'>Hauteur du bâtiment</Typography>
             </Stack>
             <Typography className='result'>{roofDelimiter?.roofHeightInMeter || 0}m</Typography>
           </Paper>
