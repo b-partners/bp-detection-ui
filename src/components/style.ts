@@ -59,6 +59,7 @@ export const llmButtonStyle: SxProps = {
 };
 
 export const annotatorCustomButtonStyle: SxProps = {
+  mb: 1,
   '& svg': {
     color: 'white',
   },
@@ -66,5 +67,13 @@ export const annotatorCustomButtonStyle: SxProps = {
     background: t => (t as any).palette.primary.main,
     mx: 0.2,
     borderRadius: 2,
+  },
+  '& .annotator-info': {
+    '& .MuiBox-root > .MuiBox-root': {
+      border: '1px solid black',
+      px: 1,
+      borderRadius: 2,
+      mb: 0.2,
+    },
   },
 };
