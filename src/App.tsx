@@ -1,6 +1,6 @@
 import '@/App.css';
 import { GlobalDialog } from '@/components';
-import { AnnotateImageStep, DetectionLoadingStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
+import { AnnotateImageStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
 import { useCheckApiKey, useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
 import { Box, Step, StepLabel, Stepper } from '@mui/material';
@@ -16,10 +16,6 @@ const steps = [
   {
     label: 'Délimitation de votre toiture',
     content: <AnnotateImageStep />,
-  },
-  {
-    label: 'Analyse de votre toiture',
-    content: <DetectionLoadingStep />,
   },
   {
     label: "Résultat de l'analyse",

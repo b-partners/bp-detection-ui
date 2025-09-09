@@ -43,7 +43,17 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         withoutImage: true,
       },
       {
-        onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any, imageSrc: currentImageSrc, useGeoJson: true } }),
+        onSuccess: result =>
+          setStep({
+            actualStep: 2,
+            params: {
+              geoJsonResultUrl: result?.result.geoJsonZone?.[0]?.properties?.vgg_file_url || '',
+              geojsonBody: result?.geoJson as any,
+              useGeoJson: true,
+              imageSrc: result?.result?.geoJsonZone?.[0]?.properties?.original_image_url || '',
+              roofDelimiter: result?.result?.roofDelimiter,
+            },
+          }),
       }
     );
   };

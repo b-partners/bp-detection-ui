@@ -1,12 +1,12 @@
 import { useAnnotationFrom } from '@/forms';
-import { useStep } from '@/hooks';
+import { useStep, useToggle } from '@/hooks';
 import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
-import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryImageFromUrl } from '@/queries';
+import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryHeightAndSlope, useQueryImageFromUrl } from '@/queries';
 import { cache, getCached } from '@/utilities';
-import { Box, Button, Chip, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotatorCanvasCustom, SlopeSelect } from '..';
+import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
@@ -25,7 +25,7 @@ const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
   </Paper>
 );
 
-const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
+export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
   switch (covering) {
     case 'BATI_ARDOISE':
       return ANNOTATION_COVERING[2];
@@ -39,13 +39,16 @@ const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
 };
 
 export const DetectionResultStep = () => {
-  const { imageSrc, useGeoJson, roofDelimiter } = useStep(({ params }) => params);
+  const { imageSrc, useGeoJson } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const form = useAnnotationFrom();
   const { register, watch, setValue: setFormValue } = form;
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { toggleValue: tootleLLMResultView, value: showLLMResult } = useToggle(false);
+
+  const { data: heightAndSlope, isPending: isHeightAndSlopePending } = useQueryHeightAndSlope();
 
   const [annotatorCanvasState, setAnnotatorCanvasState] = useState<{ image: string; polygons: any[] }>({ image: '', polygons: [] });
 
@@ -68,6 +71,10 @@ export const DetectionResultStep = () => {
   }, [data]);
 
   useEffect(() => {
+    if (heightAndSlope?.slope) setFormValue('slope', heightAndSlope?.slope);
+  }, [heightAndSlope]);
+
+  useEffect(() => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
   }, [useGeoJson, imageSrc]);
 
@@ -82,27 +89,35 @@ export const DetectionResultStep = () => {
           </Stack>
         </Paper>
         <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
-          <AnnotatorCanvasCustom
-            height='513px'
-            setPolygons={() => {}}
-            pointRadius={0}
-            polygonList={data?.polygons || []}
-            isLoading={isImageLoading || isGeoJsonResultLoading}
-            image={data?.createdImage || ''}
-          />
+          <Box position='relative'>
+            {!showLLMResult && (
+              <AnnotatorCanvasCustom
+                height='513px'
+                setPolygons={() => {}}
+                pointRadius={0}
+                polygonList={data?.polygons || []}
+                isLoading={isImageLoading || isGeoJsonResultLoading}
+                image={data?.createdImage || ''}
+              />
+            )}
+            {data?.properties && showLLMResult && <LlmResult width='90%' height='513px' roofAnalyseProperties={data?.properties} />}
+          </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
-          <Paper className='degratation-rate-title'>
+          <Box className='degratation-rate-title'>
+            <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
             <Typography>
               Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
             </Typography>
-          </Paper>
-          <Stack direction='row' justifyContent='center' m={1} gap={1}>
+          </Box>
+          <Stack className='degratation-levels' direction='row' justifyContent='center' m={1} gap={1}>
             {degradationLevels.map(({ color, label }) => (
-              <Chip
+              <Box
                 key={label}
-                label={label}
-                sx={{ px: 1, bgcolor: color, border: `5px solid ${data?.properties?.global_rate_type === label ? 'black' : 'transparent'}` }}
-              />
+                className={`degratation-levels-box ${data?.properties?.global_rate_type === label ? 'degratation-levels-box-selected' : ''}`}
+                sx={{ bgcolor: color, border: `5px solid ${data?.properties?.global_rate_type === label ? 'black' : 'transparent'}` }}
+              >
+                {label}
+              </Box>
             ))}
           </Stack>
         </Grid2>
@@ -133,14 +148,22 @@ export const DetectionResultStep = () => {
             </TextField>
           </Paper>
           <Paper>
-            <SlopeSelect disabled={isEmailSent} />
+            {!isHeightAndSlopePending && (
+              <TextField disabled={isEmailSent} type='number' {...register('slope')} label='Pente (%)' id='demo-simple-select' fullWidth />
+            )}
+            {isHeightAndSlopePending && <Typography>Chargement de la pente en cours... </Typography>}
           </Paper>
           <Paper>
-            <Stack direction='row' gap={1}>
-              <Box className='color-legend' sx={{ bgcolor: detectionResultColors['HAUTEUR' as keyof typeof detectionResultColors] }}></Box>
-              <Typography className='label'>Hauteur</Typography>
-            </Stack>
-            <Typography className='result'>{roofDelimiter?.roofHeightInMeter || 0}m</Typography>
+            {!isHeightAndSlopePending && (
+              <>
+                <Stack direction='row' gap={1}>
+                  <Box className='color-legend' sx={{ bgcolor: detectionResultColors['HAUTEUR' as keyof typeof detectionResultColors] }}></Box>
+                  <Typography className='label'>Hauteur du bâtiment</Typography>
+                </Stack>
+                <Typography className='result'>{heightAndSlope?.height || 0}m</Typography>
+              </>
+            )}
+            {isHeightAndSlopePending && <Typography>Chargement de la hauteur du bâtiment en cours... </Typography>}
           </Paper>
           <ResultItem label="Taux d'usure" source='USURE' percentage={data?.properties?.['usure_rate'] || 0} />
           <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.properties?.['moisissure_rate'] || 0} />

@@ -129,7 +129,7 @@ describe('Component testing', () => {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.contains('Hauteur');
+    cy.contains('Hauteur du bâtiment');
     cy.contains("Taux d'usure");
     cy.contains('Taux de moisissure');
     cy.contains("Taux d'humidité");

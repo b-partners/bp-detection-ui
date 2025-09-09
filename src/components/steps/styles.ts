@@ -56,12 +56,39 @@ export const DetectionResultStepStyle: SxProps = {
     width: 20,
   },
   '& .degratation-rate-title': {
-    background: '#BEB4A4 !important',
-    px: '10rem',
     py: 2,
-    borderRadius: 5,
-    textTransform: 'uppercase',
-    '& .MuiTypography-root': { textAlign: 'center', width: '100%' },
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'space-between',
+    '& .MuiTypography-root': {
+      textAlign: 'center',
+      width: 'fit-content',
+      textTransform: 'uppercase',
+      border: '2px solid black',
+      py: 1,
+      px: 2,
+      borderRadius: 3,
+    },
+  },
+  '& .degratation-levels': {
+    '& .degratation-levels-box': {
+      width: 40,
+      height: 40,
+      borderRadius: 2,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      transition: 'all 500ms',
+    },
+    '&:hover': {
+      '& .degratation-levels-box:not(.degratation-levels-box-selected)': {
+        background: '#D9D9D9',
+      },
+      '& .degratation-levels-box-selected': {
+        width: 50,
+        height: 50,
+      },
+    },
   },
 };
 
