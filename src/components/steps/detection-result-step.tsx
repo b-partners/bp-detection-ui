@@ -101,7 +101,7 @@ export const DetectionResultStep = () => {
         </Paper>
         <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
           <Box position='relative'>
-            {!showLLMResult && (
+            {(!showLLMResult || sendInfoToRooferPending) && (
               <AnnotatorCanvasCustom
                 height='513px'
                 setPolygons={() => {}}
@@ -111,7 +111,9 @@ export const DetectionResultStep = () => {
                 image={data?.createdImage || ''}
               />
             )}
-            {data?.properties && showLLMResult && <LlmResult width='90%' height='513px' roofAnalyseProperties={data?.properties} />}
+            {data?.properties && (showLLMResult || sendInfoToRooferPending) && (
+              <LlmResult width='90%' height='513px' roofAnalyseProperties={data?.properties} />
+            )}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Box className='degratation-rate-title'>
