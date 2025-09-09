@@ -1,4 +1,5 @@
 import { useStep } from '@/hooks';
+import { getSlopeValue } from '@/utilities';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -11,20 +12,6 @@ const schema = zod.object({
 });
 
 const resolver = zodResolver(schema);
-
-const degToRad = (degrees: number) => degrees * (Math.PI / 180);
-
-interface RoofDelimiter {
-  roofSlopeInDegree: number;
-  roofHeightInMeter: number;
-  polygon?: any;
-}
-
-const getSlopeValue = (roofDelimiter: RoofDelimiter) => {
-  const roofHalfWidth = roofDelimiter.roofHeightInMeter / Math.tan(degToRad(roofDelimiter.roofSlopeInDegree));
-  const result = roofDelimiter.roofHeightInMeter * (12 / roofHalfWidth);
-  return Math.round(result);
-};
 
 export type TAnnotationForm = zod.infer<typeof schema>;
 export const useAnnotationFrom = () => {

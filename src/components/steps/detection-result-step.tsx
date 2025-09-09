@@ -30,7 +30,7 @@ export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalys
   }
 };
 
-const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
+export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
   switch (covering) {
     case 'BATI_ARDOISE':
       return ANNOTATION_COVERING[2];
@@ -44,7 +44,7 @@ const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
 };
 
 export const DetectionResultStep = () => {
-  const { imageSrc, useGeoJson, roofDelimiter } = useStep(({ params }) => params);
+  const { imageSrc, useGeoJson } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const form = useAnnotationFrom();
