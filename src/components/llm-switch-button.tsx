@@ -11,7 +11,7 @@ interface Props {
 export const LlmSwitchButton: FC<Props> = ({ onClick, showLlm }) => {
   return (
     <Button sx={llmButtonStyle} startIcon={<Cached />} onClick={onClick}>
-      {showLlm ? "Revenir à l'ecran d'annotation" : 'Voir les conseils générés par notre IA'}
+      {showLlm ? "Revenir à l'ecran d'annotation" : 'Comprendre votre rapport'}
     </Button>
   );
 };

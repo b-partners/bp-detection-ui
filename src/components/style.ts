@@ -57,6 +57,11 @@ export const llmButtonStyle: SxProps = {
     color: 'white',
   },
 };
+export const llmIconButtonStyle: SxProps = {
+  color: t => (t as any).palette.primary.main,
+  position: 'absolute',
+  top: 0,
+};
 
 export const annotatorCustomButtonStyle: SxProps = {
   mb: 1,
