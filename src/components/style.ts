@@ -41,6 +41,7 @@ export const llmResultStyle: SxProps = {
   justifyContent: 'flex-start',
   overflowY: 'scroll',
   overflowX: 'hidden',
+  position: 'relative',
   '& h1': {
     mb: 5,
   },
@@ -49,6 +50,16 @@ export const llmResultStyle: SxProps = {
   },
   '& strong': {
     display: 'block',
+  },
+  '& .loading-container': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    '& .loading-element-container': {
+      alignItems: 'center',
+    },
   },
 };
 
