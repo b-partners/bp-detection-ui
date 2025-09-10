@@ -140,6 +140,8 @@ export const DetectionResultStep = () => {
               Résultats de l'analyse :
             </Typography>
             <ResultItem label='Surface totale' source='surface' unity='m²' value={getCached.area().toFixed(2)} />
+            <ResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
+            <ResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
             <ResultItem
               label='Hauteur du bâtiment'
               loadingMessage='Chargement de la hauteur du bâtiment en cours...'
@@ -148,9 +150,6 @@ export const DetectionResultStep = () => {
               isLoading={isHeightAndSlopePending}
               value={heightAndSlope?.height}
             />
-            <ResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
-            <ResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
-            <ResultItem label='Type' source='type' value='neant' unity='' />
             <ResultItem
               label='Pente'
               isLoading={isHeightAndSlopePending}
