@@ -150,7 +150,7 @@ export const DetectionResultStep = () => {
             />
             <ResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
             <ResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
-            <ResultItem label='Type' source='type' value='Neant' unity='' />
+            <ResultItem label='Type' source='type' value='neant' unity='' />
             <ResultItem
               label='Pente'
               isLoading={isHeightAndSlopePending}
@@ -161,12 +161,12 @@ export const DetectionResultStep = () => {
             <ResultItem label="Taux d'usure" source='USURE' value={data?.properties?.['usure_rate'] || 0} />
             <ResultItem label='Taux de moisissure' source='MOISISSURE' value={data?.properties?.['moisissure_rate'] || 0} />
             <ResultItem label="Taux d'humidité" source='HUMIDITE' value={data?.properties?.['humidite_rate'] || 0} />
-            <ResultItem label='Mutation' source='mutation' value='Neant' unity='' />
+            <ResultItem label='Mutation' source='mutation' value='neant' unity='' />
             <ResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
             <ResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
             <ResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
             <Button data-cy='send-roofer-mail-button' fullWidth loading={sendInfoToRooferPending} disabled={!canSendPdf} onClick={handleSendPdf}>
-              Envoyer les informations à mon couvreur
+              Envoyer ces informations à mon couvreur
             </Button>
           </Stack>
         </Grid2>
