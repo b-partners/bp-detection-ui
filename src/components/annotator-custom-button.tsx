@@ -15,25 +15,25 @@ export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callback
     params: { areaPictureDetails },
   } = useStep();
   return (
-    <Stack sx={annotatorCustomButtonStyle} direction='row' width='100%' alignItems='center' justifyContent='space-between'>
-      <Stack className='annotator-info' direction='row' gap={3}>
-        <Box>
+    <Stack sx={annotatorCustomButtonStyle} direction='row' width='100%' alignItems='center' justifyContent='space-between' gap={1}>
+      <Stack className='annotator-info' gap={0.2}>
+        <Stack direction='row' gap={0.2}>
           <Box>
-            <Typography>
-              (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.latitude})
-            </Typography>
+            <p ref={xRef}>x: 0</p>
           </Box>
-          <Box ref={yRef}>
-            <Typography>Source : {areaPictureDetails?.actualLayer?.name}</Typography>
+          <Box>
+            <p ref={yRef}>y: 0</p>
           </Box>
+        </Stack>
+      </Stack>
+      <Stack className='image-info' direction='row' gap={1}>
+        <Box>
+          <Typography>
+            (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.latitude})
+          </Typography>
         </Box>
         <Box>
-          <Box>
-            <Typography ref={xRef}>x: 0</Typography>
-          </Box>
-          <Box>
-            <Typography ref={yRef}>y: 0</Typography>
-          </Box>
+          <Typography>Source : {areaPictureDetails?.actualLayer?.name}</Typography>
         </Box>
       </Stack>
       <Stack direction='row'>
