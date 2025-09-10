@@ -103,6 +103,18 @@ export const getDetectionResult = async (apiKey: string) => {
   return result;
 };
 
+export const initiateRoofProperties = async (apiKey: string) => {
+  const detectionId = getCached.detectionId() ?? '';
+  const result = await fetch(`${baseUrl}/detections/${detectionId}/roofs/properties`, {
+    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
+    method: 'PUT',
+  });
+  const data = await result.json();
+
+  if (result.status !== 200 || (!data?.properties?.vgg_file_url && !data?.roofDelimiter?.roofSlopeInDegree)) throw new Error('Not done');
+  return data;
+};
+
 export const sendImageToDetect = async (image: File) => {
   const detectionId = getCached.detectionId();
   const { apiKey } = ParamsUtilities.getQueryParams();
