@@ -118,9 +118,7 @@ export const DetectionResultStep = () => {
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Box className='degratation-rate-title'>
             <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
-            <Typography>
-              Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
-            </Typography>
+            <Typography>Note de dégradation globale : {data?.properties?.global_rate_value}%</Typography>
           </Box>
           <Stack className='degratation-levels' direction='row' justifyContent='center' m={1} gap={1}>
             {degradationLevels.map(({ color, label }) => (

@@ -1,3 +1,4 @@
+import { PALETTE_COLORS } from '@/utilities';
 import { SxProps, Theme } from '@mui/material';
 
 export const DetectionResultStepStyle: SxProps = {
@@ -68,10 +69,12 @@ export const DetectionResultStepStyle: SxProps = {
     width: '100%',
     justifyContent: 'space-between',
     '& .MuiTypography-root': {
+      background: PALETTE_COLORS.pine,
+      color: '#fff',
+      fontWeight: 'bold',
       textAlign: 'center',
       width: 'fit-content',
       textTransform: 'uppercase',
-      border: '2px solid black',
       py: 1,
       px: 2,
       borderRadius: 3,
