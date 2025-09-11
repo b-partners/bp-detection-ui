@@ -8,6 +8,7 @@ const AREA_ITEM = 'AREA_ITEM';
 const EMAIL_SENT_ITEM = 'EMAIL_SENT_ITEM';
 const ANNOTATION_ID_ITEM = 'ANNOTATION_ID_ITEM';
 const ROOF_DELIMITER_POLYGON_ITEM = 'ROOF_DELIMITER_POLYGON_ITEM';
+const LLM_RESULT = 'LLM_HTML_RESULT';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -30,6 +31,10 @@ export const cache = {
   roofDelimiterPolygon(polygon: DomainPolygonType) {
     localStorage.setItem(ROOF_DELIMITER_POLYGON_ITEM, JSON.stringify(polygon));
     return polygon;
+  },
+  llmResult(html: string) {
+    localStorage.setItem(LLM_RESULT, html);
+    return html;
   },
 };
 
@@ -59,6 +64,9 @@ export const getCached = {
     } catch {
       return undefined;
     }
+  },
+  llmResult() {
+    return localStorage.getItem(LLM_RESULT);
   },
 };
 

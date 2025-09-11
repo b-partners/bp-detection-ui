@@ -6,6 +6,7 @@ import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { useMutation } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
+import { useQueryHeightAndSlope } from './height-and-slope-query';
 
 interface MutationProps {
   polygons: DomainPolygonType[];
@@ -26,6 +27,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     actualStep,
   } = useStep();
   const { open: openDialog } = useDialog();
+  const { start: startPropertiesQuery } = useQueryHeightAndSlope(false);
 
   const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
@@ -62,7 +64,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       ]);
       setStep({ params: { prospect: data[0], polygons }, actualStep });
     }
-
+    startPropertiesQuery();
     return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [mappedCoordinates], receiverEmail);
   };
 

@@ -1,9 +1,16 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
 import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
-import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryHeightAndSlope, useQueryImageFromUrl } from '@/queries';
+import {
+  AnnotationCoveringFromAnalyse,
+  useGeojsonQueryResult,
+  useLlmResultQuery,
+  usePostDetectionQueries,
+  useQueryHeightAndSlope,
+  useQueryImageFromUrl,
+} from '@/queries';
 import { cache, getCached } from '@/utilities';
-import { Box, Button, Grid2, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid2, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
@@ -11,19 +18,30 @@ import { DetectionResultStepStyle as style } from './styles';
 
 interface ResultItemProps {
   label: string;
-  percentage: number | string;
+  value: number | string;
   source: string;
+  unity?: string;
+  isLoading?: boolean;
+  loadingMessage?: string;
 }
 
-const ResultItem: FC<ResultItemProps> = ({ label, percentage, source }) => (
-  <Paper key={source}>
-    <Stack direction='row' gap={1}>
-      <Box className='color-legend' sx={{ bgcolor: detectionResultColors[source as keyof typeof detectionResultColors] }}></Box>
-      <Typography className='label'>{label}</Typography>
-    </Stack>
-    <Typography className='result'>{percentage || 0}%</Typography>
-  </Paper>
-);
+const ResultItem: FC<ResultItemProps> = ({ label, value, source, unity = '%', isLoading, loadingMessage }) => {
+  const bgcolor = detectionResultColors[source as keyof typeof detectionResultColors];
+  return (
+    <Paper key={source}>
+      {!isLoading && (
+        <>
+          <Stack direction='row' gap={1}>
+            {bgcolor && <Box className='color-legend' sx={{ bgcolor }}></Box>}
+            <Typography className='label'>{label}</Typography>
+          </Stack>
+          <Typography className='result'>{`${value || 0}${unity}`}</Typography>
+        </>
+      )}
+      {isLoading && <Typography>{loadingMessage}</Typography>}
+    </Paper>
+  );
+};
 
 export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
   switch (covering) {
@@ -43,7 +61,7 @@ export const DetectionResultStep = () => {
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const form = useAnnotationFrom();
-  const { register, watch, setValue: setFormValue } = form;
+  const { watch, setValue: setFormValue } = form;
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleValue: tootleLLMResultView, value: showLLMResult } = useToggle(false);
@@ -78,19 +96,16 @@ export const DetectionResultStep = () => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
   }, [useGeoJson, imageSrc]);
 
-  const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading;
+  const { data: llmHtmlData, isPending: isLlmHtmlData } = useLlmResultQuery(data?.properties as any);
+  const canSendPdf =
+    !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
   return (
     <FormProvider {...form}>
       <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
-        <Paper elevation={0} className='info-section' sx={{ width: '100%' }}>
-          <Stack>
-            <Typography>Veuillez remplir les champs Revêtement 1, Revêtement 2 et Pente pour nous permettre de mieux comprendre vos besoins.</Typography>
-          </Stack>
-        </Paper>
         <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
           <Box position='relative'>
-            {!showLLMResult && (
+            {(!showLLMResult || sendInfoToRooferPending) && (
               <AnnotatorCanvasCustom
                 height='513px'
                 setPolygons={() => {}}
@@ -100,14 +115,12 @@ export const DetectionResultStep = () => {
                 image={data?.createdImage || ''}
               />
             )}
-            {data?.properties && showLLMResult && <LlmResult width='90%' height='513px' roofAnalyseProperties={data?.properties} />}
+            {data?.properties && llmHtmlData && showLLMResult && <LlmResult width='90%' height='513px' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Box className='degratation-rate-title'>
             <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
-            <Typography>
-              Note de dégradation globale : <strong>{data?.properties?.global_rate_value}%</strong>
-            </Typography>
+            <Typography>Note de dégradation globale : {data?.properties?.global_rate_value}%</Typography>
           </Box>
           <Stack className='degratation-levels' direction='row' justifyContent='center' m={1} gap={1}>
             {degradationLevels.map(({ color, label }) => (
@@ -120,64 +133,42 @@ export const DetectionResultStep = () => {
               </Box>
             ))}
           </Stack>
+          {llmHtmlData && sendInfoToRooferPending && <LlmResult width='90%' height='100%' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />}
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
-          <Typography className='title' mb={2}>
-            Résultats de l'analyse :
-          </Typography>
-          <Paper>
-            <Typography className='label'>Surface totale : </Typography>
-            <Typography className='result'>{getCached.area().toFixed(2)}m²</Typography>
-          </Paper>
-          <Paper>
-            <TextField disabled={isEmailSent} {...register('cover1')} value={watch()?.cover1 || ''} fullWidth label='Revêtement 1' select>
-              {ANNOTATION_COVERING.map(({ value, label }) => (
-                <MenuItem key={value} value={value}>
-                  {label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Paper>
-          <Paper>
-            <TextField disabled={isEmailSent} {...register('cover2')} value={watch()?.cover2 || ''} fullWidth label='Revêtement 2' select>
-              {ANNOTATION_COVERING.map(({ value, label }) => (
-                <MenuItem key={value} value={value}>
-                  {label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Paper>
-          <Paper>
-            {!isHeightAndSlopePending && (
-              <TextField disabled={isEmailSent} type='number' {...register('slope')} label='Pente (%)' id='demo-simple-select' fullWidth />
-            )}
-            {isHeightAndSlopePending && <Typography>Chargement de la pente en cours... </Typography>}
-          </Paper>
-          <Paper>
-            {!isHeightAndSlopePending && (
-              <>
-                <Stack direction='row' gap={1}>
-                  <Box className='color-legend' sx={{ bgcolor: detectionResultColors['HAUTEUR' as keyof typeof detectionResultColors] }}></Box>
-                  <Typography className='label'>Hauteur du bâtiment</Typography>
-                </Stack>
-                <Typography className='result'>{heightAndSlope?.height || 0}m</Typography>
-              </>
-            )}
-            {isHeightAndSlopePending && <Typography>Chargement de la hauteur du bâtiment en cours... </Typography>}
-          </Paper>
-          <ResultItem label="Taux d'usure" source='USURE' percentage={data?.properties?.['usure_rate'] || 0} />
-          <ResultItem label='Taux de moisissure' source='MOISISSURE' percentage={data?.properties?.['moisissure_rate'] || 0} />
-          <ResultItem label="Taux d'humidité" source='HUMIDITE' percentage={data?.properties?.['humidite_rate'] || 0} />
-          <Paper>
-            <Stack direction='row' gap={1}>
-              <Box className='color-legend' sx={{ bgcolor: detectionResultColors['OBSTACLE' as keyof typeof detectionResultColors] }}></Box>
-              <Typography className='label'>Obstacle / Velux</Typography>
-            </Stack>
-            <Typography className='result'>{data?.properties?.obstacle ? 'OUI' : 'NON'}</Typography>
-          </Paper>
-          <Button data-cy='send-roofer-mail-button' loading={sendInfoToRooferPending} disabled={!canSendPdf} onClick={handleSendPdf}>
-            Envoyer
-          </Button>
+          <Stack className='analyse-result-info'>
+            <Typography className='title' mb={2}>
+              Résultats de l'analyse :
+            </Typography>
+            <ResultItem label='Surface totale' source='surface' unity='m²' value={getCached.area().toFixed(2)} />
+            <ResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
+            <ResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
+            <ResultItem
+              label='Hauteur du bâtiment'
+              loadingMessage='Chargement de la hauteur du bâtiment en cours...'
+              source='HAUTEUR'
+              unity='m'
+              isLoading={isHeightAndSlopePending}
+              value={heightAndSlope?.height}
+            />
+            <ResultItem
+              label='Pente'
+              isLoading={isHeightAndSlopePending}
+              loadingMessage='Chargement de la pente en cours... '
+              source='pente'
+              value={heightAndSlope?.slope}
+            />
+            <ResultItem label="Taux d'usure" source='USURE' value={data?.properties?.['usure_rate'] || 0} />
+            <ResultItem label='Taux de moisissure' source='MOISISSURE' value={data?.properties?.['moisissure_rate'] || 0} />
+            <ResultItem label="Taux d'humidité" source='HUMIDITE' value={data?.properties?.['humidite_rate'] || 0} />
+            <ResultItem label='Mutation' source='mutation' value='neant' unity='' />
+            <ResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
+            <ResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
+            <ResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
+            <Button data-cy='send-roofer-mail-button' fullWidth loading={sendInfoToRooferPending} disabled={!canSendPdf} onClick={handleSendPdf}>
+              Envoyer ces informations à mon couvreur
+            </Button>
+          </Stack>
         </Grid2>
       </Grid2>
     </FormProvider>

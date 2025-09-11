@@ -1,5 +1,4 @@
 import { useStep } from '@/hooks';
-import { getSlopeValue } from '@/utilities';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -22,8 +21,7 @@ export const useAnnotationFrom = () => {
   const form = useForm({ mode: 'all', resolver });
 
   useEffect(() => {
-    const slope = getSlopeValue({ roofHeightInMeter: roofDelimiter?.roofHeightInMeter || 1, roofSlopeInDegree: roofDelimiter?.roofSlopeInDegree || 1 });
-    form.setValue('slope', slope);
+    form.setValue('slope', roofDelimiter?.roofSlopeInDegree);
   }, [roofDelimiter]);
 
   return form;

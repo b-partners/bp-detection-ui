@@ -1,5 +1,5 @@
-import { SxProps } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { PALETTE_COLORS } from '@/utilities';
+import { SxProps, Theme } from '@mui/material';
 
 export const DetectionResultStepStyle: SxProps = {
   position: 'relative',
@@ -42,13 +42,21 @@ export const DetectionResultStepStyle: SxProps = {
     },
     textTransform: 'capitalize',
   },
+  '& .analyse-result-info': {
+    '& .title': {
+      color: t => (t as Theme).palette.primary.main,
+    },
+    p: 2,
+    borderRadius: 5,
+    boxShadow: `0.4px 0.4px 2.2px -8px rgba(0, 0, 0, 0.02), 1px 1px 5.3px -8px rgba(0, 0, 0, 0.028), 1.9px 1.9px 10px -8px rgba(0, 0, 0, 0.035), 3.4px 3.4px 17.9px -8px rgba(0, 0, 0, 0.042), 6.3px 6.3px 33.4px -8px rgba(0, 0, 0, 0.05), 15px 15px 80px -8px rgba(0, 0, 0, 0.07)`,
+  },
   '& .MuiPaper-root': {
     p: 1,
     my: 1,
     display: 'flex',
     alignItems: 'center',
-    bgcolor: grey[300],
     justifyContent: 'space-between',
+    boxShadow: 'none',
   },
   gap: 1,
   '& .color-legend': {
@@ -61,10 +69,12 @@ export const DetectionResultStepStyle: SxProps = {
     width: '100%',
     justifyContent: 'space-between',
     '& .MuiTypography-root': {
+      background: PALETTE_COLORS.pine,
+      color: '#fff',
+      fontWeight: 'bold',
       textAlign: 'center',
       width: 'fit-content',
       textTransform: 'uppercase',
-      border: '2px solid black',
       py: 1,
       px: 2,
       borderRadius: 3,

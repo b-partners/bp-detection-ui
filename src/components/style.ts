@@ -1,3 +1,4 @@
+import { PALETTE_COLORS } from '@/utilities';
 import { SxProps } from '@mui/material';
 
 export const DialogFormStyle: SxProps = {
@@ -40,6 +41,7 @@ export const llmResultStyle: SxProps = {
   justifyContent: 'flex-start',
   overflowY: 'scroll',
   overflowX: 'hidden',
+  position: 'relative',
   '& h1': {
     mb: 5,
   },
@@ -49,6 +51,16 @@ export const llmResultStyle: SxProps = {
   '& strong': {
     display: 'block',
   },
+  '& .loading-container': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    '& .loading-element-container': {
+      alignItems: 'center',
+    },
+  },
 };
 
 export const llmButtonStyle: SxProps = {
@@ -56,6 +68,11 @@ export const llmButtonStyle: SxProps = {
   '& svg': {
     color: 'white',
   },
+};
+export const llmIconButtonStyle: SxProps = {
+  color: t => (t as any).palette.primary.main,
+  position: 'absolute',
+  top: 0,
 };
 
 export const annotatorCustomButtonStyle: SxProps = {
@@ -69,11 +86,28 @@ export const annotatorCustomButtonStyle: SxProps = {
     borderRadius: 2,
   },
   '& .annotator-info': {
-    '& .MuiBox-root > .MuiBox-root': {
-      border: '1px solid black',
+    '& .MuiStack-root > .MuiBox-root': {
+      '& p': {
+        m: 0,
+      },
+      color: '#fff',
       px: 1,
+      py: 1.4,
       borderRadius: 2,
-      mb: 0.2,
+      minWidth: 50,
+      fontWeight: 'semi-bold',
+      background: PALETTE_COLORS.neon_orange,
+    },
+  },
+  '& .image-info': {
+    background: PALETTE_COLORS.pine,
+    borderRadius: 2,
+    width: '100%',
+    py: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    '& .MuiTypography-root': {
+      color: '#fff',
     },
   },
 };
