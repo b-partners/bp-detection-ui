@@ -1,4 +1,4 @@
-import { getDetectionResult } from '@/providers';
+import { initiateRoofProperties } from '@/providers';
 import { ParamsUtilities } from '@/utilities';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -10,7 +10,7 @@ export const useQueryHeightAndSlope = (enabled: boolean = true) => {
   const { data, isPending } = useQuery({
     queryKey: ['detection', 'result'],
     queryFn: async () => {
-      const data = await getDetectionResult(apiKey);
+      const data = await initiateRoofProperties(apiKey);
 
       const roofDelimiter = data?.roofDelimiter;
 
@@ -23,5 +23,9 @@ export const useQueryHeightAndSlope = (enabled: boolean = true) => {
     retry: shouldRetry ? Number.MAX_SAFE_INTEGER : undefined,
   });
 
-  return { data, isPending };
+  const start = () => {
+    setShouldRetry(true);
+  };
+
+  return { data, isPending, start };
 };

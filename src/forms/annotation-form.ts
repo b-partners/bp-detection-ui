@@ -1,5 +1,4 @@
 import { useStep } from '@/hooks';
-import { getSlopeValue } from '@/utilities';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';

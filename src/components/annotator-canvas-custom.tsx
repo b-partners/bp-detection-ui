@@ -2,7 +2,6 @@ import { AnnotatorCanvas, AnnotatorCanvasProps } from '@bpartners/annotator-comp
 import { Box } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { AnnotatorCustomButton } from './annotator-custom-button';
-import { addressStyle } from './style';
 
 interface AnnotatorCanvasCustomProps extends Omit<AnnotatorCanvasProps, 'buttonsComponent' | 'width' | 'height' | 'zoom'> {
   isLoading?: boolean;
