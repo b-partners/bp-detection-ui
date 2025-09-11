@@ -23,5 +23,9 @@ export const useQueryHeightAndSlope = (enabled: boolean = true) => {
     retry: shouldRetry ? Number.MAX_SAFE_INTEGER : undefined,
   });
 
-  return { data, isPending };
+  const start = () => {
+    setShouldRetry(true);
+  };
+
+  return { data, isPending, start };
 };
