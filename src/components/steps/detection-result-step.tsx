@@ -1,7 +1,14 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
 import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
-import { AnnotationCoveringFromAnalyse, useGeojsonQueryResult, usePostDetectionQueries, useQueryHeightAndSlope, useQueryImageFromUrl } from '@/queries';
+import {
+  AnnotationCoveringFromAnalyse,
+  useGeojsonQueryResult,
+  useLlmResultQuery,
+  usePostDetectionQueries,
+  useQueryHeightAndSlope,
+  useQueryImageFromUrl,
+} from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Grid2, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
@@ -89,16 +96,12 @@ export const DetectionResultStep = () => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
   }, [useGeoJson, imageSrc]);
 
-  const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading;
+  const { data: llmHtmlData, isPending: isLlmHtmlData } = useLlmResultQuery(data?.properties as any);
+  const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData;
 
   return (
     <FormProvider {...form}>
       <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
-        <Paper elevation={0} className='info-section' sx={{ width: '100%' }}>
-          <Stack>
-            <Typography>Veuillez remplir les champs Revêtement 1, Revêtement 2 et Pente pour nous permettre de mieux comprendre vos besoins.</Typography>
-          </Stack>
-        </Paper>
         <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
           <Box position='relative'>
             {(!showLLMResult || sendInfoToRooferPending) && (
@@ -111,9 +114,7 @@ export const DetectionResultStep = () => {
                 image={data?.createdImage || ''}
               />
             )}
-            {data?.properties && (showLLMResult || sendInfoToRooferPending) && (
-              <LlmResult width='90%' height='513px' roofAnalyseProperties={data?.properties} />
-            )}
+            {data?.properties && llmHtmlData && showLLMResult && <LlmResult width='90%' height='513px' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Box className='degratation-rate-title'>
@@ -131,6 +132,7 @@ export const DetectionResultStep = () => {
               </Box>
             ))}
           </Stack>
+          {llmHtmlData && sendInfoToRooferPending && <LlmResult width='90%' height='100%' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />}
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
           <Stack className='analyse-result-info'>
