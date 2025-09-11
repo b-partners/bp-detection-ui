@@ -97,7 +97,8 @@ export const DetectionResultStep = () => {
   }, [useGeoJson, imageSrc]);
 
   const { data: llmHtmlData, isPending: isLlmHtmlData } = useLlmResultQuery(data?.properties as any);
-  const canSendPdf = !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData;
+  const canSendPdf =
+    !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
   return (
     <FormProvider {...form}>

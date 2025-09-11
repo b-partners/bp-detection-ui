@@ -28,6 +28,7 @@ export const usePostDetectionQueries = () => {
   const {
     params: { areaPictureDetails, prospect },
   } = useStep();
+
   const mutationFn = async (ref: RefObject<HTMLDivElement | null>) => {
     const file = await generateLocalPdf(ref, areaPictureDetails?.address || '');
     await sendPdfToMail(file);
