@@ -143,3 +143,13 @@ export const GetAddressStepStyle: SxProps = {
     justifyContent: 'center',
   },
 };
+
+export const detectionResultItemStyle: SxProps = {
+  border: `3px solid ${PALETTE_COLORS.pine}`,
+  '& .detection-result-item-loading': {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+};
