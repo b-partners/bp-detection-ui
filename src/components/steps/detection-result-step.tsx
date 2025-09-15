@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { ANNOTATION_COVERING, degradationLevels, detectionResultColors } from '@/mappers';
+import { ANNOTATION_COVERING, degradationLevels } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -10,38 +10,12 @@ import {
   useQueryImageFromUrl,
 } from '@/queries';
 import { cache, getCached } from '@/utilities';
-import { Box, Button, Grid2, Paper, Stack, Typography } from '@mui/material';
-import { FC, useEffect, useRef, useState } from 'react';
+import { Box, Button, Grid2, Stack, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
+import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
-
-interface ResultItemProps {
-  label: string;
-  value: number | string;
-  source: string;
-  unity?: string;
-  isLoading?: boolean;
-  loadingMessage?: string;
-}
-
-const ResultItem: FC<ResultItemProps> = ({ label, value, source, unity = '%', isLoading, loadingMessage }) => {
-  const bgcolor = detectionResultColors[source as keyof typeof detectionResultColors];
-  return (
-    <Paper key={source}>
-      {!isLoading && (
-        <>
-          <Stack direction='row' gap={1}>
-            {bgcolor && <Box className='color-legend' sx={{ bgcolor }}></Box>}
-            <Typography className='label'>{label}</Typography>
-          </Stack>
-          <Typography className='result'>{`${value || 0}${unity}`}</Typography>
-        </>
-      )}
-      {isLoading && <Typography>{loadingMessage}</Typography>}
-    </Paper>
-  );
-};
 
 export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
   switch (covering) {
@@ -140,31 +114,31 @@ export const DetectionResultStep = () => {
             <Typography className='title' mb={2}>
               Résultats de l'analyse :
             </Typography>
-            <ResultItem label='Surface totale' source='surface' unity='m²' value={getCached.area().toFixed(2)} />
-            <ResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
-            <ResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
-            <ResultItem
+            <DetectionResultItem label='Surface totale' source='surface' unity='m²' value={getCached.area().toFixed(2)} />
+            <DetectionResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
+            <DetectionResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
+            <DetectionResultItem
               label='Hauteur du bâtiment'
-              loadingMessage='Chargement de la hauteur du bâtiment en cours...'
+              loadingMessage='Calcule de la hauteur du bâtiment en cours...'
               source='HAUTEUR'
               unity='m'
               isLoading={isHeightAndSlopePending}
               value={heightAndSlope?.height}
             />
-            <ResultItem
+            <DetectionResultItem
               label='Pente'
               isLoading={isHeightAndSlopePending}
-              loadingMessage='Chargement de la pente en cours... '
+              loadingMessage='Calcule de la pente en cours... '
               source='pente'
               value={heightAndSlope?.slope}
             />
-            <ResultItem label="Taux d'usure" source='USURE' value={data?.properties?.['usure_rate'] || 0} />
-            <ResultItem label='Taux de moisissure' source='MOISISSURE' value={data?.properties?.['moisissure_rate'] || 0} />
-            <ResultItem label="Taux d'humidité" source='HUMIDITE' value={data?.properties?.['humidite_rate'] || 0} />
-            <ResultItem label='Mutation' source='mutation' value='neant' unity='' />
-            <ResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
-            <ResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
-            <ResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
+            <DetectionResultItem label="Taux d'usure" source='USURE' value={data?.properties?.['usure_rate'] || 0} />
+            <DetectionResultItem label='Taux de moisissure' source='MOISISSURE' value={data?.properties?.['moisissure_rate'] || 0} />
+            <DetectionResultItem label="Taux d'humidité" source='HUMIDITE' value={data?.properties?.['humidite_rate'] || 0} />
+            <DetectionResultItem label='Mutation' source='mutation' value='neant' unity='' />
+            <DetectionResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
+            <DetectionResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
+            <DetectionResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
             <Button data-cy='send-roofer-mail-button' fullWidth loading={sendInfoToRooferPending} disabled={!canSendPdf} onClick={handleSendPdf}>
               Envoyer ces informations à mon couvreur
             </Button>
