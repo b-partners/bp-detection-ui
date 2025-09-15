@@ -45,6 +45,9 @@ export const DetectionResultStepStyle: SxProps = {
   '& .analyse-result-info': {
     '& .title': {
       color: t => (t as Theme).palette.primary.main,
+      fontWeight: 'bold',
+      fontSize: 20,
+      textAlign: 'center',
     },
     p: 2,
     borderRadius: 5,
@@ -55,7 +58,6 @@ export const DetectionResultStepStyle: SxProps = {
     my: 1,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
     boxShadow: 'none',
   },
   gap: 1,
@@ -95,8 +97,7 @@ export const DetectionResultStepStyle: SxProps = {
         background: '#D9D9D9',
       },
       '& .degratation-levels-box-selected': {
-        width: 50,
-        height: 50,
+        transform: 'scale(1.2)',
       },
     },
   },
@@ -151,5 +152,14 @@ export const detectionResultItemStyle: SxProps = {
     display: 'flex',
     justifyContent: 'space-between',
     width: '100%',
+  },
+  '& .item-label-container': {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    '& .MuiTypography-root': {
+      textAlign: 'center',
+      fontWeight: 'bold',
+    },
   },
 };
