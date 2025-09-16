@@ -77,7 +77,7 @@ export const DetectionResultStep = () => {
   return (
     <FormProvider {...form}>
       <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
-        <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
+        <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: sendInfoToRooferPending ? 10 : 1 }}>
           <Box position='relative'>
             {(!showLLMResult || sendInfoToRooferPending) && (
               <AnnotatorCanvasCustom
@@ -89,7 +89,9 @@ export const DetectionResultStep = () => {
                 image={data?.createdImage || ''}
               />
             )}
-            {data?.properties && llmHtmlData && showLLMResult && <LlmResult width='90%' height='513px' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />}
+            {data?.properties && llmHtmlData && showLLMResult && !sendInfoToRooferPending && (
+              <LlmResult width='90%' height='513px' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />
+            )}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Box className='degratation-rate-title'>

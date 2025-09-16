@@ -18,8 +18,14 @@ const generateLocalPdf = async (ref: RefObject<HTMLDivElement | null>, address: 
       },
     },
   };
-
-  const res = await generatePDF(ref, options);
+  // wait fo the image in the annotator board to load before geenrate the pdf
+  await new Promise(resolve => {
+    const timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
+      resolve(timeoutId);
+    }, 1000);
+  });
+  const res = (await generatePDF(ref, options)).save('file.pdf');
   const blob = res.output('blob');
   return new File([blob], `${address}.pdf`, { lastModified: Date.now(), type: 'application/pdf' });
 };
