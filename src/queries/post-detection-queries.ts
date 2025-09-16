@@ -25,7 +25,7 @@ const generateLocalPdf = async (ref: RefObject<HTMLDivElement | null>, address: 
       resolve(timeoutId);
     }, 1000);
   });
-  const res = (await generatePDF(ref, options)).save('file.pdf');
+  const res = (await generatePDF(ref, options));
   const blob = res.output('blob');
   return new File([blob], `${address}.pdf`, { lastModified: Date.now(), type: 'application/pdf' });
 };
