@@ -83,7 +83,7 @@ export const DetectionResultStep = () => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
   }, [useGeoJson, imageSrc]);
 
-  const { data: llmHtmlData, isPending: isLlmHtmlData } = useLlmResultQuery(data?.properties as any);
+  const { data: llmHtmlData, isPending: isLlmHtmlData } = useLlmResultQuery(data?.properties as any, heightAndSlope?.slope);
   const canSendPdf =
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
@@ -108,7 +108,7 @@ export const DetectionResultStep = () => {
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
           <Box className='degratation-rate-title'>
-            <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
+            <LlmSwitchButton disabled={!heightAndSlope?.slope} showLlm={showLLMResult} onClick={tootleLLMResultView} />
             <Typography>Note de dégradation globale : {data?.properties?.global_rate_value}%</Typography>
           </Box>
           <Stack className='degratation-levels' direction='row' justifyContent='center' m={1} gap={1}>
