@@ -48,6 +48,15 @@ export const llmResultStyle: SxProps = {
   '& li': {
     mb: 2,
   },
+  '& h1,h2,h3': {
+    textAlign: 'center',
+  },
+  '& section:first-child > h2': {
+    color: PALETTE_COLORS.neon_orange,
+  },
+  '& section:nth-child(2) > h2': {
+    color: PALETTE_COLORS.neon_orange,
+  },
   '& strong': {
     display: 'block',
   },
