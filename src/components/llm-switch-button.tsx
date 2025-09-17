@@ -6,11 +6,12 @@ import { llmButtonStyle } from './style';
 interface Props {
   showLlm: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }
 
-export const LlmSwitchButton: FC<Props> = ({ onClick, showLlm }) => {
+export const LlmSwitchButton: FC<Props> = ({ onClick, showLlm, disabled = false }) => {
   return (
-    <Button sx={llmButtonStyle} startIcon={<Cached />} onClick={onClick}>
+    <Button disabled={disabled} sx={llmButtonStyle} startIcon={<Cached />} onClick={onClick}>
       {showLlm ? "Revenir à l'ecran d'annotation" : 'Comprendre votre rapport'}
     </Button>
   );
