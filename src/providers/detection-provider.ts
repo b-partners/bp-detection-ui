@@ -30,6 +30,7 @@ const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: str
     },
     geoJsonZone,
     zoneName,
+    geoJsonDelimitationType: 'ROOF',
   };
 };
 
