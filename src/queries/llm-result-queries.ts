@@ -21,5 +21,5 @@ export const useLlmResultQuery = (roofAnnotatorProperties: Properties & { obstac
     return htmlResult;
   };
 
-  return useQuery({ queryFn, queryKey: [roofAnnotatorProperties], enabled: !!pente });
+  return useQuery({ queryFn, queryKey: [roofAnnotatorProperties] });
 };
