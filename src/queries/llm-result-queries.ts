@@ -6,7 +6,7 @@ import { Properties } from './types';
 const baseUrl = `${process.env.LLM_ANALYSE_RESULT}`;
 const apiKey = `${process.env.LLM_API_KEY}`;
 
-export const useLlmResultQuery = (roofAnnotatorProperties: Properties & { obstacle: boolean }, pente?: number) => {
+export const useLlmResultQuery = (roofAnnotatorProperties: Properties & { obstacle: boolean }) => {
   const { moisissure_rate, usure_rate, humidite_rate, roof_area_in_m2, revetement_1, global_rate_value, obstacle } = roofAnnotatorProperties || {};
   const queryFn = async () => {
     let llmResult = getCached.llmResult();
@@ -21,5 +21,5 @@ export const useLlmResultQuery = (roofAnnotatorProperties: Properties & { obstac
     return htmlResult;
   };
 
-  return useQuery({ queryFn, queryKey: [roofAnnotatorProperties], enabled: !!pente });
+  return useQuery({ queryFn, queryKey: [roofAnnotatorProperties] });
 };
