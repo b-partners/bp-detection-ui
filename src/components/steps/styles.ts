@@ -157,9 +157,16 @@ export const detectionResultItemStyle: SxProps = {
     display: 'flex',
     justifyContent: 'center',
     width: '100%',
+    position: 'relative',
     '& .MuiTypography-root': {
       textAlign: 'center',
       fontWeight: 'bold',
+    },
+    '& .color-legend': {
+      position: 'absolute',
+      left: 1,
+      top: '50%',
+      transform: 'translateY(-50%)',
     },
   },
 };
