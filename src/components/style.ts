@@ -70,6 +70,21 @@ export const llmResultStyle: SxProps = {
       alignItems: 'center',
     },
   },
+  '& .empty-llm-result': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    background: '#00000020',
+    '& svg': {
+      fontSize: '50px',
+    },
+    '& .MuiStack-root': {
+      display: 'flex',
+      alignItems: 'center',
+    },
+  },
 };
 
 export const llmButtonStyle: SxProps = {

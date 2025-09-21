@@ -1,3 +1,4 @@
+import { Error } from '@mui/icons-material';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useRef } from 'react';
 import { llmResultStyle } from './style';
@@ -9,7 +10,7 @@ interface LlmResultProps {
   isLoading: boolean;
 }
 
-export const LlmResult: FC<LlmResultProps> = ({ height, htmlData, width, isLoading }) => {
+export const LlmResult: FC<LlmResultProps> = ({ height, htmlData = '', width, isLoading }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,6 +26,14 @@ export const LlmResult: FC<LlmResultProps> = ({ height, htmlData, width, isLoadi
           <Stack className='loading-element-container'>
             <CircularProgress />
             <Typography>Chargement des explications du rapport...</Typography>
+          </Stack>
+        </Box>
+      )}
+      {!isLoading && htmlData.length === 0 && (
+        <Box className='empty-llm-result'>
+          <Stack>
+            <Error />
+            <Typography>L’explication du rapport d’analyse n’est pas disponible pour le moment.</Typography>
           </Stack>
         </Box>
       )}
