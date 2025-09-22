@@ -38,8 +38,17 @@ export const legalFilesProvider = {
     const { userId } = getCached.userInfo();
     if (!userId || !apiKey) throw new Error('User id or apikey is undefined');
 
-    const { data } = await bpUserAccountApi(apiKey).approveLegalFile(userId, legalFileId);
-    return data;
+    try {
+      const { data } = await bpUserAccountApi(apiKey).approveLegalFile(userId, legalFileId);
+      return data;
+    } catch (err: any) {
+      const alreadyApproved = err.response.data.message.includes(' was already approved on ');
+      if (alreadyApproved) {
+        cache.legalFilesAlreadyApproved(true);
+      } else {
+        throw err;
+      }
+    }
   },
   checkLegalFiles: async (providedApiKey?: string, providedUserId?: string) => {
     const result: { approved: boolean; legalFiles: LegalFile[] } = { approved: false, legalFiles: [] };
@@ -48,6 +57,10 @@ export const legalFilesProvider = {
       const apiKey = providedApiKey || urlApikey;
       const { userId: cachedUserId } = getCached.userInfo();
       const userId = providedUserId || cachedUserId;
+
+      if (getCached.legalFilesAlreadyApproved()) {
+        return { approved: true, legalFiles: [] };
+      }
 
       const { data: lfTemp } = await bpUserAccountApi(apiKey).getLegalFiles(userId || '');
 
