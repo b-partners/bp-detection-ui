@@ -119,21 +119,25 @@ export const DetectionResultStep = () => {
             <DetectionResultItem label='Surface totale' source='surface' unity='m²' value={getCached.area().toFixed(2)} />
             <DetectionResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
             <DetectionResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
-            <DetectionResultItem
-              label='Hauteur du bâtiment'
-              loadingMessage='Calcule de la hauteur du bâtiment en cours...'
-              source='HAUTEUR'
-              unity='m'
-              isLoading={isHeightAndSlopePending}
-              value={heightAndSlope?.height}
-            />
-            <DetectionResultItem
-              label='Pente'
-              isLoading={isHeightAndSlopePending}
-              loadingMessage='Calcule de la pente en cours... '
-              source='pente'
-              value={heightAndSlope?.slope}
-            />
+            {heightAndSlope?.height !== 0 && (
+              <DetectionResultItem
+                label='Hauteur du bâtiment'
+                loadingMessage='Calcule de la hauteur du bâtiment en cours...'
+                source='HAUTEUR'
+                unity='m'
+                isLoading={isHeightAndSlopePending}
+                value={heightAndSlope?.height}
+              />
+            )}
+            {heightAndSlope?.height !== 0 && (
+              <DetectionResultItem
+                label='Pente'
+                isLoading={isHeightAndSlopePending}
+                loadingMessage='Calcule de la pente en cours... '
+                source='pente'
+                value={heightAndSlope?.slope}
+              />
+            )}
             <DetectionResultItem label="Taux d'usure" source='USURE' value={data?.properties?.['usure_rate'] || 0} />
             <DetectionResultItem label='Taux de moisissure' source='MOISISSURE' value={data?.properties?.['moisissure_rate'] || 0} />
             <DetectionResultItem label="Taux d'humidité" source='HUMIDITE' value={data?.properties?.['humidite_rate'] || 0} />

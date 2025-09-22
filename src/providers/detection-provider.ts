@@ -112,7 +112,7 @@ export const initiateRoofProperties = async (apiKey: string) => {
   });
   const data = await result.json();
 
-  if (result.status !== 200 || (!data?.properties?.vgg_file_url && !data?.roofDelimiter?.roofSlopeInDegree)) throw new Error('Not done');
+  if (result.status !== 200 || (!data?.properties?.vgg_file_url && isNaN(data?.roofDelimiter?.roofSlopeInDegree))) throw new Error('Not done');
   return data;
 };
 
