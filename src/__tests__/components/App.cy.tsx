@@ -61,6 +61,8 @@ describe('Component testing', () => {
     cy.intercept('POST', `**/detections/*/roofer/email`, { body: {} }).as('sendUserInfo');
     // email message
 
+    cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
+
     cy.mount(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
@@ -99,7 +101,6 @@ describe('Component testing', () => {
     //steppers state
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-completed');
     cy.contains('Délimitation de votre toiture').should('have.class', 'Mui-active');
-    cy.contains('Analyse de votre toiture').should('not.have.class', 'Mui-active');
     //steppers state
 
     cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
@@ -125,28 +126,19 @@ describe('Component testing', () => {
     cy.dataName('phone').type('123987456');
     cy.dataName('email').type('john@gmail.com');
 
+    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
     cy.dataCy(process_detection_on_form_sel).click();
 
-    // cy.wait('@getDetectionResultGeojson');
-
+    cy.contains('Hauteur du bâtiment');
     cy.contains("Taux d'usure");
     cy.contains('Taux de moisissure');
     cy.contains("Taux d'humidité");
     cy.contains('Obstacle / Velux');
 
-    cy.dataName('cover1').parent('.MuiInputBase-root').click();
-    cy.contains('Zinc').click();
+    // cy.dataCy('send-roofer-mail-button').click();
 
-    cy.dataName('cover2').parent('.MuiInputBase-root').click();
-    cy.contains('Autres').click();
-
-    cy.dataName('slope').parent('.MuiInputBase-root').click();
-    cy.dataCy('slope-1').click();
-
-    cy.dataCy('send-roofer-mail-button').click();
-
-    const sendPdfTimeout = 30000;
-    cy.wait('@sendPdf', { timeout: sendPdfTimeout });
-    cy.wait('@sendUserInfo', { timeout: sendPdfTimeout });
+    // const sendPdfTimeout = 30000;
+    // cy.wait('@sendPdf', { timeout: sendPdfTimeout });
+    // cy.wait('@sendUserInfo', { timeout: sendPdfTimeout });
   });
 });

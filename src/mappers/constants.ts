@@ -12,6 +12,7 @@ export const detectionResultColors = {
   HUMIDITE: '#1E90FF',
   USURE: '#FF7F50',
   MOISISSURE: '#32FF7E',
+  HAUTEUR: '#000000',
 };
 
 export const ANNOTATION_COVERING = [
@@ -29,9 +30,9 @@ export const ANNOTATION_COVERING = [
 ];
 
 export const degradationLevels = [
-  { label: 'A', color: '#53b76a' },
-  { label: 'B', color: '#f7ec94' },
-  { label: 'C', color: '#ddc563' },
-  { label: 'D', color: '#ee915c' },
-  { label: 'E', color: '#e8443b' },
+  { label: 'A', color: '#47BE62' },
+  { label: 'B', color: '#F4FBAB' },
+  { label: 'C', color: '#F9DD56' },
+  { label: 'D', color: '#F38F4B' },
+  { label: 'E', color: '#EF2C2D' },
 ];

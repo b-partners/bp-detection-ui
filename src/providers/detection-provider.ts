@@ -22,6 +22,7 @@ const geoServerProperties = (layers: string) => ({
 
 const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: string, geoJsonZone?: any) => {
   return {
+    needsImageOutput: true,
     geoServerProperties: geoServerProperties(layers),
     emailReceiver,
     detectableObjectModel: {
@@ -29,10 +30,11 @@ const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: str
     },
     geoJsonZone,
     zoneName,
+    geoJsonDelimitationType: 'ROOF',
   };
 };
 
-export const processDetection = async (layers: string, address: string, coordinates?: Array<Array<Array<Array<number>>>>, emailReceiver?: string) => {
+export const processDetection = async (layers: string, address: string, coordinates?: Array<Array<Array<number>>>, emailReceiver?: string) => {
   const detectionId = v4();
   const { apiKey } = ParamsUtilities.getQueryParams();
   cache.detectionId(detectionId);
@@ -46,7 +48,7 @@ export const processDetection = async (layers: string, address: string, coordina
           {
             geometry: {
               coordinates,
-              type: 'MultiPolygon',
+              type: 'Polygon',
             },
             properties: {
               zoom: 20,
@@ -97,9 +99,21 @@ export const getDetectionResult = async (apiKey: string) => {
   });
   const result = await data.json();
 
-  if (!result.vggUrl && !result.geoJsonUrl) throw new Error('Not done');
+  if (!result?.properties?.vgg_file_url && !result?.roofDelimiter?.roofSlopeInDegree) throw new Error('Not done');
 
   return result;
+};
+
+export const initiateRoofProperties = async (apiKey: string) => {
+  const detectionId = getCached.detectionId() ?? '';
+  const result = await fetch(`${baseUrl}/detections/${detectionId}/roofs/properties`, {
+    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
+    method: 'PUT',
+  });
+  const data = await result.json();
+
+  if (result.status !== 200 || (!data?.properties?.vgg_file_url && isNaN(data?.roofDelimiter?.roofSlopeInDegree))) throw new Error('Not done');
+  return data;
 };
 
 export const sendImageToDetect = async (image: File) => {

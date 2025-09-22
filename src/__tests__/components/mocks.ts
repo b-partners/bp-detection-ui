@@ -40,11 +40,6 @@ export const area_picture_mock: AreaPictureDetails = {
   filename: 'filename_1000_1000_zoom.jpg',
 };
 
-export const detection_mock = {
-  id: 'detection-mock-id',
-  vggUrl: 'http://mock.url.com',
-};
-
 export const mercator_mock = {
   '20_123456_123456.jpg': {
     size: null,
@@ -92,7 +87,10 @@ export const detectionSync = {
   pdfUrl: null,
   vggUrl: null,
   addresses: [],
-  roofDelimiter: null,
+  roofDelimiter: {
+    roofHeightInMeter: 9.2,
+    roofSlopeInDegree: 21,
+  },
   emailReceiver: '',
   zoneName: '1 Rue de la Vau Saint-Jacques, 79200 Parthenay, France',
   geoServerProperties: {
@@ -147,3 +145,28 @@ export const detectionSync = {
   ],
   geoJsonOutput: 'GEO_JSON',
 };
+
+export const detection_mock = {
+  ...detectionSync,
+};
+
+export const legalFiles_mock = [
+  {
+    id: '05c96052-c2a1-4f1e-9e43-53ecd8642099',
+    name: 'cgu_20-11-23.pdf',
+    fileUrl: '/assets/legal-file.pdf',
+    toBeConfirmed: true,
+  },
+  {
+    id: '9214432d-7b7a-4fa2-9660-d00d4e0109a0',
+    name: 'cgu_09-10-23.pdf',
+    fileUrl: '/assets/legal-file.pdf',
+    toBeConfirmed: true,
+  },
+];
+
+export const legalFilesOneNonApproved_mock = [{ ...legalFiles_mock[0], toBeConfirmed: false }, legalFiles_mock[1]];
+export const legalFilesAllApproved_mock = [
+  { ...legalFiles_mock[0], toBeConfirmed: false },
+  { ...legalFiles_mock[1], toBeConfirmed: false },
+];

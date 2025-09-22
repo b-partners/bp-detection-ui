@@ -1,5 +1,5 @@
-import { cache, getCached } from '@/utilities';
-import { Account } from '@bpartners/typescript-client';
+import { cache, getCached, ParamsUtilities } from '@/utilities';
+import { Account, LegalFile } from '@bpartners/typescript-client';
 import { bpSecurityApi, bpUserAccountApi } from '.';
 
 const getCurrentAccount = (accounts: Account[]) => {
@@ -24,5 +24,58 @@ export const userInfoProvider = async (apiKey: string) => {
     userInfo.accountHolderId = currentAccountHolder?.id ?? '';
   }
   cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
-  return { ...userInfo };
+
+  const { approved, legalFiles } = await legalFilesProvider.checkLegalFiles(apiKey, userInfo.userId);
+
+  if (!approved) throw new Error('legalFileNotApproved');
+
+  return { ...userInfo, legalFiles };
+};
+
+export const legalFilesProvider = {
+  acceptLegalFiles: async (legalFileId: string) => {
+    const { apiKey } = ParamsUtilities.getQueryParams();
+    const { userId } = getCached.userInfo();
+    if (!userId || !apiKey) throw new Error('User id or apikey is undefined');
+
+    try {
+      const { data } = await bpUserAccountApi(apiKey).approveLegalFile(userId, legalFileId);
+      return data;
+    } catch (err: any) {
+      const alreadyApproved = err.response.data.message.includes(' was already approved on ');
+      if (alreadyApproved) {
+        cache.legalFilesAlreadyApproved(true);
+      } else {
+        throw err;
+      }
+    }
+  },
+  checkLegalFiles: async (providedApiKey?: string, providedUserId?: string) => {
+    const result: { approved: boolean; legalFiles: LegalFile[] } = { approved: false, legalFiles: [] };
+    try {
+      const { apiKey: urlApikey } = ParamsUtilities.getQueryParams();
+      const apiKey = providedApiKey || urlApikey;
+      const { userId: cachedUserId } = getCached.userInfo();
+      const userId = providedUserId || cachedUserId;
+
+      if (getCached.legalFilesAlreadyApproved()) {
+        return { approved: true, legalFiles: [] };
+      }
+
+      const { data: lfTemp } = await bpUserAccountApi(apiKey).getLegalFiles(userId || '');
+
+      const notApprovedLegalFiles = lfTemp.filter(legalFile => legalFile.toBeConfirmed || !legalFile.approvalDatetime);
+
+      if (notApprovedLegalFiles.length === 0) {
+        result.legalFiles = lfTemp;
+        result.approved = true;
+        return result;
+      }
+      result.legalFiles = notApprovedLegalFiles;
+
+      return result;
+    } catch (err) {
+      return { approved: true, legalFiles: [] };
+    }
+  },
 };

@@ -1,11 +1,12 @@
 import { DomainPolygonType, ErrorMessageDialog } from '@/components';
 import { useDialog, useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
-import { bpProspectApi, getDetectionResult, pointsToGeoPoints, processDetection } from '@/providers';
+import { bpProspectApi, pointsToGeoPoints, processDetection } from '@/providers';
 import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
+import { useQueryHeightAndSlope } from './height-and-slope-query';
 
 interface MutationProps {
   polygons: DomainPolygonType[];
@@ -26,6 +27,7 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     actualStep,
   } = useStep();
   const { open: openDialog } = useDialog();
+  const { start: startPropertiesQuery } = useQueryHeightAndSlope(false);
 
   const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
@@ -36,8 +38,8 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     const refererGeoJson: any = (await pointsToGeoPoints(geoJson as any)) || {};
 
     const regions = (Object.values(refererGeoJson)[0] as any)?.regions;
-    const { all_points_x, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
-
+    const { all_points_x: xpoints, all_points_y } = (Object.values(regions)[0] as any)?.shape_attributes || {};
+    const all_points_x = xpoints.slice(0, xpoints.length - 1);
     const coordinates: any[] = [];
 
     (all_points_x as any[])?.forEach((latitude, index) => {
@@ -62,13 +64,8 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       ]);
       setStep({ params: { prospect: data[0], polygons }, actualStep });
     }
-
-    return await processDetection(
-      areaPictureDetails.actualLayer?.name ?? '',
-      `${areaPictureDetails.address}`,
-      [[mappedCoordinates.slice(0, mappedCoordinates.length - 1)]],
-      receiverEmail
-    );
+    startPropertiesQuery();
+    return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [mappedCoordinates], receiverEmail);
   };
 
   const { isPending, data, mutate } = useMutation({
@@ -84,23 +81,4 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
     },
   });
   return { isDetectionPending: isPending, geoJsonResult: data, startDetection: mutate };
-};
-
-export const useQueryDetectionResult = () => {
-  const { apiKey } = ParamsUtilities.getQueryParams();
-  const {
-    params: { useGeoJson, detection },
-  } = useStep();
-
-  const { data, isPending } = useQuery({
-    queryKey: ['detection', 'result'],
-    enabled: !useGeoJson,
-    queryFn: () => {
-      return getDetectionResult(apiKey);
-    },
-    retryDelay: 8000,
-    retry: Number.MAX_SAFE_INTEGER,
-  });
-
-  return { data: useGeoJson ? detection : data, isPending };
 };

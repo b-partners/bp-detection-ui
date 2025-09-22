@@ -4,7 +4,7 @@ import { AreaPictureDetails, Prospect } from '@bpartners/typescript-client';
 import { create } from 'zustand';
 
 interface State {
-  actualStep: 0 | 1 | 2 | 3;
+  actualStep: 0 | 1 | 2;
   params: {
     imageSrc?: string;
     areaPictureDetails?: AreaPictureDetails;
@@ -15,6 +15,11 @@ interface State {
     polygons?: DomainPolygonType[];
     useGeoJson?: boolean;
     detection?: any;
+    roofDelimiter?: {
+      roofSlopeInDegree?: number;
+      roofHeightInMeter?: number;
+      polygon?: any;
+    };
   };
 }
 

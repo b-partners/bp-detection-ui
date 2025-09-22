@@ -18,7 +18,13 @@ const generateLocalPdf = async (ref: RefObject<HTMLDivElement | null>, address: 
       },
     },
   };
-
+  // wait fo the image in the annotator board to load before geenrate the pdf
+  await new Promise(resolve => {
+    const timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
+      resolve(timeoutId);
+    }, 1000);
+  });
   const res = await generatePDF(ref, options);
   const blob = res.output('blob');
   return new File([blob], `${address}.pdf`, { lastModified: Date.now(), type: 'application/pdf' });
@@ -28,6 +34,7 @@ export const usePostDetectionQueries = () => {
   const {
     params: { areaPictureDetails, prospect },
   } = useStep();
+
   const mutationFn = async (ref: RefObject<HTMLDivElement | null>) => {
     const file = await generateLocalPdf(ref, areaPictureDetails?.address || '');
     await sendPdfToMail(file);

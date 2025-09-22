@@ -1,5 +1,5 @@
-import { SxProps } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { PALETTE_COLORS } from '@/utilities';
+import { SxProps, Theme } from '@mui/material';
 
 export const DetectionResultStepStyle: SxProps = {
   position: 'relative',
@@ -42,13 +42,23 @@ export const DetectionResultStepStyle: SxProps = {
     },
     textTransform: 'capitalize',
   },
+  '& .analyse-result-info': {
+    '& .title': {
+      color: t => (t as Theme).palette.primary.main,
+      fontWeight: 'bold',
+      fontSize: 20,
+      textAlign: 'center',
+    },
+    p: 2,
+    borderRadius: 5,
+    boxShadow: `0.4px 0.4px 2.2px -8px rgba(0, 0, 0, 0.02), 1px 1px 5.3px -8px rgba(0, 0, 0, 0.028), 1.9px 1.9px 10px -8px rgba(0, 0, 0, 0.035), 3.4px 3.4px 17.9px -8px rgba(0, 0, 0, 0.042), 6.3px 6.3px 33.4px -8px rgba(0, 0, 0, 0.05), 15px 15px 80px -8px rgba(0, 0, 0, 0.07)`,
+  },
   '& .MuiPaper-root': {
     p: 1,
     my: 1,
     display: 'flex',
     alignItems: 'center',
-    bgcolor: grey[300],
-    justifyContent: 'space-between',
+    boxShadow: 'none',
   },
   gap: 1,
   '& .color-legend': {
@@ -56,12 +66,40 @@ export const DetectionResultStepStyle: SxProps = {
     width: 20,
   },
   '& .degratation-rate-title': {
-    background: '#BEB4A4 !important',
-    px: '10rem',
     py: 2,
-    borderRadius: 5,
-    textTransform: 'uppercase',
-    '& .MuiTypography-root': { textAlign: 'center', width: '100%' },
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'space-between',
+    '& .MuiTypography-root': {
+      background: PALETTE_COLORS.pine,
+      color: '#fff',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      width: 'fit-content',
+      textTransform: 'uppercase',
+      py: 1,
+      px: 2,
+      borderRadius: 3,
+    },
+  },
+  '& .degratation-levels': {
+    '& .degratation-levels-box': {
+      width: 40,
+      height: 40,
+      borderRadius: 2,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      transition: 'all 500ms',
+    },
+    '&:hover': {
+      '& .degratation-levels-box:not(.degratation-levels-box-selected)': {
+        background: '#D9D9D9',
+      },
+      '& .degratation-levels-box-selected': {
+        transform: 'scale(1.2)',
+      },
+    },
   },
 };
 
@@ -104,5 +142,31 @@ export const GetAddressStepStyle: SxProps = {
   },
   '& .location-input > .MuiStack-root': {
     justifyContent: 'center',
+  },
+};
+
+export const detectionResultItemStyle: SxProps = {
+  border: `3px solid ${PALETTE_COLORS.pine}`,
+  '& .detection-result-item-loading': {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  '& .item-label-container': {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'relative',
+    '& .MuiTypography-root': {
+      textAlign: 'center',
+      fontWeight: 'bold',
+    },
+    '& .color-legend': {
+      position: 'absolute',
+      left: 1,
+      top: '50%',
+      transform: 'translateY(-50%)',
+    },
   },
 };

@@ -9,6 +9,7 @@ export interface DetectionResult {
   properties: Properties;
   regions: { [key: string]: Region };
 }
+export type AnnotationCoveringFromAnalyse = 'BATI_TUILES' | 'BATI_BETON' | 'BATI_ARDOISE' | 'BATI_AUTRES';
 
 export interface Properties {
   usure_rate: number;
@@ -16,6 +17,9 @@ export interface Properties {
   global_rate_type: string;
   moisissure_rate: number;
   humidite_rate: number;
+  roof_area_in_m2: number;
+  revetement_1: AnnotationCoveringFromAnalyse;
+  revetement_2: AnnotationCoveringFromAnalyse;
 }
 
 export interface Region {

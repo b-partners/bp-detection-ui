@@ -6,7 +6,16 @@ import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
-import { AnnotationTutorialDialog, AnnotatorCanvasCustom, DetectionForm, DetectionFormInfo, DialogFormStyle, DialogTutorialStyle, DomainPolygonType } from '.';
+import {
+  addressStyle,
+  AnnotationTutorialDialog,
+  AnnotatorCanvasCustom,
+  DetectionForm,
+  DetectionFormInfo,
+  DialogFormStyle,
+  DialogTutorialStyle,
+  DomainPolygonType,
+} from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
@@ -43,7 +52,17 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         withoutImage: true,
       },
       {
-        onSuccess: result => setStep({ actualStep: 2, params: { geojsonBody: result?.geoJson as any, imageSrc: currentImageSrc, useGeoJson: true } }),
+        onSuccess: result =>
+          setStep({
+            actualStep: 2,
+            params: {
+              geoJsonResultUrl: result?.result.geoJsonZone?.[0]?.properties?.vgg_file_url || '',
+              geojsonBody: result?.geoJson as any,
+              useGeoJson: true,
+              imageSrc: result?.result?.geoJsonZone?.[0]?.properties?.original_image_url || '',
+              roofDelimiter: result?.result?.roofDelimiter,
+            },
+          }),
       }
     );
   };
@@ -77,17 +96,22 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           <HelpCenterOutlined fontSize='large' />
         </IconButton>
       </Paper>
-      <Box display='flex' alignItems='center' gap={2} mb={2}>
-        <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
-          {isExtended ? 'Rétrécir la zone' : 'Elargir la zone'}
-        </Button>
-        <Button variant='contained' onClick={handleGetNewImage} disabled={isPending}>
-          Actualiser l’image
-        </Button>
-        <Button variant='contained' onClick={handleClearPolygon} disabled={polygons.length === 0 || isPending}>
-          Effacer la sélection
-        </Button>
-      </Box>
+      <Stack direction='row' justifyContent='space-between'>
+        <Box sx={addressStyle}>
+          <Typography>Adresse: {areaPictureDetails?.address}</Typography>
+        </Box>
+        <Box display='flex' alignItems='center' gap={2} mb={2}>
+          <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
+            {isExtended ? 'Rétrécir la zone' : 'Elargir la zone'}
+          </Button>
+          <Button variant='contained' onClick={handleGetNewImage} disabled={isPending}>
+            Actualiser l’image
+          </Button>
+          <Button variant='contained' onClick={handleClearPolygon} disabled={polygons.length === 0 || isPending}>
+            Effacer la sélection
+          </Button>
+        </Box>
+      </Stack>
       <Box minHeight='500px'>
         <AnnotatorCanvasCustom
           isLoading={isPending}
