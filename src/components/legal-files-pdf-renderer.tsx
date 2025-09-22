@@ -15,7 +15,7 @@ const useQueryLegalFiles = () => {
     data: legalFiles,
     refetch,
     isLoading: isQueryLegalFiles,
-  } = useQuery<any>({ queryKey: ['legalFiles', currentLegalFile], queryFn: legalFilesProvider.checkLegalFiles as any });
+  } = useQuery<any>({ queryKey: ['legalFiles', currentLegalFile], queryFn: () => legalFilesProvider.checkLegalFiles() as any });
 
   const { mutate: acceptLegalFile, isPending: isAcceptLegalFilesPending } = useMutation({
     mutationKey: ['update-legal-files'],
