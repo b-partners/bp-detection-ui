@@ -79,10 +79,10 @@ export const createImage = async (url: string): Promise<HTMLImageElement> =>
     };
   });
 
-export const getCropepedImageAndPolygons = (polygons: Polygon[], image: HTMLImageElement) => {
+export const getCropepedImageAndPolygons = (polygons: Polygon[], polygonsForBoundingBox: Polygon[], image: HTMLImageElement) => {
   const canvas = document.createElement('canvas');
 
-  const boundingBox = getBoundingBox(polygons);
+  const boundingBox = getBoundingBox(polygonsForBoundingBox);
   const boundingBoxSize = getBoundingBoxSize(boundingBox);
   const originPoint = getOriginPoint(boundingBox, boundingBoxSize, image.width);
 
