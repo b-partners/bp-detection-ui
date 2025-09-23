@@ -64,7 +64,7 @@ export const legalFilesProvider = {
 
       const { data: lfTemp } = await bpUserAccountApi(apiKey).getLegalFiles(userId || '');
 
-      const notApprovedLegalFiles = lfTemp.filter(legalFile => legalFile.toBeConfirmed || !legalFile.approvalDatetime);
+      const notApprovedLegalFiles = lfTemp.filter(legalFile => legalFile.toBeConfirmed && !legalFile.approvalDatetime);
 
       if (notApprovedLegalFiles.length === 0) {
         result.legalFiles = lfTemp;
