@@ -70,7 +70,7 @@ export const DetectionResultStep = () => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
   }, [useGeoJson, imageSrc]);
 
-  const { data: llmHtmlData, isPending: isLlmHtmlData } = useLlmResultQuery(data?.properties as any);
+  const { data: llmHtmlData, isPending: isLlmHtmlDataPending, isLoading: isLlmHtmlDataLoading } = useLlmResultQuery(data?.properties as any);
   const canSendPdf =
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
@@ -90,7 +90,7 @@ export const DetectionResultStep = () => {
               />
             )}
             {data?.properties && llmHtmlData && showLLMResult && !sendInfoToRooferPending && (
-              <LlmResult width='90%' height='513px' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />
+              <LlmResult width='90%' height='513px' htmlData={llmHtmlData} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
             )}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
@@ -109,7 +109,9 @@ export const DetectionResultStep = () => {
               </Box>
             ))}
           </Stack>
-          {llmHtmlData && sendInfoToRooferPending && <LlmResult width='90%' height='100%' htmlData={llmHtmlData} isLoading={isLlmHtmlData} />}
+          {llmHtmlData && sendInfoToRooferPending && (
+            <LlmResult width='90%' height='100%' htmlData={llmHtmlData} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
+          )}
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
           <Stack className='analyse-result-info'>
