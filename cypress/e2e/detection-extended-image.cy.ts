@@ -8,15 +8,18 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 const timeout = 1200000;
 const expectedImagePrecisionInCm = 5;
 const expectedIsExtendedValueAfterExtendImage = true;
+const expectedMoisissure = `13.44%`;
+const expectedHumidity = `0%`;
+const expectedUsure = `0%`;
 
 const HaveWeASuccessFullDetection = {
   yes() {
     cy.contains('210.99m²', { timeout });
     cy.contains('Note de dégradation globale');
-    cy.contains("Taux d'usure");
-    cy.contains('Taux de moisissure');
-    cy.contains("Taux d'humidité");
-    cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
+    cy.contains(`Taux d'usure: ${expectedUsure}`);
+    cy.contains(`Taux de moisissure: ${expectedMoisissure}`);
+    cy.contains(`Taux d'humidité: ${expectedHumidity}`);
+    cy.contains('Obstacle / Velux: OUI');
   },
   no() {},
 };
@@ -32,7 +35,7 @@ const HaveTheCorrectImagePrecision5Cm = {
         cy.wait('@createAreaPicture', { timeout }).then(({ response, request }) => {
           const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
           const currentIsExtendedValue = response?.body?.isExtended;
-          expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, cy.addInstatusErrorPrefix('The precisionLevelInCm should be equal to 5cm', 'api'));
+          expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, 'The precisionLevelInCm should be equal to 5cm');
           if (request.body?.actualLayer?.precisionLevelInCm) expect(currentIsExtendedValue).to.equal(expectedIsExtendedValueAfterExtendImage);
         });
       });

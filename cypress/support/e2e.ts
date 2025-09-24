@@ -1,5 +1,4 @@
 import './commands';
-import './in-status-commands';
 
 const prodRequestUtilities = () => {
   cy.intercept('POST', '/address/autocomplete*').as('location-search');
