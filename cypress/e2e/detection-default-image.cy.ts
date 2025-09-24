@@ -6,13 +6,24 @@ const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 const timeout = 1200000;
-const expedtedRoofArea = '220.77m²';
+const expectedRoofArea = '220.77m²';
+const expectedUsureRate = '2.25%';
+const expectedHumidityRate = '0.08%';
+const expectedGlobalRage = `1.15%`;
+const expectedGPSValues = `47.6653675, 47.6653675`;
+const expectedImageSource = `cite:PCRS`;
 
 const HaveRoofDelimiterSucceeded = {
   yes: () => {
-    cy.contains(expedtedRoofArea, { timeout });
+    cy.contains(expectedRoofArea, { timeout });
+    cy.contains(`(GPS ${expectedGPSValues})`);
+    cy.contains(`Source : ${expectedImageSource}`);
+    cy.contains(`Note de dégradation globale : ${expectedGlobalRage}`);
     cy.contains("Taux d'humidité");
-    cy.contains('Obstacle / Velux').parent('.MuiStack-root').siblings('.MuiTypography-root').contains('OUI');
+    cy.contains('Obstacle / Velux: OUI');
+    cy.contains('Taux de moisissure: 0%');
+    cy.contains(`Taux d'usure: ${expectedUsureRate}`);
+    cy.contains(`Taux d'humidité: ${expectedHumidityRate}`);
   },
   no: () => cy.contains('La détection sur cette zone a échoué, veuillez réessayer'),
 };

@@ -11,7 +11,7 @@ class GetImageStepUtilities {
     this.resolve = () => resolve(undefined);
   }
 
-  private haveRequestSuccesYesFunction = (alias: string, decision: TDecision) => {
+  private haveRequestSuccessYesFunction = (alias: string, decision: TDecision) => {
     cy.wait(alias, { timeout: e2eTimeout }).then(({ response }) => {
       if (response?.statusCode !== 200) decision.no();
       else decision.yes();
@@ -27,23 +27,9 @@ class GetImageStepUtilities {
     no_limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
   };
 
-  // private HaveCreateAreaPitureSucceeded = {
-  //   yes: () => {
-  //     cy.wait('@createDetection', { timeout: e2eTimeout }).then(({ response }) => {
-  //       if (response?.statusCode === 400 && response?.body?.message?.includes('limit exceeded for free trial period')) {
-  //         this.HaveTheCorrectImagePrecision5Cm.no_limitExceededForFreeTrial();
-  //       } else if (response?.statusCode === 200) {
-  //         this.HaveTheCorrectImagePrecision5Cm.yes();
-  //       } else this.HaveTheCorrectImagePrecision5Cm.no_detectionInitializationError();
-  //     });
-  //   },
-  //   no: this.getImageError,
-  // };
-
   private HaveCreateProspectSucceeded = {
     yes: () =>
       cy.wait('@createAreaPicture', { timeout: e2eTimeout }).then(({ response }) => {
-        cy.verifyRequestFailedError('@createAreaPicture', response);
         const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
         if (response?.statusCode !== 200) this.getImageError();
         else if (currentPrecisionInCm !== expectedImagePrecisionInCm) this.HaveTheCorrectImagePrecision5Cm.no();
@@ -53,24 +39,24 @@ class GetImageStepUtilities {
   };
 
   private HaveCreateAccountHolderSucceeded = {
-    yes: () => this.haveRequestSuccesYesFunction('@createProspect', this.HaveCreateProspectSucceeded),
+    yes: () => this.haveRequestSuccessYesFunction('@createProspect', this.HaveCreateProspectSucceeded),
     no: this.getImageError,
   };
 
   private HaveGetAccountsSucceeded = {
-    yes: () => this.haveRequestSuccesYesFunction('@getAccountHolders', this.HaveCreateAccountHolderSucceeded),
+    yes: () => this.haveRequestSuccessYesFunction('@getAccountHolders', this.HaveCreateAccountHolderSucceeded),
     no: this.getImageError,
   };
 
   private HaveGetWhoamiSucceeded = {
-    yes: () => this.haveRequestSuccesYesFunction('@getAccounts', this.HaveGetAccountsSucceeded),
+    yes: () => this.haveRequestSuccessYesFunction('@getAccounts', this.HaveGetAccountsSucceeded),
     no: this.getImageError,
   };
 
   public init() {
     console.log(this);
 
-    this.haveRequestSuccesYesFunction('@getWhoami', this.HaveGetWhoamiSucceeded);
+    this.haveRequestSuccessYesFunction('@getWhoami', this.HaveGetWhoamiSucceeded);
   }
 }
 
