@@ -23,6 +23,10 @@ const prodRequestUtilities = () => {
   cy.intercept('POST', `/detections/**/image`).as('createDetectionImage');
   // detection
 
+  // llm
+  cy.intercept('GET', `/toiture**`).as('getLlmResult');
+  // llm
+
   cy.intercept('POST', '/Prod/mercator').as('mercatorConversion');
 
   cy.visit('https://roof.birdia.fr');

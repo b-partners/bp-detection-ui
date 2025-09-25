@@ -149,8 +149,8 @@ describe('Error message testing', () => {
     cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
     cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
-      fixture: 'bp-detection-image.jpeg',
-      headers: { 'content-type': 'image/jpeg' },
+      fixture: 'bp-detection-image.png',
+      headers: { 'content-type': 'image/png' },
     }).as('getImage');
     // prospect & areaPictures & get image
 
@@ -207,8 +207,8 @@ describe('Error message testing', () => {
     cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
     cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
-      fixture: 'bp-detection-image.jpeg',
-      headers: { 'content-type': 'image/jpeg' },
+      fixture: 'bp-detection-image.png',
+      headers: { 'content-type': 'image/png' },
     }).as('getImage');
     // prospect & areaPictures & get image
 
@@ -291,8 +291,8 @@ describe('Error message testing', () => {
     cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
     cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
-      fixture: 'bp-detection-image.jpeg',
-      headers: { 'content-type': 'image/jpeg' },
+      fixture: 'bp-detection-image.png',
+      headers: { 'content-type': 'image/png' },
     }).as('getImage');
     // prospect & areaPictures & get image
 
@@ -347,8 +347,8 @@ describe('Error message testing', () => {
     cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
     cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
-      fixture: 'bp-detection-image.jpeg',
-      headers: { 'content-type': 'image/jpeg' },
+      fixture: 'bp-detection-image.png',
+      headers: { 'content-type': 'image/png' },
     }).as('getImage');
     // prospect & areaPictures & get image
 

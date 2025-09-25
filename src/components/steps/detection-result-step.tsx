@@ -136,7 +136,7 @@ export const DetectionResultStep = () => {
               <DetectionResultItem
                 label='Pente'
                 isLoading={isHeightAndSlopePending}
-                loadingMessage='Calcule de la pente en cours... '
+                loadingMessage='Calcule de la pente en cours...'
                 source='pente'
                 value={heightAndSlope?.slope}
               />

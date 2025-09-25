@@ -8,6 +8,7 @@ import {
   area_picture_mock,
   detection_mock,
   detectionSync,
+  llmResult_mock,
   locations_mock,
   mercator_mock,
   prospect_mock,
@@ -37,8 +38,8 @@ describe('Component testing', () => {
     cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
     cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
-      fixture: 'bp-detection-image.jpeg',
-      headers: { 'content-type': 'image/jpeg' },
+      fixture: 'bp-detection-image.png',
+      headers: { 'content-type': 'image/png' },
     }).as('getImage');
     // prospect & areaPictures & get image
 
@@ -48,6 +49,7 @@ describe('Component testing', () => {
     cy.intercept('GET', `http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
       'getDetectionResultGeojson'
     );
+    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultGeojson');
     cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
     cy.intercept('GET', `/image-result`, { fixture: 'sync-result-image.jpg', headers: { 'content-type': 'image/jpg' } }).as('detectionSync');
     // detection
@@ -102,17 +104,33 @@ describe('Component testing', () => {
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-completed');
     cy.contains('Délimitation de votre toiture').should('have.class', 'Mui-active');
     //steppers state
+    //llm result
+    cy.intercept('GET', '/toiture**', res => {
+      res.reply({ body: llmResult_mock, headers: { 'content-type': 'text/html' } });
+    });
+    //llm result
 
     cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
 
-    cy.dataCy('zoom-in').click();
+    const getX = (x: number) => Math.floor(x + 145 - 71);
+    const getY = (y: number) => Math.floor(y + 397 - 387);
 
-    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(300, 300, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy('zoom-in').click();
+    cy.dataCy('zoom-in').click();
+    cy.dataCy('zoom-reset').click();
+
+    cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(42), getY(279), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(25), getY(362), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(44), getY(390), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(137), getY(423), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(273), getY(438), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(381), getY(447), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(408), getY(313), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(337), getY(271), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(354), getY(203), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(237), getY(151), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
 
     cy.dataCy('zoom-out').click();
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
@@ -126,8 +144,19 @@ describe('Component testing', () => {
     cy.dataName('phone').type('123987456');
     cy.dataName('email').type('john@gmail.com');
 
-    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
+    cy.intercept('PUT', '/detections/*/roofs/properties', {
+      ...detection_mock,
+      roofDelimiter: {
+        roofHeightInMeter: null,
+        roofSlopeInDegree: null,
+      },
+    });
     cy.dataCy(process_detection_on_form_sel).click();
+
+    cy.contains('Calcule de la pente en cours...');
+    cy.contains('Calcule de la hauteur du bâtiment en cours...');
+
+    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
 
     cy.contains('Hauteur du bâtiment');
     cy.contains("Taux d'usure");
@@ -135,10 +164,13 @@ describe('Component testing', () => {
     cy.contains("Taux d'humidité");
     cy.contains('Obstacle / Velux');
 
-    // cy.dataCy('send-roofer-mail-button').click();
+    cy.contains('Hauteur du bâtiment: 9.2m');
+    cy.contains('Pente: 21%');
 
-    // const sendPdfTimeout = 30000;
-    // cy.wait('@sendPdf', { timeout: sendPdfTimeout });
-    // cy.wait('@sendUserInfo', { timeout: sendPdfTimeout });
+    cy.contains('Comprendre votre rapport');
+    cy.dataCy('toggle-llm-result-view').click();
+
+    cy.contains('COMPRENDRE VOTRE RAPPORT');
+    cy.contains('CATÉGORIE B : BON');
   });
 });

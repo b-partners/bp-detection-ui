@@ -1,3 +1,4 @@
+import { degradationLevels } from '@/mappers';
 import { PALETTE_COLORS } from '@/utilities';
 import { SxProps } from '@mui/material';
 
@@ -48,8 +49,34 @@ export const llmResultStyle: SxProps = {
   '& li': {
     mb: 2,
   },
+  '& h3': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 1,
+  },
   '& h1,h2,h3': {
     textAlign: 'center',
+    '& .category-colored-round': {
+      height: 20,
+      width: 20,
+      borderRadius: '50%',
+    },
+    '& .category-A': {
+      background: degradationLevels[0].color,
+    },
+    '& .category-B': {
+      background: degradationLevels[1].color,
+    },
+    '& .category-C': {
+      background: degradationLevels[2].color,
+    },
+    '& .category-D': {
+      background: degradationLevels[3].color,
+    },
+    '& .category-E': {
+      background: degradationLevels[4].color,
+    },
   },
   '& section:first-child > h2': {
     color: PALETTE_COLORS.neon_orange,

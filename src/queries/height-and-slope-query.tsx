@@ -17,7 +17,7 @@ export const useQueryHeightAndSlope = (enabled: boolean = true) => {
 
       const roofDelimiter = data?.roofDelimiter;
 
-      if (isNaN(roofDelimiter?.roofHeightInMeter)) throw new Error('RoofDelimiter is missing');
+      if (roofDelimiter?.roofHeightInMeter === null) throw new Error('RoofDelimiter is missing');
       setShouldRetry(false);
       if (roofDelimiter.roofHeightInMeter === 0) {
         open(<ErrorMessageDialog message='Les données de hauteur et de pente seront disponibles prochainement.' />);
