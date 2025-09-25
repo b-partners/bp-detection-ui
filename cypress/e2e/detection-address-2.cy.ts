@@ -1,6 +1,6 @@
 import { detectionGetImage } from './detection-get-image';
 
-const addressToDetect = '1 Rue de la Vau Saint-Jacques, 79200 Parthenay';
+const addressToDetect = '16 Rue Rameau, 21000 Dijon';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
@@ -8,13 +8,13 @@ const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 const timeout = 1200000;
-const expectedRoofArea = '265.64m²';
-const expectedUsureRate = '2.68%';
-const expectedMoisissureRate = '43.09%';
-const expectedHumidityRate = '0%';
-const expectedGlobalRage = `18.58%`;
-const expectedGPSValues = `46.6519823, 46.6519823`;
-const expectedImageSource = `cite:PCRS`;
+const expectedRoofArea = '270.00m²';
+const expectedUsureRate = '0%';
+const expectedMoisissureRate = '0%';
+const expectedHumidityRate = '22.22%';
+const expectedGlobalRage = `8.89%`;
+const expectedGPSValues = `47.3212159, 47.3212159`;
+const expectedImageSource = `COTE_D_OR_2024_5cm`;
 
 const HaveRoofDelimiterSucceeded = {
   yes: () => {
@@ -47,18 +47,17 @@ const HaveTheCorrectImagePrecision5Cm = {
     cy.dataCy('zoom-in').click();
     cy.dataCy('zoom-reset').click();
 
-    cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(42), getY(279), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(25), getY(362), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(44), getY(390), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(137), getY(423), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(273), getY(438), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(381), getY(447), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(408), getY(313), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(337), getY(271), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(354), getY(203), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(237), getY(151), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(74), getY(411), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(139), getY(416), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(134), getY(481), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(436), getY(481), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(433), getY(364), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(450), getY(213), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(130), getY(191), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(124), getY(274), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(86), getY(269), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(79), getY(340), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(getX(74), getY(411), { force: true });
 
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
 

@@ -11,7 +11,7 @@ interface Props {
 
 export const LlmSwitchButton: FC<Props> = ({ onClick, showLlm, disabled = false }) => {
   return (
-    <Button disabled={disabled} sx={llmButtonStyle} startIcon={<Cached />} onClick={onClick}>
+    <Button disabled={disabled} data-cy='toggle-llm-result-view' sx={llmButtonStyle} startIcon={<Cached />} onClick={onClick}>
       {showLlm ? "Revenir à l’écran d'annotation" : 'Comprendre votre rapport'}
     </Button>
   );

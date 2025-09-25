@@ -30,9 +30,9 @@ export const ANNOTATION_COVERING = [
 ];
 
 export const degradationLevels = [
-  { label: 'A', color: '#47BE62' },
-  { label: 'B', color: '#F4FBAB' },
-  { label: 'C', color: '#F9DD56' },
-  { label: 'D', color: '#F38F4B' },
-  { label: 'E', color: '#EF2C2D' },
+  { label: 'A', color: '#47BE62', name: 'Bon état' },
+  { label: 'B', color: '#F4FBAB', name: 'Entretient à prévoir' },
+  { label: 'C', color: '#F9DD56', name: 'Entretient nécessaire' },
+  { label: 'D', color: '#F38F4B', name: 'Réparation nécessaire' },
+  { label: 'E', color: '#EF2C2D', name: 'Intervention urgente' },
 ];
