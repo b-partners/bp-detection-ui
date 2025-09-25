@@ -170,3 +170,29 @@ export const legalFilesAllApproved_mock = [
   { ...legalFiles_mock[0], toBeConfirmed: false },
   { ...legalFiles_mock[1], toBeConfirmed: false },
 ];
+
+export const llmResult_mock = `
+<section>
+    <h2>COMPRENDRE VOTRE RAPPORT</h2>
+    <h3>
+        <span>🟡</span>
+        CATÉGORIE B : BON
+    </h3>
+    <ul>
+        <li>L'analyse a montré que l'état général de votre toiture est bon, avec une usure limitée à 3.43 %. Cependant, la présence de moisissure à hauteur de 29.18 % nécessite une attention particulière. Cette moisissure pourrait accélérer le vieillissement du revêtement, surtout sur une surface de 161.50 m² qui est plus susceptible à la stagnation d'eau à cause d'une pente nulle. L'absence de fissures et de risque d'incendie est positive, mais nécessite un suivi pour s'assurer de la persistance de ces bonnes conditions.</li>
+    </ul>
+    <ul>
+        <li>Étant donné le type de revêtement "autres" et la pente inexistante, l'humidité mesurée à 0.0 % est positive, mais la moisissure détectée représente un point de vigilance majeur. Sans obstacles drainant l'eau, cette zone pourrait connaître des accumulations d'humidité non compensées par l'entretien, entraînant un vieillissement prématuré.</li>
+    </ul>
+</section>
+<section>
+    <h2>CONSEILS DE L’ARTISAN COUVREUR</h2>
+    <ul>
+        <li>🔍 Inspection ciblée : Je recommande de vérifier régulièrement les angles rentrants et autres zones où l'eau pourrait stagner en raison de la pente nulle.</li>
+        <li>🧼 Entretien recommandé : Prévoir un nettoyage préventif pour enlever les mousses et lichens, ainsi que le curage des gouttières pour éviter toute accumulation qui pourrait accroître la moisissure.</li>
+        <li>🛠️ Travaux à envisager : Envisager de reprendre certains joints pour garantir une meilleure étanchéité, surtout dans les zones où l'usure est détectée.</li>
+        <li>📸 Suivi : Je recommande un contrôle visuel ou par drone une fois par an, ce qui convient pour une toiture en catégorie B, afin de détecter toutes évolutions préoccupantes.</li>
+        <li>🧪 Vérifications complémentaires : Effectuer des tests tels que l'arrosage ciblé et une vérification du dimensionnement des évacuations surtout qu'aucune pente ne favorise l'écoulement naturel de l'eau.</li>
+    </ul>
+</section>
+`;
