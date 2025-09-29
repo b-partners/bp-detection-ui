@@ -29,7 +29,7 @@ export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callback
       <Stack className='image-info' direction='row' gap={1}>
         <Box>
           <Typography>
-            (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.latitude})
+            (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.longitude})
           </Typography>
         </Box>
         <Box>
