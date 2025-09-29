@@ -9,7 +9,17 @@ export interface DetectionResult {
   properties: Properties;
   regions: { [key: string]: Region };
 }
-export type AnnotationCoveringFromAnalyse = 'BATI_TUILES' | 'BATI_BETON' | 'BATI_ARDOISE' | 'BATI_AUTRES';
+export type AnnotationCoveringFromAnalyse =
+  | 'ROOF_ARDOISE'
+  | 'ROOF_ASPHALTE_BITUME'
+  | 'ROOF_BAC_ACIER'
+  | 'ROOF_BETON_BRUT'
+  | 'ROOF_FIBRO_CIMENT'
+  | 'ROOF_GRAVIER'
+  | 'ROOF_MEMBRANE_SYNTHETIQUE'
+  | 'ROOF_TOLE_ONDULEE'
+  | 'ROOF_TUILES'
+  | 'ROOF_ZINC';
 
 export interface Properties {
   usure_rate: number;
