@@ -130,7 +130,7 @@ describe('Error message testing', () => {
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, no5CmAreaPictureMock).as('createAreaPicture');
 
     cy.dataCy(search_input_sel).type('{enter}');
-    cy.contains("Adresse momentanément indisponible.");
+    cy.contains('Adresse momentanément indisponible.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
