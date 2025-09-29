@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { degradationLevels } from '@/mappers';
+import { coveringTypeMap, degradationLevels } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -17,10 +17,7 @@ import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
-export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
-  if (covering.includes('ROOF')) return covering.slice(5);
-  return covering as string;
-};
+export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => coveringTypeMap[covering] || covering || 'Autres';
 
 export const DetectionResultStep = () => {
   const { imageSrc, useGeoJson } = useStep(({ params }) => params);
