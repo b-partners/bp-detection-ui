@@ -10,8 +10,8 @@
       "roof_area_in_m2": 264.84157690163977,
       "moisissure_rate": 42.42,
       "humidite_rate": 0.0,
-      "revetement_1": "BATI_TUILES",
-      "revetement_2": "BATI_TUILES"
+      "revetement_1": "ROOF_TUILES",
+      "revetement_2": "ROOF_TUILES"
     },
     "regions": {
       "d5fd6777-0d4b-4d2b-9d11-be73699da2b0": {
