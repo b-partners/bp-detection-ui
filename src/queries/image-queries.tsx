@@ -62,7 +62,7 @@ export const useQueryImageFromAddress = () => {
       if (e?.status === 404 || e.message === 'Network Error') return checkApiKey();
       let errorMessage = '';
 
-      if (e.message === 'areaPicturePrecision') errorMessage = "L'adresse que vous avez spécifiée n'est pas encore prise en charge.";
+      if (e.message === 'areaPicturePrecision') errorMessage = 'Adresse momentanément indisponible.';
       else if (e.message === 'detectionLimitExceeded') errorMessage = 'La limite des analyses gratuites a été atteinte.';
       else if (e.message === 'legalFileNotApproved') {
         open(<LegalFilesPdfRenderer />);

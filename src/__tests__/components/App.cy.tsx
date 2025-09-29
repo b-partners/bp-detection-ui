@@ -167,6 +167,9 @@ describe('Component testing', () => {
     cy.contains('Hauteur du bâtiment: 9.2m');
     cy.contains('Pente: 21%');
 
+    cy.contains('Revêtement 1: Tuiles');
+    cy.contains('Revêtement 2: Fibrociment');
+
     cy.contains('Comprendre votre rapport');
     cy.dataCy('toggle-llm-result-view').click();
 

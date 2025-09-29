@@ -29,6 +29,19 @@ export const ANNOTATION_COVERING = [
   { value: 'autres', label: 'Autres' },
 ];
 
+export const coveringTypeMap = {
+  ROOF_ARDOISE: 'Ardoise',
+  ROOF_ASPHALTE_BITUME: 'Asphalte Bitume',
+  ROOF_BAC_ACIER: 'Bac Acier',
+  ROOF_BETON_BRUT: 'Béton brut',
+  ROOF_FIBRO_CIMENT: 'Fibrociment',
+  ROOF_GRAVIER: 'Gravier',
+  ROOF_MEMBRANE_SYNTHETIQUE: 'Membrane synthétique',
+  ROOF_TOLE_ONDULEE: 'Tôle ondulée',
+  ROOF_TUILES: 'Tuiles',
+  ROOF_ZINC: 'Zinc',
+};
+
 export const degradationLevels = [
   { label: 'A', color: '#47BE62', name: 'Bon état' },
   { label: 'B', color: '#F4FBAB', name: 'Entretient à prévoir' },

@@ -75,7 +75,7 @@ const HaveTheCorrectImagePrecision5Cm = {
     });
   },
   no() {
-    cy.contains("L'adresse que vous avez spécifiée n'est pas encore prise en charge.");
+    cy.contains("Adresse momentanément indisponible.");
   },
 };
 

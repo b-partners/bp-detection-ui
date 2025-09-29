@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { ANNOTATION_COVERING, degradationLevels } from '@/mappers';
+import { coveringTypeMap, degradationLevels } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -17,18 +17,7 @@ import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
-export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
-  switch (covering) {
-    case 'BATI_ARDOISE':
-      return ANNOTATION_COVERING[2];
-    case 'BATI_BETON':
-      return ANNOTATION_COVERING[5];
-    case 'BATI_TUILES':
-      return ANNOTATION_COVERING[0];
-    default:
-      return ANNOTATION_COVERING[10];
-  }
-};
+export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => coveringTypeMap[covering] || covering || 'Autres';
 
 export const DetectionResultStep = () => {
   const { imageSrc, useGeoJson } = useStep(({ params }) => params);
@@ -57,8 +46,8 @@ export const DetectionResultStep = () => {
 
   useEffect(() => {
     if (data?.properties) {
-      setFormValue('cover1', fromAnalyseResultToDomain(data.properties.revetement_1)?.value);
-      setFormValue('cover2', fromAnalyseResultToDomain(data.properties.revetement_2)?.value);
+      setFormValue('cover1', fromAnalyseResultToDomain(data.properties.revetement_1));
+      setFormValue('cover2', fromAnalyseResultToDomain(data.properties.revetement_2));
     }
   }, [data]);
 
@@ -111,7 +100,7 @@ export const DetectionResultStep = () => {
             ))}
           </Stack>
           {sendInfoToRooferPending && (
-            <LlmResult width='90%' height='513px' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
+            <LlmResult width='90%' height='100%' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
           )}
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>

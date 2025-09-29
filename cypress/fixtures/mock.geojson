@@ -3,7 +3,7 @@
     {
       "properties": {
         "confidence": "0.9216269254684448",
-        "label": "BATI_TUILES"
+        "label": "ROOF_TUILES"
       },
       "type": "Feature",
       "geometry": {
@@ -839,7 +839,7 @@
     {
       "properties": {
         "confidence": "0.8182207345962524",
-        "label": "BATI_TUILES"
+        "label": "ROOF_TUILES"
       },
       "type": "Feature",
       "geometry": {
@@ -1518,7 +1518,7 @@
     {
       "properties": {
         "confidence": "0.7691612243652344",
-        "label": "BATI_TUILES"
+        "label": "ROOF_TUILES"
       },
       "type": "Feature",
       "geometry": {
