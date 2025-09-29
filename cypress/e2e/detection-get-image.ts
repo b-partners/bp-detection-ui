@@ -22,7 +22,7 @@ class GetImageStepUtilities {
 
   private HaveTheCorrectImagePrecision5Cm = {
     yes: () => this.resolve(),
-    no: () => cy.contains("L'adresse que vous avez spécifiée n'est pas encore prise en charge."),
+    no: () => cy.contains("Adresse momentanément indisponible."),
     no_detectionInitializationError: () => cy.contains("Erreur lors de l'initialisation de la détection."),
     no_limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
   };
