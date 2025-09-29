@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { ANNOTATION_COVERING, degradationLevels } from '@/mappers';
+import { degradationLevels } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -18,16 +18,8 @@ import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
 export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => {
-  switch (covering) {
-    case 'BATI_ARDOISE':
-      return ANNOTATION_COVERING[2];
-    case 'BATI_BETON':
-      return ANNOTATION_COVERING[5];
-    case 'BATI_TUILES':
-      return ANNOTATION_COVERING[0];
-    default:
-      return ANNOTATION_COVERING[10];
-  }
+  if (covering.includes('ROOF')) return covering.slice(5);
+  return covering as string;
 };
 
 export const DetectionResultStep = () => {
@@ -57,8 +49,8 @@ export const DetectionResultStep = () => {
 
   useEffect(() => {
     if (data?.properties) {
-      setFormValue('cover1', fromAnalyseResultToDomain(data.properties.revetement_1)?.value);
-      setFormValue('cover2', fromAnalyseResultToDomain(data.properties.revetement_2)?.value);
+      setFormValue('cover1', fromAnalyseResultToDomain(data.properties.revetement_1));
+      setFormValue('cover2', fromAnalyseResultToDomain(data.properties.revetement_2));
     }
   }, [data]);
 
