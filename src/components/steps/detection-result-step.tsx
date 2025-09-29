@@ -100,7 +100,7 @@ export const DetectionResultStep = () => {
             ))}
           </Stack>
           {sendInfoToRooferPending && (
-            <LlmResult width='90%' height='513px' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
+            <LlmResult width='90%' height='100%' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
           )}
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
