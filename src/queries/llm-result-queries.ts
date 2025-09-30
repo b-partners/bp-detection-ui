@@ -20,15 +20,16 @@ export const useLlmResultQuery = (roofAnnotatorProperties: Properties & { obstac
 
     const categoryReplacePattern = /<span>[\s\S]*<\/h3>/;
 
-    const htmlResult = await result.text();
+    const _htmlResult = await result.text();
     const currentDegradationLevel = degradationLevels.filter(({ label }) => label === global_rate_type)[0];
-    cache.llmResult(htmlResult || '');
-    return htmlResult.replace(
+    const htmlResult = _htmlResult.replace(
       categoryReplacePattern,
       `<span class='category-colored-round category-${global_rate_type}'></span>` +
         `CATÉGORIE ${global_rate_type}: ${currentDegradationLevel.name}`.toUpperCase() +
         '</h3>'
     );
+    cache.llmResult(htmlResult || '');
+    return htmlResult;
   };
 
   return useQuery({ queryFn, queryKey: [roofAnnotatorProperties] });
