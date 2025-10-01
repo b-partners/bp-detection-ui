@@ -176,7 +176,7 @@ export const llmResult_mock = `
     <h2>COMPRENDRE VOTRE RAPPORT</h2>
     <h3>
         <span>🟡</span>
-        CATÉGORIE B : BON
+        CATÉGORIE B : ENTRETIEN À PRÉVOIR
     </h3>
     <ul>
         <li>L'analyse a montré que l'état général de votre toiture est bon, avec une usure limitée à 3.43 %. Cependant, la présence de moisissure à hauteur de 29.18 % nécessite une attention particulière. Cette moisissure pourrait accélérer le vieillissement du revêtement, surtout sur une surface de 161.50 m² qui est plus susceptible à la stagnation d'eau à cause d'une pente nulle. L'absence de fissures et de risque d'incendie est positive, mais nécessite un suivi pour s'assurer de la persistance de ces bonnes conditions.</li>
