@@ -118,7 +118,7 @@ export const DetectionResultStep = () => {
                 source='HAUTEUR'
                 unity='m'
                 isLoading={isHeightAndSlopePending}
-                value={heightAndSlope?.height || 0}
+                value={heightAndSlope?.height}
               />
             )}
             {heightAndSlope?.height !== 0 && (
@@ -127,7 +127,7 @@ export const DetectionResultStep = () => {
                 isLoading={isHeightAndSlopePending}
                 loadingMessage='Calcule de la pente en cours...'
                 source='pente'
-                value={heightAndSlope?.slope || 0}
+                value={heightAndSlope?.slope}
               />
             )}
             <DetectionResultItem label="Taux d'usure" source='USURE' value={data?.properties?.['usure_rate'] || 0} />

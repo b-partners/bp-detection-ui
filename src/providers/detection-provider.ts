@@ -99,7 +99,7 @@ export const getDetectionResult = async (apiKey: string) => {
   });
   const result = await data.json();
 
-  if (!result?.properties?.vgg_file_url) throw new Error('Not done');
+  if (!result.geoJsonZone[0]?.properties?.vgg_file_url) throw new Error('Not done');
 
   return result;
 };

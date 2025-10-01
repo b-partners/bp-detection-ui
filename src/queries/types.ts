@@ -10,10 +10,6 @@ export interface DetectionResult {
   base64_img_data: null;
   properties: Properties;
   regions: { [key: string]: Region };
-  roof_height_data_status: SlopeAndHeightStatus;
-  roof_slope_data_status: SlopeAndHeightStatus;
-  roof_slope_in_degrees: 24.4;
-  roof_height_in_meters: 7.9;
 }
 export type AnnotationCoveringFromAnalyse =
   | 'ROOF_ARDOISE'
@@ -36,6 +32,10 @@ export interface Properties {
   roof_area_in_m2: number;
   revetement_1: AnnotationCoveringFromAnalyse;
   revetement_2: AnnotationCoveringFromAnalyse;
+  roof_height_data_status: SlopeAndHeightStatus;
+  roof_slope_data_status: SlopeAndHeightStatus;
+  roof_slope_in_degrees: number;
+  roof_height_in_meters: number;
 }
 
 export interface Region {
