@@ -1,4 +1,4 @@
-import { e2eTimeout, expectedImagePrecisionInCm, search_input_sel } from './utilities';
+import { defaultTimeout, expectedImagePrecisionInCm, search_input_sel } from './utilities';
 
 type TDecision = {
   yes: () => void;
@@ -12,7 +12,7 @@ class GetImageStepUtilities {
   }
 
   private haveRequestSuccessYesFunction = (alias: string, decision: TDecision) => {
-    cy.wait(alias, { timeout: e2eTimeout }).then(({ response }) => {
+    cy.wait(alias, { timeout: defaultTimeout }).then(({ response }) => {
       if (response?.statusCode !== 200) decision.no();
       else decision.yes();
     });
@@ -22,14 +22,14 @@ class GetImageStepUtilities {
 
   private HaveTheCorrectImagePrecision5Cm = {
     yes: () => this.resolve(),
-    no: () => cy.contains("Adresse momentanément indisponible."),
+    no: () => cy.contains('Adresse momentanément indisponible.'),
     no_detectionInitializationError: () => cy.contains("Erreur lors de l'initialisation de la détection."),
     no_limitExceededForFreeTrial: () => cy.contains('La limite des analyses gratuites a été atteinte.'),
   };
 
   private HaveCreateProspectSucceeded = {
     yes: () =>
-      cy.wait('@createAreaPicture', { timeout: e2eTimeout }).then(({ response }) => {
+      cy.wait('@createAreaPicture', { timeout: defaultTimeout }).then(({ response }) => {
         const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
         if (response?.statusCode !== 200) this.getImageError();
         else if (currentPrecisionInCm !== expectedImagePrecisionInCm) this.HaveTheCorrectImagePrecision5Cm.no();
@@ -90,7 +90,7 @@ export const detectionGetImage = (address: string, resolve: () => void) => {
 
   cy.contains('Récupération de votre adresse');
   cy.dataCy(search_input_sel).type(address);
-  cy.wait('@location-search', { timeout: e2eTimeout }).then(({ response }) => {
+  cy.wait('@location-search', { timeout: defaultTimeout }).then(({ response }) => {
     if (response?.statusCode !== 200 || response?.body?.length === 0) HaveResultFromSearchLocation.no(address);
     else HaveResultFromSearchLocation.yes();
   });
