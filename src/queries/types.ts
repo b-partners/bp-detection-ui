@@ -2,12 +2,18 @@ import { detectionResultColors } from '@/mappers';
 
 export type DetectionResultInVgg = Record<string, DetectionResult>;
 
+type SlopeAndHeightStatus = 'AVAILABLE' | 'UNAVAILABLE' | 'EXTRACTION_ERROR';
+
 export interface DetectionResult {
   size: null;
   filename: string;
   base64_img_data: null;
   properties: Properties;
   regions: { [key: string]: Region };
+  roof_height_data_status: SlopeAndHeightStatus;
+  roof_slope_data_status: SlopeAndHeightStatus;
+  roof_slope_in_degrees: 24.4;
+  roof_height_in_meters: 7.9;
 }
 export type AnnotationCoveringFromAnalyse =
   | 'ROOF_ARDOISE'
