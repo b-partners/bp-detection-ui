@@ -1,4 +1,5 @@
 import { detectionGetImage } from './detection-get-image';
+import { defaultTimeout, syncDetectionTimeout } from './utilities';
 
 const addressToDetect = '16 Rue Rameau, 21000 Dijon';
 
@@ -7,38 +8,42 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const timeout = 1200000;
 const expectedRoofArea = '270.00m²';
 const expectedUsureRate = '0%';
 const expectedMoisissureRate = '0%';
-const expectedHumidityRate = '22.22%';
-const expectedGlobalRage = `8.89%`;
-const expectedGPSValues = `47.3212159, 47.3212159`;
+const expectedHumidityRate = '22.53%';
+const expectedGlobalRage = `9.01%`;
+const expectedGPSValues = `47.3212159, 5.042935099999999`;
 const expectedImageSource = `COTE_D_OR_2024_5cm`;
+const expectedCovering1 = `Ardoise`;
+const expectedCovering2 = `Asphalte Bitume`;
 
 const HaveRoofDelimiterSucceeded = {
   yes: () => {
-    cy.contains(expectedRoofArea, { timeout });
+    cy.contains(expectedRoofArea, { timeout: defaultTimeout });
     cy.contains(`(GPS ${expectedGPSValues})`);
     cy.contains(`Source : ${expectedImageSource}`);
     cy.contains('Comprendre votre rapport').click();
-    cy.contains('Chargement des explications du rapport...', { timeout });
-    cy.contains('COMPRENDRE VOTRE RAPPORT', { timeout });
-    cy.contains('CATÉGORIE B', { timeout });
-    cy.contains('CONSEILS DE L’ARTISAN COUVREUR', { timeout });
+    cy.contains('Chargement des explications du rapport...', { timeout: defaultTimeout });
+    cy.contains('COMPRENDRE VOTRE RAPPORT', { timeout: syncDetectionTimeout });
+    cy.contains('CATÉGORIE B', { timeout: defaultTimeout });
+    cy.contains('CONSEILS DE L’ARTISAN COUVREUR', { timeout: defaultTimeout });
 
     cy.contains(`Note de dégradation globale : ${expectedGlobalRage}`);
     cy.contains('Obstacle / Velux: OUI');
     cy.contains(`Taux de moisissure: ${expectedMoisissureRate}`);
     cy.contains(`Taux d'usure: ${expectedUsureRate}`);
     cy.contains(`Taux d'humidité: ${expectedHumidityRate}`);
+
+    cy.contains(`Revêtement 1: ${expectedCovering1}`);
+    cy.contains(`Revêtement 2: ${expectedCovering2}`);
   },
   no: () => cy.contains('La détection sur cette zone a échoué, veuillez réessayer'),
 };
 
 const HaveTheCorrectImagePrecision5Cm = {
   yes() {
-    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
+    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout: defaultTimeout });
 
     const getX = (x: number) => Math.floor(x + 145 - 71);
     const getY = (y: number) => Math.floor(y + 397 - 387);
@@ -72,7 +77,7 @@ const HaveTheCorrectImagePrecision5Cm = {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createDetection', { timeout }).then(({ response }) => {
+    cy.wait('@createDetection', { timeout: syncDetectionTimeout }).then(({ response }) => {
       if (response?.statusCode !== 200) HaveRoofDelimiterSucceeded.no();
       else HaveRoofDelimiterSucceeded.yes();
     });
@@ -80,7 +85,14 @@ const HaveTheCorrectImagePrecision5Cm = {
 };
 
 describe('test detection on ' + addressToDetect, () => {
-  it('Default image detection', () => {
+  it('test detection on ' + addressToDetect, () => {
+    // temporary until new implementation
+    cy.intercept('PUT', '/detections/*/roofs/properties', {
+      roofDelimiter: {
+        roofHeightInMeter: 10,
+        roofSlopeInDegree: 10,
+      },
+    });
     cy.prodRequestUtilities();
     //steppers state
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');

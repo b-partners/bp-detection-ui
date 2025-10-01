@@ -1,4 +1,5 @@
-export const e2eTimeout = 1200000;
+export const syncDetectionTimeout = 60000;
+export const defaultTimeout = 30000;
 export const expectedImagePrecisionInCm = 5;
 export const expectedIsExtendedValueAfterExtendImage = true;
 

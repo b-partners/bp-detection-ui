@@ -61,10 +61,6 @@ export const DetectionResultStepStyle: SxProps = {
     boxShadow: 'none',
   },
   gap: 1,
-  '& .color-legend': {
-    height: 20,
-    width: 20,
-  },
   '& .degratation-rate-title': {
     py: 2,
     display: 'flex',
@@ -167,6 +163,10 @@ export const detectionResultItemStyle: SxProps = {
       left: 1,
       top: '50%',
       transform: 'translateY(-50%)',
+      height: 20,
+      width: 20,
+      border: `2px solid ${PALETTE_COLORS.pine}`,
+      borderRadius: '2px',
     },
   },
 };
