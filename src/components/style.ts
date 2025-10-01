@@ -43,6 +43,9 @@ export const llmResultStyle: SxProps = {
   overflowY: 'scroll',
   overflowX: 'hidden',
   position: 'relative',
+  '& *': {
+    fontFamily: "'Kumbh Sans', sans-serif !important",
+  },
   '& h1': {
     mb: 5,
   },

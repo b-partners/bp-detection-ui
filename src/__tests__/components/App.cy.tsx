@@ -174,6 +174,6 @@ describe('Component testing', () => {
     cy.dataCy('toggle-llm-result-view').click();
 
     cy.contains('COMPRENDRE VOTRE RAPPORT');
-    cy.contains('CATÉGORIE B : BON');
+    cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
   });
 });

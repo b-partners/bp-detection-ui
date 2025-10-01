@@ -1,11 +1,11 @@
 import { detectionGetImage } from './detection-get-image';
+import { defaultTimeout, syncDetectionTimeout } from './utilities';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const timeout = 1200000;
 const expectedRoofArea = '220.77m²';
 const expectedUsureRate = '2.25%';
 const expectedHumidityRate = '0.08%';
@@ -15,7 +15,7 @@ const expectedImageSource = `cite:PCRS`;
 
 const HaveRoofDelimiterSucceeded = {
   yes: () => {
-    cy.contains(expectedRoofArea, { timeout });
+    cy.contains(expectedRoofArea, { timeout: defaultTimeout });
     cy.contains(`(GPS ${expectedGPSValues})`);
     cy.contains(`Source : ${expectedImageSource}`);
     cy.contains(`Note de dégradation globale : ${expectedGlobalRage}`);
@@ -30,7 +30,7 @@ const HaveRoofDelimiterSucceeded = {
 
 const HaveTheCorrectImagePrecision5Cm = {
   yes() {
-    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
+    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout: defaultTimeout });
 
     const getX = (x: number) => Math.floor(x + 145 - 71);
     const getY = (y: number) => Math.floor(y + 397 - 387);
@@ -58,7 +58,7 @@ const HaveTheCorrectImagePrecision5Cm = {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createDetection', { timeout }).then(({ response }) => {
+    cy.wait('@createDetection', { timeout: syncDetectionTimeout }).then(({ response }) => {
       if (response?.statusCode !== 200) HaveRoofDelimiterSucceeded.no();
       else HaveRoofDelimiterSucceeded.yes();
     });
@@ -67,6 +67,13 @@ const HaveTheCorrectImagePrecision5Cm = {
 
 describe('test detection', () => {
   it('Default image detection', () => {
+    // temporary until new implementation
+    cy.intercept('PUT', '/detections/*/roofs/properties', {
+      roofDelimiter: {
+        roofHeightInMeter: 10,
+        roofSlopeInDegree: 10,
+      },
+    });
     cy.prodRequestUtilities();
     //steppers state
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');

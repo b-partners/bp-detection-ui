@@ -1,11 +1,11 @@
 import { detectionGetImage } from './detection-get-image';
+import { defaultTimeout, syncDetectionTimeout } from './utilities';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const timeout = 1200000;
 const expectedImagePrecisionInCm = 5;
 const expectedIsExtendedValueAfterExtendImage = true;
 const expectedMoisissure = `13.44%`;
@@ -14,7 +14,7 @@ const expectedUsure = `0%`;
 
 const HaveWeASuccessFullDetection = {
   yes() {
-    cy.contains('210.99m²', { timeout });
+    cy.contains('210.99m²', { timeout: defaultTimeout });
     cy.contains('Note de dégradation globale');
     cy.contains(`Taux d'usure: ${expectedUsure}`);
     cy.contains(`Taux de moisissure: ${expectedMoisissure}`);
@@ -26,13 +26,13 @@ const HaveWeASuccessFullDetection = {
 
 const HaveTheCorrectImagePrecision5Cm = {
   yes: () => {
-    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout });
+    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.", { timeout: defaultTimeout });
 
     cy.get('button')
       .contains(`Elargir la zone`)
       .click()
       .then(() => {
-        cy.wait('@createAreaPicture', { timeout }).then(({ response, request }) => {
+        cy.wait('@createAreaPicture', { timeout: defaultTimeout }).then(({ response, request }) => {
           const currentPrecisionInCm = response?.body?.actualLayer?.precisionLevelInCm;
           const currentIsExtendedValue = response?.body?.isExtended;
           expect(currentPrecisionInCm).to.equal(expectedImagePrecisionInCm, 'The precisionLevelInCm should be equal to 5cm');
@@ -68,14 +68,14 @@ const HaveTheCorrectImagePrecision5Cm = {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createDetection', { timeout }).then(({ response }) => {
+    cy.wait('@createDetection', { timeout: syncDetectionTimeout }).then(({ response }) => {
       const statusCode = response?.statusCode;
       if (statusCode === 200) HaveWeASuccessFullDetection.yes();
       else HaveWeASuccessFullDetection.no();
     });
   },
   no() {
-    cy.contains("Adresse momentanément indisponible.");
+    cy.contains('Adresse momentanément indisponible.');
   },
 };
 

@@ -1,18 +1,17 @@
 export const detectionResultColors = {
-  MOISISSURE_COULEUR: '#32FF7E',
-  MOISISSURE_CLAIR: '#32FF7E',
-  MOISISSURE_NOIRCIE: '#32FF7E',
-  USURE_LEGER: '#FF7F50',
-  USURE_IMPORTANTE: '#FF7F50',
-  OBSTACLE: '#FF3F34',
-  CHEMINEE: '#FF3F34',
-  HUMIDITE_CLAIR: '#1E90FF',
-  HUMIDITE_INTENSE: '#1E90FF',
-  VELUX: '#FF3F34',
-  HUMIDITE: '#1E90FF',
-  USURE: '#FF7F50',
-  MOISISSURE: '#32FF7E',
-  HAUTEUR: '#000000',
+  MOISISSURE_COULEUR: '#f68817',
+  MOISISSURE_CLAIR: '#f68817',
+  MOISISSURE_NOIRCIE: '#f68817',
+  MOISISSURE: '#f68817',
+  HUMIDITE_CLAIR: '#4987eb',
+  HUMIDITE_INTENSE: '#4987eb',
+  HUMIDITE: '#4987eb',
+  USURE_LEGER: '#898c94',
+  USURE_IMPORTANTE: '#898c94',
+  USURE: '#898c94',
+  OBSTACLE: '#ffffff',
+  CHEMINEE: '#ffffff',
+  VELUX: '#ffffff',
 };
 
 export const ANNOTATION_COVERING = [
@@ -44,8 +43,8 @@ export const coveringTypeMap = {
 
 export const degradationLevels = [
   { label: 'A', color: '#47BE62', name: 'Bon état' },
-  { label: 'B', color: '#F4FBAB', name: 'Entretient à prévoir' },
-  { label: 'C', color: '#F9DD56', name: 'Entretient nécessaire' },
+  { label: 'B', color: '#F4FBAB', name: 'Entretien à prévoir' },
+  { label: 'C', color: '#F9DD56', name: 'Entretien nécessaire' },
   { label: 'D', color: '#F38F4B', name: 'Réparation nécessaire' },
   { label: 'E', color: '#EF2C2D', name: 'Intervention urgente' },
 ];
