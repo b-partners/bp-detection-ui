@@ -12,7 +12,7 @@ const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Error message testing', () => {
-  it.only('Test bad apikey', () => {
+  it('Test bad apikey', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
     cy.intercept('POST', '/address/autocomplete*', { statusCode: 403 }).as('location-search');
 
@@ -203,6 +203,10 @@ describe('Error message testing', () => {
     cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts/${account_mock.id}/accountHolders`, [account_holder_mock]).as('getAccountHolders');
     // user informations
 
+    // points conversion
+    cy.intercept('POST', `/Prod/mercator`, mercator_mock).as('createDetectionImage');
+    // points conversion
+
     // prospect & areaPictures & get image
     cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
@@ -253,6 +257,8 @@ describe('Error message testing', () => {
     cy.contains('24 rue mozart mock 2').click();
 
     cy.dataCy('zoom-in').click();
+    cy.dataCy('zoom-in').click();
+    cy.dataCy('zoom-out').click();
 
     cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
     cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
