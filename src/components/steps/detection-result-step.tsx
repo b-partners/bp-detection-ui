@@ -13,7 +13,7 @@ import { cache, getCached } from '@/utilities';
 import { Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
+import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -108,10 +108,11 @@ export const DetectionResultStep = () => {
             <Typography className='title' mb={2}>
               Résultats de l'analyse :
             </Typography>
+            {heightAndSlope?.heightStatus && <AnnotationSlopeHeightAlert status={heightAndSlope.heightStatus} />}
             <DetectionResultItem label='Surface totale' source='surface' unity='m²' value={getCached.area().toFixed(2)} />
             <DetectionResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
             <DetectionResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
-            {heightAndSlope?.height !== 0 && (
+            {(!heightAndSlope?.heightStatus || heightAndSlope?.heightStatus === 'AVAILABLE') && (
               <DetectionResultItem
                 label='Hauteur du bâtiment'
                 loadingMessage='Calcule de la hauteur du bâtiment en cours...'
@@ -121,7 +122,7 @@ export const DetectionResultStep = () => {
                 value={heightAndSlope?.height}
               />
             )}
-            {heightAndSlope?.height !== 0 && (
+            {(!heightAndSlope?.slopeStatus || heightAndSlope?.slopeStatus === 'AVAILABLE') && (
               <DetectionResultItem
                 label='Pente'
                 isLoading={isHeightAndSlopePending}

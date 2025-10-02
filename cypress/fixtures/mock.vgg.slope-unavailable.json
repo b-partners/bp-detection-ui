@@ -12,10 +12,10 @@
       "humidite_rate": 0.0,
       "revetement_1": "ROOF_TUILES",
       "revetement_2": "ROOF_FIBRO_CIMENT",
-      "roof_height_data_status": "AVAILABLE",
-      "roof_slope_data_status": "AVAILABLE",
-      "roof_slope_in_degrees": 24.4,
-      "roof_height_in_meters": 7.9
+      "roof_height_data_status": "UNAVAILABLE",
+      "roof_slope_data_status": "UNAVAILABLE",
+      "roof_slope_in_degrees": null,
+      "roof_height_in_meters": null
     },
     "regions": {
       "d5fd6777-0d4b-4d2b-9d11-be73699da2b0": {

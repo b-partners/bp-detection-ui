@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress';
 import vitePreprocessor from 'cypress-vite';
 import { createRequire } from 'node:module';
 
-const timeout = 1200000;
+const timeout = 60000;
 
 export default defineConfig({
   viewportHeight: 500,
@@ -22,7 +22,7 @@ export default defineConfig({
 
   env: {
     codeCoverage: {
-      exclude: ['cypress/**/*.*', 'src/**/*.cy'],
+      exclude: ['cypress/**/*.*', 'src/**/*.cy.*'],
     },
   },
 

@@ -2,6 +2,7 @@ export * from './use-check-api-key';
 export * from './use-crop-polygon';
 export * from './use-dialog';
 export * from './use-notify';
+export * from './use-reset-store';
 export * from './use-step';
 export * from './use-toggle';
 export * from './use-windows-size';

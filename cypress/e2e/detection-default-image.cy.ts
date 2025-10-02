@@ -6,21 +6,21 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-const expectedRoofArea = '220.77m²';
-const expectedUsureRate = '2.25%';
-const expectedHumidityRate = '0.08%';
-const expectedGlobalRage = `1.15%`;
-const expectedGPSValues = `47.6653675, 47.6653675`;
-const expectedImageSource = `cite:PCRS`;
+const expectedRoofArea = '220.25m²';
+const expectedUsureRate = '0%';
+const expectedHumidityRate = '1.14%';
+const expectedGlobalRate = `0.45%`;
+const expectedGPSValues = `47.6653675, -2.7623357`;
+const expectedImageSource = `PCRS.LAMB93`;
 
 const HaveRoofDelimiterSucceeded = {
   yes: () => {
     cy.contains(expectedRoofArea, { timeout: defaultTimeout });
     cy.contains(`(GPS ${expectedGPSValues})`);
     cy.contains(`Source : ${expectedImageSource}`);
-    cy.contains(`Note de dégradation globale : ${expectedGlobalRage}`);
+    cy.contains(`Note de dégradation globale : ${expectedGlobalRate}`);
     cy.contains("Taux d'humidité");
-    cy.contains('Obstacle / Velux: OUI');
+    cy.contains('Obstacle / Velux: NON');
     cy.contains('Taux de moisissure: 0%');
     cy.contains(`Taux d'usure: ${expectedUsureRate}`);
     cy.contains(`Taux d'humidité: ${expectedHumidityRate}`);

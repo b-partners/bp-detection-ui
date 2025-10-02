@@ -14,12 +14,20 @@ interface DialogState extends DialogOptions {
 interface DialogAction {
   open: (content: ReactNode, options?: DialogOptions) => void;
   close: () => void;
+  reset: () => void;
 }
+
+const defaultState = {
+  content: undefined,
+  isOpen: false,
+};
 
 export const useDialog = create<DialogState & DialogAction>(set => ({
   close: () => set({ isOpen: false }),
-  content: undefined,
-  isOpen: false,
+  ...defaultState,
+  reset() {
+    set(defaultState);
+  },
   open(content, options) {
     set({ content: content, isOpen: true, ...options });
   },

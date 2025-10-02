@@ -5,7 +5,7 @@ import { detectionResultItemStyle } from './styles';
 
 interface ResultItemProps {
   label: string;
-  value: number | string;
+  value?: number | string;
   source: string;
   unity?: string;
   isLoading?: boolean;

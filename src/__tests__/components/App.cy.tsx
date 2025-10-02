@@ -1,10 +1,8 @@
-import App from '@/App';
-import { cache, ParamsUtilities, theme } from '@/utilities';
-import { ThemeProvider } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { cache, ParamsUtilities } from '@/utilities';
 import {
   account_holder_mock,
   account_mock,
+  AppComponent_Mock,
   area_picture_mock,
   detection_mock,
   detectionSync,
@@ -13,9 +11,7 @@ import {
   mercator_mock,
   prospect_mock,
   whoami_mock,
-} from './mocks';
-
-const queryClient = new QueryClient();
+} from '../mocks';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
@@ -49,7 +45,7 @@ describe('Component testing', () => {
     cy.intercept('GET', `http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
       'getDetectionResultGeojson'
     );
-    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultGeojson');
+    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
     cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
     cy.intercept('GET', `/image-result`, { fixture: 'sync-result-image.jpg', headers: { 'content-type': 'image/jpg' } }).as('detectionSync');
     // detection
@@ -65,13 +61,7 @@ describe('Component testing', () => {
 
     cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
 
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
-    );
+    cy.mount(<AppComponent_Mock />);
 
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -144,13 +134,7 @@ describe('Component testing', () => {
     cy.dataName('phone').type('123987456');
     cy.dataName('email').type('john@gmail.com');
 
-    cy.intercept('PUT', '/detections/*/roofs/properties', {
-      ...detection_mock,
-      roofDelimiter: {
-        roofHeightInMeter: null,
-        roofSlopeInDegree: null,
-      },
-    });
+    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('Calcule de la pente en cours...');
@@ -164,8 +148,8 @@ describe('Component testing', () => {
     cy.contains("Taux d'humidité");
     cy.contains('Obstacle / Velux');
 
-    cy.contains('Hauteur du bâtiment: 9.2m');
-    cy.contains('Pente: 21%');
+    cy.contains('Hauteur du bâtiment: 7.9m');
+    cy.contains('Pente: 24.4%');
 
     cy.contains('Revêtement 1: Tuiles');
     cy.contains('Revêtement 2: Fibrociment');

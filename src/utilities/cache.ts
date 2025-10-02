@@ -10,6 +10,7 @@ const ANNOTATION_ID_ITEM = 'ANNOTATION_ID_ITEM';
 const ROOF_DELIMITER_POLYGON_ITEM = 'ROOF_DELIMITER_POLYGON_ITEM';
 const LLM_RESULT = 'LLM_HTML_RESULT';
 const LEGAL_FILES_STATUS_APPROVED = 'LEGAL_FILES_STATUS_APPROVED';
+const IS_ROOF_PROPERTIES_REQUEST_DONE = 'IS_ROOF_PROPERTIES_REQUEST_DONE';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -38,7 +39,11 @@ export const cache = {
     return html;
   },
   legalFilesAlreadyApproved(value: boolean) {
-    localStorage.setItem(LEGAL_FILES_STATUS_APPROVED, JSON.stringify(LEGAL_FILES_STATUS_APPROVED));
+    localStorage.setItem(LEGAL_FILES_STATUS_APPROVED, JSON.stringify(value));
+    return value;
+  },
+  isRoofPropertiesRequestDone(value: boolean) {
+    localStorage.setItem(IS_ROOF_PROPERTIES_REQUEST_DONE, JSON.stringify(value));
     return value;
   },
 };
@@ -75,6 +80,10 @@ export const getCached = {
   },
   legalFilesAlreadyApproved() {
     const value = localStorage.getItem(LEGAL_FILES_STATUS_APPROVED);
+    return JSON.parse(value || 'false');
+  },
+  isRoofPropertiesRequestDone() {
+    const value = localStorage.getItem(IS_ROOF_PROPERTIES_REQUEST_DONE);
     return JSON.parse(value || 'false');
   },
 };
