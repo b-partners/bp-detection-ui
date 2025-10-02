@@ -23,9 +23,7 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Test process detection error', () => {
   it('Test process detection error', () => {
-    cy.intercept('GET', `*/vgg*`, { fixture: 'mock.vgg-slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as(
-      'getDetectionResultVgg'
-    );
+    cy.intercept('GET', `*/vgg*`, { fixture: 'mock.vgg-slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
