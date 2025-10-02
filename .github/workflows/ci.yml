@@ -50,6 +50,7 @@ jobs:
           echo LLM_ANALYSE_RESULT=${{ env.LLM_ANALYSE_RESULT }} >> .env
           echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env
           echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env
+          echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env
 
           npm run test -- --browser firefox
 
