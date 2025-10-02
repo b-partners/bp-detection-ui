@@ -2,7 +2,7 @@ import { detectionResultColors } from '@/mappers';
 
 export type DetectionResultInVgg = Record<string, DetectionResult>;
 
-type SlopeAndHeightStatus = 'AVAILABLE' | 'UNAVAILABLE' | 'EXTRACTION_ERROR';
+export type SlopeAndHeightStatus = 'AVAILABLE' | 'UNAVAILABLE' | 'EXTRACTION_ERROR';
 
 export interface DetectionResult {
   size: null;
