@@ -9,6 +9,7 @@ import {
   locations_mock,
   mercator_mock,
   prospect_mock,
+  roofAnalyseLimitExceededResponse_Mock,
   tooBigPolygonResponse_mock,
   whoami_mock,
 } from '../mocks';
@@ -102,6 +103,42 @@ describe('Test process detection error', () => {
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('La détection sur cette zone a échoué, veuillez réessayer');
+    cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
+  });
+
+  it('Test detection free limit', () => {
+    cy.intercept('POST', `**/detections/**/sync`, roofAnalyseLimitExceededResponse_Mock).as('createDetection');
+
+    cy.dataCy('api-key-input', ' input').type('api-key-mock{enter}');
+
+    cy.dataCy(search_input_sel).type('24 rue mozart');
+    cy.wait('@location-search');
+
+    cy.contains('24 rue mozart mock 2').click();
+
+    cy.dataCy('zoom-in').click();
+    cy.dataCy('zoom-in').click();
+    cy.dataCy('zoom-out').click();
+
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(300, 300, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+
+    cy.dataCy('zoom-out').click();
+
+    cy.dataCy(process_detection_sel).click();
+
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('123987456');
+    cy.dataName('email').type('john@gmail.com');
+
+    cy.dataCy(process_detection_on_form_sel).click();
+
+    cy.contains('La limite des analyses gratuites a été atteinte.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
