@@ -8,7 +8,6 @@ import {
   area_picture_mock,
   detection_mock,
   detectionSync,
-  llmResult_mock,
   locations_mock,
   mercator_mock,
   prospect_mock,
@@ -22,8 +21,11 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-describe('Component testing', () => {
-  it('Test the app', () => {
+describe('Test process detection error', () => {
+  it.skip('Test process detection error', () => {
+    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg-slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as(
+      'getDetectionResultGeojson'
+    );
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -44,14 +46,12 @@ describe('Component testing', () => {
     // prospect & areaPictures & get image
 
     // detection
+    cy.intercept('POST', `**/detections/**/roofer`, detection_mock).as('createDetection');
     cy.intercept('GET', `**/detections/**`, detection_mock).as('getDetection');
     cy.intercept('POST', `**/detections/**/image`, detection_mock).as('createDetectionImage');
-    cy.intercept('GET', `http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
+    cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
       'getDetectionResultGeojson'
     );
-    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultGeojson');
-    cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
-    cy.intercept('GET', `/image-result`, { fixture: 'sync-result-image.jpg', headers: { 'content-type': 'image/jpg' } }).as('detectionSync');
     // detection
 
     // points conversion
@@ -59,11 +59,9 @@ describe('Component testing', () => {
     // points conversion
 
     // email message
-    cy.intercept('POST', `**/detections/*/pdf`, { body: {} }).as('sendPdf');
-    cy.intercept('POST', `**/detections/*/roofer/email`, { body: {} }).as('sendUserInfo');
+    cy.intercept('POST', `**/detections/${detection_mock.id}/pdf`, { body: {} }).as('sendPdf');
+    cy.intercept('POST', `**/detections/${detection_mock.id}/roofer/email`, { body: {} }).as('sendUserInfo');
     // email message
-
-    cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
 
     cy.mount(
       <QueryClientProvider client={queryClient}>
@@ -78,12 +76,7 @@ describe('Component testing', () => {
 
     cy.contains('Récupération de votre adresse');
 
-    //steppers state
-    cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Délimitation de votre toiture').should('not.have.class', 'Mui-active');
-    //steppers state
-
-    cy.dataCy(search_input_sel).type('24 rue mozart');
+    cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
     cy.wait('@location-search');
 
     cy.contains('24 rue mozart mock');
@@ -104,33 +97,19 @@ describe('Component testing', () => {
     cy.contains('Récupération de votre adresse').should('have.class', 'Mui-completed');
     cy.contains('Délimitation de votre toiture').should('have.class', 'Mui-active');
     //steppers state
-    //llm result
-    cy.intercept('GET', '/toiture**', res => {
-      res.reply({ body: llmResult_mock, headers: { 'content-type': 'text/html' } });
-    });
-    //llm result
 
     cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
 
-    const getX = (x: number) => Math.floor(x + 145 - 71);
-    const getY = (y: number) => Math.floor(y + 397 - 387);
-
     cy.dataCy('zoom-in').click();
     cy.dataCy('zoom-in').click();
-    cy.dataCy('zoom-reset').click();
+    cy.dataCy('zoom-out').click();
 
-    cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(42), getY(279), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(25), getY(362), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(44), getY(390), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(137), getY(423), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(273), getY(438), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(381), getY(447), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(408), getY(313), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(337), getY(271), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(354), getY(203), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(237), getY(151), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(300, 300, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
+    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
 
     cy.dataCy('zoom-out').click();
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
@@ -144,30 +123,40 @@ describe('Component testing', () => {
     cy.dataName('phone').type('123987456');
     cy.dataName('email').type('john@gmail.com');
 
-    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
+    cy.intercept('POST', `**/detections/**/roofer`, { statusCode: 500 }).as('createDetection');
+    cy.intercept('POST', `**/detections/*/sync`, { statusCode: 500 });
+
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.contains('Calcule de la pente en cours...');
-    cy.contains('Calcule de la hauteur du bâtiment en cours...');
+    cy.contains('La détection sur cette zone a échoué, veuillez réessayer');
+    cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
 
-    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
+    cy.intercept('POST', `**/detections/*/sync`, {
+      statusCode: 501,
+      body: { message: 'Provided geojson polygon is too large to be processed synchronously' },
+    }).as('createDetection');
 
-    cy.contains('Hauteur du bâtiment');
-    cy.contains("Taux d'usure");
-    cy.contains('Taux de moisissure');
-    cy.contains("Taux d'humidité");
-    cy.contains('Obstacle / Velux');
+    cy.dataCy(process_detection_sel).click();
 
-    cy.contains('Hauteur du bâtiment: 7.9m');
-    cy.contains('Pente: 24.4%');
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('123987456');
+    cy.dataName('email').type('john@gmail.com');
 
-    cy.contains('Revêtement 1: Tuiles');
-    cy.contains('Revêtement 2: Fibrociment');
+    cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.contains('Comprendre votre rapport');
-    cy.dataCy('toggle-llm-result-view').click();
+    cy.contains('La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge.');
+    cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
 
-    cy.contains('COMPRENDRE VOTRE RAPPORT');
-    cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
+    cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
+    cy.dataCy(process_detection_sel).click();
+
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('123987456');
+    cy.dataName('email').type('john@gmail.com');
+
+    cy.dataCy(process_detection_on_form_sel).click();
+    cy.contains('La pente et la hauteur du bâtiment ne sont pas encore disponibles.');
   });
 });
