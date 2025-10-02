@@ -189,7 +189,9 @@ describe('Test process detection error', () => {
   });
 
   it('Test slope & height unavailable', () => {
-    cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
+    cy.intercept('POST', `/detections/**/sync`, detectionSync).as('detectionSync');
+    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock).as('setRoofProperties');
+    cy.intercept('GET', `/detections/*`, detection_mock).as('getDetection');
 
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
@@ -226,7 +228,7 @@ describe('Test process detection error', () => {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait(['@getDetection', '@detectionSync', '@getDetectionResultVgg']);
+    cy.wait(['@setRoofProperties', '@detectionSync', '@getDetection', '@getDetectionResultVgg']);
     cy.get('.MuiAlert-root').contains('La pente et la hauteur du bâtiment ne sont pas encore disponibles.');
   });
 });

@@ -53,6 +53,12 @@ jobs:
           echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env.local
 
           npm run test -- --browser firefox
+      - name: Upload screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-screenshots
+          path: cypress/screenshots/
 
   style:
     runs-on: ubuntu-latest
