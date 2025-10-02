@@ -1,10 +1,8 @@
-import App from '@/App';
-import { cache, ParamsUtilities, theme } from '@/utilities';
-import { ThemeProvider } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { cache, ParamsUtilities } from '@/utilities';
 import {
   account_holder_mock,
   account_mock,
+  AppComponent_Mock,
   area_picture_mock,
   detection_mock,
   detectionSync,
@@ -13,9 +11,7 @@ import {
   mercator_mock,
   prospect_mock,
   whoami_mock,
-} from './mocks';
-
-const queryClient = new QueryClient();
+} from '../mocks';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
@@ -65,13 +61,7 @@ describe('Component testing', () => {
 
     cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
 
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
-    );
+    cy.mount(<AppComponent_Mock />);
 
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');

@@ -1,10 +1,15 @@
-import App from '@/App';
-import { ParamsUtilities, theme } from '@/utilities';
-import { ThemeProvider } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { account_holder_mock, account_mock, area_picture_mock, detection_mock, locations_mock, mercator_mock, prospect_mock, whoami_mock } from './mocks';
-
-const queryClient = new QueryClient();
+import { ParamsUtilities } from '@/utilities';
+import {
+  account_holder_mock,
+  account_mock,
+  AppComponent_Mock,
+  area_picture_mock,
+  detection_mock,
+  locations_mock,
+  mercator_mock,
+  prospect_mock,
+  whoami_mock,
+} from '../mocks';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
@@ -16,13 +21,7 @@ describe('Error message testing', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
     cy.intercept('POST', '/address/autocomplete*', { statusCode: 403 }).as('location-search');
 
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
-    );
+    cy.mount(<AppComponent_Mock />);
 
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -65,13 +64,7 @@ describe('Error message testing', () => {
 
     cy.intercept('POST', `**/detections/**/roofer`, detection_mock).as('createDetection');
 
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
-    );
+    cy.mount(<AppComponent_Mock />);
 
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -163,13 +156,7 @@ describe('Error message testing', () => {
     );
     // detection
 
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
-    );
+    cy.mount(<AppComponent_Mock />);
 
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -228,13 +215,7 @@ describe('Error message testing', () => {
     );
     // detection
 
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
-    );
+    cy.mount(<AppComponent_Mock />);
 
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input', ' input').type('api-key-mock{enter}');

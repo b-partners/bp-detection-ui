@@ -26,15 +26,23 @@ interface State {
 interface Action {
   setStep(step: State): void;
   setSession(session: string): void;
+  reset(): void;
 }
 
-export const useStep = create<State & Action>(set => ({
+const defaultState: any = {
   params: {},
+  actualStep: 0,
+};
+
+export const useStep = create<State & Action>(set => ({
+  ...defaultState,
+  reset() {
+    set(defaultState);
+  },
   setStep(step) {
     set(prev => ({ ...prev, ...step, params: { ...prev.params, ...step.params } }));
   },
   setSession(session) {
     set(prev => ({ ...prev, params: { ...prev.params, sessionId: session } }));
   },
-  actualStep: 0,
 }));
