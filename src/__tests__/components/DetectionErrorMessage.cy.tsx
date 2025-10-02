@@ -23,7 +23,7 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Test process detection error', () => {
   it('Test process detection error', () => {
-    cy.intercept('GET', `*/vgg*`, { fixture: 'mock.vgg-slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
+    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg-slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -44,9 +44,9 @@ describe('Test process detection error', () => {
     // prospect & areaPictures & get image
 
     // detection
-    cy.intercept('POST', `**/detections/**/roofer`, detection_mock).as('createDetection');
-    cy.intercept('GET', `**/detections/**`, detection_mock).as('getDetection');
-    cy.intercept('POST', `**/detections/**/image`, detection_mock).as('createDetectionImage');
+    cy.intercept('POST', `/detections/**/roofer`, detection_mock).as('createDetection');
+    cy.intercept('GET', `/detections/**`, detection_mock).as('getDetection');
+    cy.intercept('POST', `/detections/**/image`, detection_mock).as('createDetectionImage');
     cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
       'getDetectionResultGeojson'
     );
@@ -57,8 +57,8 @@ describe('Test process detection error', () => {
     // points conversion
 
     // email message
-    cy.intercept('POST', `**/detections/${detection_mock.id}/pdf`, { body: {} }).as('sendPdf');
-    cy.intercept('POST', `**/detections/${detection_mock.id}/roofer/email`, { body: {} }).as('sendUserInfo');
+    cy.intercept('POST', `/detections/${detection_mock.id}/pdf`, { body: {} }).as('sendPdf');
+    cy.intercept('POST', `/detections/${detection_mock.id}/roofer/email`, { body: {} }).as('sendUserInfo');
     // email message
 
     cy.mount(
@@ -70,10 +70,12 @@ describe('Test process detection error', () => {
     );
 
     cy.contains("Clé d'API invalide");
+    cy.log('Type api key');
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
     cy.contains('Récupération de votre adresse');
 
+    cy.log('Type address');
     cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
     cy.wait('@location-search');
 
@@ -84,10 +86,8 @@ describe('Test process detection error', () => {
 
     cy.contains('24 rue mozart mock 2').click();
 
-    cy.wait('@getWhoami');
-    cy.wait('@getAccounts');
-    cy.wait('@getAccountHolders');
-    cy.wait('@createProspect');
+    cy.log('Wait for all request to get image');
+    cy.wait(['@getWhoami', '@getAccounts', '@getAccountHolders', '@createProspect']);
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
@@ -121,15 +121,15 @@ describe('Test process detection error', () => {
     cy.dataName('phone').type('123987456');
     cy.dataName('email').type('john@gmail.com');
 
-    cy.intercept('POST', `**/detections/**/roofer`, { statusCode: 500 }).as('createDetection');
-    cy.intercept('POST', `**/detections/*/sync`, { statusCode: 500 });
+    cy.intercept('POST', `/detections/**/roofer`, { statusCode: 500 }).as('createDetection');
+    cy.intercept('POST', `/detections/*/sync`, { statusCode: 500 });
 
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('La détection sur cette zone a échoué, veuillez réessayer');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
 
-    cy.intercept('POST', `**/detections/*/sync`, {
+    cy.intercept('POST', `/detections/*/sync`, {
       statusCode: 501,
       body: { message: 'Provided geojson polygon is too large to be processed synchronously' },
     }).as('createDetection');

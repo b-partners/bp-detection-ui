@@ -22,7 +22,7 @@ export default defineConfig({
 
   env: {
     codeCoverage: {
-      exclude: ['cypress/**/*.*', 'src/**/*.cy'],
+      exclude: ['cypress/**/*.*', 'src/**/*.cy.*'],
     },
   },
 
