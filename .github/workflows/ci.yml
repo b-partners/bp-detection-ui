@@ -7,6 +7,8 @@ env:
   REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/mercator
   REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/pixel
   REACT_APP_GEO_DETECTION_API: https://qncd60qbk0.execute-api.eu-west-3.amazonaws.com
+  LLM_ANALYSE_RESULT: http://localhost:8080/toiture
+  LLM_API_KEY: mock-llm-api-key
 
 jobs:
   tests:
@@ -42,7 +44,9 @@ jobs:
           echo REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL }} >> .env
           echo REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL }} >> .env
           echo REACT_APP_GEO_DETECTION_API=${{ env.REACT_APP_GEO_DETECTION_API }} >> .env
-          echo LLM_ANALYSE_RESULT=${{ secrets.LLM_ANALYSE_RESULT }} >> .env
+          echo LLM_ANALYSE_RESULT=${{ env.LLM_ANALYSE_RESULT }} >> .env
+          echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env
+          echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env
 
           npm test
 

@@ -237,7 +237,7 @@ describe('Error message testing', () => {
     );
 
     cy.contains("Clé d'API invalide");
-    cy.dataCy('api-key-input').type('api-key-mock{enter}');
+    cy.dataCy('api-key-input', ' input').type('api-key-mock{enter}');
 
     cy.contains('Récupération de votre adresse');
 

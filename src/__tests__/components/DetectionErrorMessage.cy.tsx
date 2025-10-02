@@ -76,7 +76,7 @@ describe('Test process detection error', () => {
 
     cy.contains('Récupération de votre adresse');
 
-    cy.dataCy(search_input_sel).type('24 rue mozart');
+    cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
     cy.wait('@location-search');
 
     cy.contains('24 rue mozart mock');
