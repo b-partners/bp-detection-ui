@@ -51,7 +51,7 @@ describe('Test process detection error', () => {
     // detection
 
     // points conversion
-    cy.intercept('POST', `/Prod/mercator`, mercator_mock).as('createDetectionImage');
+    cy.intercept('POST', `/Prod/mercator`, mercator_mock).as('convertPointMercator');
     // points conversion
 
     // llm result
@@ -69,7 +69,7 @@ describe('Test process detection error', () => {
   });
 
   it('Test /sync error 500', () => {
-    cy.intercept('POST', `/detections/*/sync`, { statusCode: 500 }).as('createDetection');
+    cy.intercept('POST', `/detections/*/sync`, { statusCode: 500 }).as('detectionSync');
 
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -112,7 +112,7 @@ describe('Test process detection error', () => {
   });
 
   it('Test free limit', () => {
-    cy.intercept('POST', `**/detections/**/sync`, roofAnalyseLimitExceededResponse_Mock).as('createDetection');
+    cy.intercept('POST', `**/detections/**/sync`, roofAnalyseLimitExceededResponse_Mock).as('detectionSync');
 
     cy.dataCy('api-key-input', ' input').type('api-key-mock{enter}');
 
@@ -148,7 +148,7 @@ describe('Test process detection error', () => {
   });
 
   it('Test too big polygon', () => {
-    cy.intercept('POST', `/detections/*/sync`, tooBigPolygonResponse_mock).as('createDetection');
+    cy.intercept('POST', `/detections/*/sync`, tooBigPolygonResponse_mock).as('detectionSync');
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
@@ -226,7 +226,7 @@ describe('Test process detection error', () => {
 
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@getDetectionResultVgg');
+    cy.wait(['@getDetection', '@detectionSync', '@getDetectionResultVgg']);
     cy.get('.MuiAlert-root').contains('La pente et la hauteur du bâtiment ne sont pas encore disponibles.');
   });
 });
