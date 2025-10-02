@@ -183,6 +183,6 @@ export const addressStyle: SxProps = {
 export const annotationSlopeHeightAlertStyle: SxProps = {
   '& .MuiAlert-action button': {
     position: 'relative',
-    transform: "translateX(-20%)"
+    transform: 'translateX(-20%)',
   },
 };
