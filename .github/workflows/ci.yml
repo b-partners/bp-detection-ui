@@ -3,11 +3,11 @@ on: [push, pull_request, workflow_dispatch]
 
 env:
   AWS_REGION: eu-west-3
-  REACT_APP_BPARTNERS_API_URL: https://api.preprod.bpartners.app
+  REACT_APP_BPARTNERS_API_URL: https://mock.com
   REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/mercator
   REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/pixel
-  REACT_APP_GEO_DETECTION_API: https://qncd60qbk0.execute-api.eu-west-3.amazonaws.com
-  LLM_ANALYSE_RESULT: http://localhost:8080/toiture
+  REACT_APP_GEO_DETECTION_API: https://mock.com
+  LLM_ANALYSE_RESULT: https://mock.com/toiture
   LLM_API_KEY: mock-llm-api-key
 
 jobs:
@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.19.0
+      - uses: browser-actions/setup-firefox@v1
       - id: install-aws-cli
         uses: unfor19/install-aws-cli-action@v1.0.3
         with:
@@ -42,15 +43,22 @@ jobs:
 
       - run: npm install --legacy-peer-deps
       - run: |
-          echo REACT_APP_BPARTNERS_API_URL=${{ env.REACT_APP_BPARTNERS_API_URL }} > .env
-          echo REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL }} >> .env
-          echo REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL }} >> .env
-          echo REACT_APP_GEO_DETECTION_API=${{ env.REACT_APP_GEO_DETECTION_API }} >> .env
-          echo LLM_ANALYSE_RESULT=${{ env.LLM_ANALYSE_RESULT }} >> .env
-          echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env
-          echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env
+          echo REACT_APP_BPARTNERS_API_URL=${{ env.REACT_APP_BPARTNERS_API_URL }} > .env.local
+          echo REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL }} >> .env.local
+          echo REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL }} >> .env.local
+          echo REACT_APP_GEO_DETECTION_API=${{ env.REACT_APP_GEO_DETECTION_API }} >> .env.local
+          echo LLM_ANALYSE_RESULT=${{ env.LLM_ANALYSE_RESULT }} >> .env.local
+          echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env.local
+          echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env.local
+          echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env.local
 
-          npm run test
+          npm run test -- --browser firefox
+      - name: Upload screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-screenshots
+          path: cypress/screenshots/
 
   style:
     runs-on: ubuntu-latest

@@ -136,9 +136,9 @@ export const detectionSync = {
         type: 'MultiPolygon',
       },
       properties: {
-        vgg_file_url: 'http://localhost:8080/vgg',
+        vgg_file_url: 'https://mock.com/vgg',
         zoom: 20,
-        original_image_url: 'http://localhost:8080/image-result',
+        original_image_url: 'https://mock.com/image-result',
         id: '7f077387-587a-4d76-bf66-523668e7276b',
       },
     },
