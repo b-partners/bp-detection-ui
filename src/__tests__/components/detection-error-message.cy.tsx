@@ -1,16 +1,17 @@
 import { cache, ParamsUtilities } from '@/utilities';
-import { AppComponent_Mock, tooBigPolygonResponse_mock } from '../mocks';
 import {
   account_holder_mock,
   account_mock,
+  AppComponent_Mock,
   area_picture_mock,
   detection_mock,
   detectionSync,
   locations_mock,
   mercator_mock,
   prospect_mock,
+  tooBigPolygonResponse_mock,
   whoami_mock,
-} from '../mocks/mocks';
+} from '../mocks';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
@@ -19,7 +20,6 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Test process detection error', () => {
   beforeEach(() => {
-    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -40,7 +40,7 @@ describe('Test process detection error', () => {
     // prospect & areaPictures & get image
 
     // detection
-    cy.intercept('POST', `/detections/**/roofer`, detection_mock).as('createDetection');
+    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
     cy.intercept('GET', `/detections/**`, detection_mock).as('getDetection');
     cy.intercept('POST', `/detections/**/image`, detection_mock).as('createDetectionImage');
     cy.intercept('GET', ` http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
@@ -56,6 +56,8 @@ describe('Test process detection error', () => {
     cy.intercept('POST', `/detections/${detection_mock.id}/pdf`, { body: {} }).as('sendPdf');
     cy.intercept('POST', `/detections/${detection_mock.id}/roofer/email`, { body: {} }).as('sendUserInfo');
     // email message
+
+    cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
 
     cy.mount(<AppComponent_Mock />);
   });

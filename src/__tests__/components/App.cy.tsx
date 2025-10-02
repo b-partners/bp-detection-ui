@@ -45,7 +45,7 @@ describe('Component testing', () => {
     cy.intercept('GET', `http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as(
       'getDetectionResultGeojson'
     );
-    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultGeojson');
+    cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
     cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
     cy.intercept('GET', `/image-result`, { fixture: 'sync-result-image.jpg', headers: { 'content-type': 'image/jpg' } }).as('detectionSync');
     // detection
