@@ -22,7 +22,7 @@ const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Test process detection error', () => {
-  it.skip('Test process detection error', () => {
+  it('Test process detection error', () => {
     cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg-slope-unavailable.json', headers: { 'content-type': 'application/json' } }).as(
       'getDetectionResultGeojson'
     );

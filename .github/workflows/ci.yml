@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.19.0
+      - uses: browser-actions/setup-firefox@v1
       - id: install-aws-cli
         uses: unfor19/install-aws-cli-action@v1.0.3
         with:
@@ -50,7 +51,7 @@ jobs:
           echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env
           echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env
 
-          npm run test
+          npm run test -- --browser firefox
 
   style:
     runs-on: ubuntu-latest

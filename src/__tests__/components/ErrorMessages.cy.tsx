@@ -192,7 +192,7 @@ describe('Error message testing', () => {
     cy.contains('24 rue mozart mock 2').click();
   });
 
-  it.skip('Test detection free limit', () => {
+  it('Test detection free limit', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
