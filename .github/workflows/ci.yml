@@ -43,14 +43,14 @@ jobs:
 
       - run: npm install --legacy-peer-deps
       - run: |
-          echo REACT_APP_BPARTNERS_API_URL=${{ env.REACT_APP_BPARTNERS_API_URL }} > .env
-          echo REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL }} >> .env
-          echo REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL }} >> .env
-          echo REACT_APP_GEO_DETECTION_API=${{ env.REACT_APP_GEO_DETECTION_API }} >> .env
-          echo LLM_ANALYSE_RESULT=${{ env.LLM_ANALYSE_RESULT }} >> .env
-          echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env
-          echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env
-          echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env
+          echo REACT_APP_BPARTNERS_API_URL=${{ env.REACT_APP_BPARTNERS_API_URL }} > .env.local
+          echo REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL }} >> .env.local
+          echo REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL=${{ env.REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL }} >> .env.local
+          echo REACT_APP_GEO_DETECTION_API=${{ env.REACT_APP_GEO_DETECTION_API }} >> .env.local
+          echo LLM_ANALYSE_RESULT=${{ env.LLM_ANALYSE_RESULT }} >> .env.local
+          echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env.local
+          echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env.local
+          echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env.local
 
           npm run test -- --browser firefox
 
