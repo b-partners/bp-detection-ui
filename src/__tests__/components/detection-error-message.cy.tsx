@@ -106,7 +106,7 @@ describe('Test process detection error', () => {
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
-  it('Test detection free limit', () => {
+  it('Test free limit', () => {
     cy.intercept('POST', `**/detections/**/sync`, roofAnalyseLimitExceededResponse_Mock).as('createDetection');
 
     cy.dataCy('api-key-input', ' input').type('api-key-mock{enter}');
