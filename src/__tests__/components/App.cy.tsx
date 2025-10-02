@@ -144,13 +144,7 @@ describe('Component testing', () => {
     cy.dataName('phone').type('123987456');
     cy.dataName('email').type('john@gmail.com');
 
-    cy.intercept('PUT', '/detections/*/roofs/properties', {
-      ...detection_mock,
-      roofDelimiter: {
-        roofHeightInMeter: null,
-        roofSlopeInDegree: null,
-      },
-    });
+    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('Calcule de la pente en cours...');
@@ -164,8 +158,8 @@ describe('Component testing', () => {
     cy.contains("Taux d'humidité");
     cy.contains('Obstacle / Velux');
 
-    cy.contains('Hauteur du bâtiment: 9.2m');
-    cy.contains('Pente: 21%');
+    cy.contains('Hauteur du bâtiment: 7.9m');
+    cy.contains('Pente: 24.4%');
 
     cy.contains('Revêtement 1: Tuiles');
     cy.contains('Revêtement 2: Fibrociment');
