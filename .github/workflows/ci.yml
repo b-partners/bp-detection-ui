@@ -48,7 +48,7 @@ jobs:
           echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env
           echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env
 
-          npm test
+          npm run test
 
   style:
     runs-on: ubuntu-latest
