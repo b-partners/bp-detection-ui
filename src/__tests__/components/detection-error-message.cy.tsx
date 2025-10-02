@@ -6,6 +6,7 @@ import {
   area_picture_mock,
   detection_mock,
   detectionSync,
+  llmResult_mock,
   locations_mock,
   mercator_mock,
   prospect_mock,
@@ -52,6 +53,10 @@ describe('Test process detection error', () => {
     // points conversion
     cy.intercept('POST', `/Prod/mercator`, mercator_mock).as('createDetectionImage');
     // points conversion
+
+    // llm result
+    cy.intercept('GET', '/toiture**', res => res.reply({ body: llmResult_mock, headers: { 'content-type': 'text/html' } }));
+    // llm result
 
     // email message
     cy.intercept('POST', `/detections/${detection_mock.id}/pdf`, { body: {} }).as('sendPdf');
@@ -183,7 +188,7 @@ describe('Test process detection error', () => {
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
-  it('Test slope & heigh unavailable', () => {
+  it('Test slope & height unavailable', () => {
     cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
 
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -220,6 +225,8 @@ describe('Test process detection error', () => {
     cy.dataName('email').type('john@gmail.com');
 
     cy.dataCy(process_detection_on_form_sel).click();
-    cy.contains('La pente et la hauteur du bâtiment ne sont pas encore disponibles.');
+
+    cy.wait('@getDetectionResultVgg');
+    cy.get('.MuiAlert-root').contains('La pente et la hauteur du bâtiment ne sont pas encore disponibles.');
   });
 });
