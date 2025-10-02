@@ -27,6 +27,7 @@ jobs:
           fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v4
+      - uses: browser-actions/setup-firefox@v1
       - id: install-aws-cli
         uses: unfor19/install-aws-cli-action@v1.0.3
         with:
@@ -53,7 +54,7 @@ jobs:
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
           if [ "${{ secrets.RUN_IT }}" = "1" ]; then
-            npm run it
+            npm run it -- --browser firefox
           fi
 
       - name: Check previous test status
