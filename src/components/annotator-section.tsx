@@ -119,6 +119,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           setPolygons={setMappedDomainPolygons}
           polygonList={mappedAnnotatorPolygons}
           image={currentImageSrc}
+          closeOnNear
         />
         <Box ref={canvasRef} component='canvas' display='none'></Box>
       </Box>
