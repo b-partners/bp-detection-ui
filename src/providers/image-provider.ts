@@ -60,6 +60,9 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
 export const updateAreaPicture = async (areaPictureDetails: AreaPictureDetails) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountId } = await userInfoProvider(apiKey);
-  const { data } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', areaPictureDetails.id || v4(), { ...areaPictureDetails });
+  const { data } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', areaPictureDetails.id || v4(), {
+    ...areaPictureDetails,
+    isOpaque: true,
+  });
   return data;
 };
