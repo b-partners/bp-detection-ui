@@ -27,6 +27,7 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
         level: ZoomLevel.HOUSES_0,
         number: 20,
       },
+      isOpaque: true,
     });
 
     return { areaPictureDetails, prospect: prospect?.[0] };
