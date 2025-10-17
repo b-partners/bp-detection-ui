@@ -68,9 +68,9 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   };
 
   const handleClickDetectionButton = () => {
-    const isValidPoligonSize = checkPolygonSizeUnder1024(polygons[0]);
+    const isValidPolygonSize = checkPolygonSizeUnder1024(polygons[0]);
 
-    openDialog(<DetectionForm onValid={handleValidateForm} withoutImage={!isValidPoligonSize} />, { style: DialogFormStyle });
+    openDialog(<DetectionForm onValid={handleValidateForm} withoutImage={!isValidPolygonSize} />, { style: DialogFormStyle });
   };
 
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
@@ -102,7 +102,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
         </Box>
         <Box display='flex' alignItems='center' gap={2} mb={2}>
           <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
-            {isExtended ? 'Rétrécir la zone' : 'Elargir la zone'}
+            {isExtended ? 'Rétrécir la zone' : 'Élargir la zone'}
           </Button>
           <Button variant='contained' onClick={handleGetNewImage} disabled={isPending}>
             Actualiser l’image

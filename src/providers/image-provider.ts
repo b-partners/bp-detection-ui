@@ -12,6 +12,8 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
         address,
         id: v4(),
         status: 'TO_CONTACT',
+        name: `Analyse de l'adresse : ${address}`,
+        firstName: 'Bouton couvreur',
       },
     ]);
     const { data: areaPictureDetails } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', v4(), {
