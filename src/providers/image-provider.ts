@@ -36,7 +36,7 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
 
     if (temporarilyUnavailablePattern.test(error.message)) throw new Error('areaPicturePrecision');
     if (notSupportedPattern.test(error.message)) throw new Error('zoneNotSupported');
-    
+
     if (error?.response?.data?.message?.includes('Provided geojson polygon is too large to be processed synchronously')) {
       throw new Error('polygonTooBig');
     }
