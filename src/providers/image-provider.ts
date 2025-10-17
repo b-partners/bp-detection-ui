@@ -12,6 +12,8 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
         address,
         id: v4(),
         status: 'TO_CONTACT',
+        name: `Analyse de l'adresse : ${address}`,
+        firstName: 'Bouton couvreur',
       },
     ]);
     const { data: areaPictureDetails } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', v4(), {
@@ -25,10 +27,17 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
         level: ZoomLevel.HOUSES_0,
         number: 20,
       },
+      isOpaque: true,
     });
 
     return { areaPictureDetails, prospect: prospect?.[0] };
   } catch (error: any) {
+    const notSupportedPattern = /Address or zone [\s\S]* not yet supported/i;
+    const temporarilyUnavailablePattern = /Address or zone [\s\S]* temporarily unavailable/i;
+
+    if (temporarilyUnavailablePattern.test(error.message)) throw new Error('areaPicturePrecision');
+    if (notSupportedPattern.test(error.message)) throw new Error('zoneNotSupported');
+
     if (error?.response?.data?.message?.includes('Provided geojson polygon is too large to be processed synchronously')) {
       throw new Error('polygonTooBig');
     }
@@ -51,6 +60,9 @@ export const getImageFromAddress = async (apiKey: string, address: string) => {
 export const updateAreaPicture = async (areaPictureDetails: AreaPictureDetails) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountId } = await userInfoProvider(apiKey);
-  const { data } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', areaPictureDetails.id || v4(), { ...areaPictureDetails });
+  const { data } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', areaPictureDetails.id || v4(), {
+    ...areaPictureDetails,
+    isOpaque: true,
+  });
   return data;
 };

@@ -25,7 +25,7 @@ export const userInfoProvider = async (apiKey: string) => {
   }
   cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
 
-  const { approved, legalFiles } = await legalFilesProvider.checkLegalFiles(apiKey, userInfo.userId);
+  const { approved, legalFiles } = await legalFilesProvider.checkLegalFiles(apiKey, userInfo.userId || '');
 
   if (!approved) throw new Error('legalFileNotApproved');
 
@@ -64,7 +64,7 @@ export const legalFilesProvider = {
 
       const { data: lfTemp } = await bpUserAccountApi(apiKey).getLegalFiles(userId || '');
 
-      const notApprovedLegalFiles = lfTemp.filter(legalFile => legalFile.toBeConfirmed && !legalFile.approvalDatetime);
+      const notApprovedLegalFiles = lfTemp.filter((legalFile: any) => legalFile.toBeConfirmed && !legalFile.approvalDatetime);
 
       if (notApprovedLegalFiles.length === 0) {
         result.legalFiles = lfTemp;
