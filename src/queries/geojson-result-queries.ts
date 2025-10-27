@@ -64,7 +64,7 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
     const roofPolygonPoints = geoShapeAttributesToPoints(pixelGeoJsonResultShapeAttributes);
 
     const roofPolygon: DomainPolygonResultType = {
-      id: v4(),
+      id: `${v4()}_roofPolygon`,
       label: 'TOIT',
       points: roofPolygonPoints,
       fillColor: '#00ff0000',
@@ -76,7 +76,6 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
     const regions = getRegions(detectionResultJson);
 
     const filteredPolygons = detectionResultMapper.toPolygon(regions);
-    const nonFilteredPolygons = detectionResultMapper.toPolygon(regions.slice(), false);
     const obstacle = isThereAnObstacle(regions);
 
     if (!imageUrl) return null;

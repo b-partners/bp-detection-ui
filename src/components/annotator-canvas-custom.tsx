@@ -23,6 +23,10 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
             width='100%'
             height={height || '500px'}
             zoom={20}
+            measurementMapper={p => {
+              if (p.polygonId?.includes('roofPolygon')) return p;
+              return { ...p, isInvisible: true };
+            }}
           />
         )}
       </Box>
