@@ -97,7 +97,7 @@ export const createImage = async (url: string): Promise<HTMLImageElement> =>
     };
   });
 
-export const getCropepedImageAndPolygons = (polygons: Polygon[], polygonsForBoundingBox: Polygon[], image: HTMLImageElement) => {
+export const getCroppedImageAndPolygons = (polygons: Polygon[], polygonsForBoundingBox: Polygon[], image: HTMLImageElement) => {
   const canvas = document.createElement('canvas');
 
   const boundingBox = getBoundingBox(polygonsForBoundingBox);

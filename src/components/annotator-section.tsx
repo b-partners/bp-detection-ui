@@ -86,7 +86,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       <Paper elevation={0} className='info-section'>
         <Stack>
           <Typography>Veuillez délimiter votre toiture sur l'image suivante.</Typography>
-          <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez elargir la zone en cliquant sur le bouton Elargir la zone</Typography>
+          <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez élargir la zone en cliquant sur le bouton Élargir la zone</Typography>
           <Typography>
             Si l'image reçue ne correspond pas à l'adresse que vous avez demandée, cliquez sur le bouton Actualiser l’image pour obtenir une image correspondant
             à votre adresse.
