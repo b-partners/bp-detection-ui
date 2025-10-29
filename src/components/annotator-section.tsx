@@ -34,8 +34,8 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   };
 
   const handleValidateForm = () => {
-    const { email: receiverEmail = '', phone = '', firstName, name: lastName } = prospect || {};
-    const detectionParams = { polygons, receiverEmail, phone, firstName, lastName, isExtended, image: currentImageSrc, withoutImage: true };
+    const { email: receiverEmail = '' } = prospect || {};
+    const detectionParams = { polygons, receiverEmail };
 
     startDetection(detectionParams, {
       onSuccess: result =>
