@@ -4,7 +4,7 @@ import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtili
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { v4 } from 'uuid';
-import { getImageFromAddress, sendImageToDetect, updateAreaPicture } from '../providers';
+import { getImageFromAddress, ProspectInfo, sendImageToDetect, updateAreaPicture } from '../providers';
 
 const getImageFile = async (areaPictureDetails: AreaPictureDetails) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
@@ -33,9 +33,9 @@ export const sendImageQuery = async (areaPictureDetails: AreaPictureDetails, ima
   await sendImageToDetect(imageAsFile);
 };
 
-const mutationFn = async (address: string) => {
+const mutationFn = async (userInfo: ProspectInfo) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
-  const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, address);
+  const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
 
   if (areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
     throw new Error('areaPicturePrecision');
@@ -53,7 +53,7 @@ const mutationFn = async (address: string) => {
 
 export const useQueryImageFromAddress = () => {
   const checkApiKey = useCheckApiKey();
-  const { open } = useDialog();
+  const { open, close } = useDialog();
 
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['image from address'],
@@ -75,6 +75,7 @@ export const useQueryImageFromAddress = () => {
 
       open(<ErrorMessageDialog message={errorMessage} />);
     },
+    onSuccess: () => close(),
   });
 
   return {
@@ -111,7 +112,7 @@ export const useQueryUpdateAreaPicture = () => {
     if (areaPictureDetailsParams) {
       updatedAreaPictureDetails = await updateAreaPicture({ ...areaPictureDetails, ...areaPictureDetailsParams });
     } else {
-      const { areaPictureDetails: newAreaPictureDetails } = await getImageFromAddress(apiKey, areaPictureDetails?.address || '');
+      const { areaPictureDetails: newAreaPictureDetails } = await getImageFromAddress(apiKey, { address: areaPictureDetails?.address || '' });
       updatedAreaPictureDetails = newAreaPictureDetails;
     }
     setStep({ actualStep, params: { areaPictureDetails: updatedAreaPictureDetails } });

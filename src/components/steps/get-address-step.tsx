@@ -1,17 +1,17 @@
 import { useAddressFrom } from '@/forms';
-import { useStep } from '@/hooks';
-import { useLocationQuery, useQueryImageFromAddress } from '@/queries';
+import { useDialog, useStep } from '@/hooks';
+import { useLocationQuery } from '@/queries';
 import { clearCached } from '@/utilities';
-import { Error as ErrorIcon, LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
-import { Box, CircularProgress, debounce, IconButton, InputBase, MenuItem, Paper, Stack } from '@mui/material';
+import { LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
+import { Box, debounce, IconButton, InputBase, MenuItem, Paper, Stack } from '@mui/material';
 import { ChangeEvent, useEffect, useMemo } from 'react';
+import { DetectionForm } from '../detection-form';
+import { DialogFormStyle } from '../style';
 import { GetAddressStepStyle as style } from './styles';
 
 export const GetAddressStep = () => {
-  const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails, prospect } = useQueryImageFromAddress();
-
+  const { open: openDialog, isOpen } = useDialog();
   const {
-    setStep,
     params: { sessionId },
   } = useStep();
 
@@ -19,12 +19,6 @@ export const GetAddressStep = () => {
 
   const searchAddressDebounceTimeout = 200;
   const search = useMemo(() => debounce(findLocation, searchAddressDebounceTimeout), []);
-
-  useEffect(() => {
-    if (imageSrc && areaPictureDetails && prospect) {
-      setStep({ actualStep: 1, params: { imageSrc, areaPictureDetails, prospect } });
-    }
-  }, [imageSrc, areaPictureDetails, setStep, prospect]);
 
   const {
     formState: { errors },
@@ -34,12 +28,8 @@ export const GetAddressStep = () => {
   } = useAddressFrom();
 
   const onSubmit = handleSubmit(
-    data => {
-      queryImage(data.address);
-    },
-    error => {
-      alert(error.address);
-    }
+    data => openDialog(<DetectionForm address={data.address} />, { style: DialogFormStyle }),
+    error => alert(error.address)
   );
 
   useEffect(() => {
@@ -57,9 +47,7 @@ export const GetAddressStep = () => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const text = event.target.value;
     setValue('address', text);
-    if (!isQueryImagePending || areaPictureDetails) {
-      search(text);
-    }
+    search(text);
   };
 
   return (
@@ -70,22 +58,14 @@ export const GetAddressStep = () => {
             <LocationOnIcon />
           </IconButton>
         </Stack>
-        <InputBase
-          onChange={handleChange}
-          data-cy='address-search-input'
-          disabled={isQueryImagePending}
-          placeholder='Adresse à analyser'
-          error={!!errors['address']}
-        />
+        <InputBase onChange={handleChange} data-cy='address-search-input' placeholder='Adresse à analyser' error={!!errors['address']} />
         <Stack>
           <IconButton onClick={onSubmit}>
-            {isQueryImagePending && <CircularProgress size={25} />}
-            {!isQueryImagePending && errors['address'] && <ErrorIcon />}
-            {!isQueryImagePending && !errors['address'] && <SearchIcon />}
+            <SearchIcon />
           </IconButton>
         </Stack>
       </Paper>
-      {(!isQueryImagePending || areaPictureDetails) && data && data.length > 0 && (
+      {!isOpen && data && data.length > 0 && (
         <Box className='location-list'>
           <Paper>
             {data.map(({ description }: any) => (
