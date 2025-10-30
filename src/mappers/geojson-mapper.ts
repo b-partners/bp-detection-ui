@@ -75,4 +75,29 @@ export const geoJsonMapper = {
 
     return polygons;
   },
+  toPixelGeoJson(feature: Feature[], x: number, y: number, size: number, zoom: number) {
+    const filename = `${v4().replace(/\-/gi, '')}_${zoom}_${x}_${y}.jpg`;
+    const result: ConverterPayload = {
+      size,
+      filename,
+      zoom: 20,
+      regions: {},
+      base64_img_data: null,
+    };
+
+    feature.forEach(({ geometry: { coordinates }, properties: { label } }, index) => {
+      const region = {
+        shape_attributes: coordinatesToShapeAttributes(coordinates),
+        region_attributes: {
+          label,
+          confidence: 0.7055366635322571,
+        },
+      };
+      result.regions[index] = region;
+    });
+
+    return {
+      [filename]: result,
+    };
+  },
 };

@@ -4,6 +4,7 @@ import {
   account_mock,
   AppComponent_Mock,
   area_picture_mock,
+  converter_mock,
   detection_mock,
   detectionSync,
   llmResult_mock,
@@ -83,6 +84,18 @@ describe('Component testing', () => {
 
     cy.contains('24 rue mozart mock 2').click();
 
+    cy.contains('Veuillez saisir les informations suivantes.');
+
+    cy.dataCy(process_detection_on_form_sel).click();
+    cy.contains('Numéro de téléphone non valide');
+    cy.contains('Adresse email non valide');
+
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
     cy.wait('@getWhoami');
     cy.wait('@getAccounts');
     cy.wait('@getAccountHolders');
@@ -125,22 +138,12 @@ describe('Component testing', () => {
     cy.dataCy('zoom-out').click();
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
 
-    cy.dataCy(process_detection_sel).click();
-
-    cy.contains('Veuillez saisir les informations suivantes.');
-
-    cy.dataName('lastName').type('Doe');
-    cy.dataName('firstName').type('John');
-    cy.dataName('phone').type('123987456');
-    cy.dataName('email').type('john@gmail.com');
-
     cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
-    cy.dataCy(process_detection_on_form_sel).click();
+    cy.intercept('POST', '/accounts/*/annotations/convert', converter_mock);
+    cy.dataCy(process_detection_sel).click();
 
     cy.contains('Calcule de la pente en cours...');
     cy.contains('Calcule de la hauteur du bâtiment en cours...');
-
-    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
 
     cy.contains('Hauteur du bâtiment');
     cy.contains("Taux d'usure");

@@ -1,8 +1,9 @@
 import { useDetectionForm } from '@/forms';
-import { useDialog } from '@/hooks';
+import { useDialog, useStep } from '@/hooks';
+import { useQueryImageFromAddress } from '@/queries';
 import { Info } from '@mui/icons-material';
-import { Alert, Button, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from '@mui/material';
-import { FC } from 'react';
+import { Button, CircularProgress, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from '@mui/material';
+import { FC, useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { BpInput } from './bp-input';
 
@@ -14,15 +15,25 @@ export interface DetectionFormInfo {
 }
 
 interface DetectionFormProps {
-  onValid(detectionFrom: DetectionFormInfo): void;
-  withoutImage?: boolean;
+  address: string;
 }
 
-export const DetectionForm: FC<DetectionFormProps> = ({ onValid, withoutImage = false }) => {
+export const DetectionForm: FC<DetectionFormProps> = ({ address }) => {
+  const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails, prospect } = useQueryImageFromAddress();
   const { close: closeDialog } = useDialog();
+  const { setStep } = useStep();
   const form = useDetectionForm();
 
-  const handleSubmit = form.handleSubmit(data => onValid(data));
+  useEffect(() => {
+    if (imageSrc && areaPictureDetails && prospect) {
+      setStep({ actualStep: 1, params: { imageSrc, areaPictureDetails, prospect } });
+    }
+  }, [imageSrc, areaPictureDetails, setStep, prospect]);
+
+  const handleSubmit = form.handleSubmit(data => {
+    const { email, phone, firstName, lastName } = data;
+    queryImage({ address, email, firstName, lastName, phone });
+  });
 
   return (
     <FormProvider {...form}>
@@ -34,11 +45,6 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid, withoutImage = 
               <Info />
             </Tooltip>
           </Stack>
-          {withoutImage && (
-            <Alert icon={false} color='info'>
-              La toiture que vous avez sélectionnée est assez grande, la détection sur cette zone prendra un peu plus de temps.
-            </Alert>
-          )}
         </Stack>
       </DialogTitle>
       <DialogContent>
@@ -56,9 +62,16 @@ export const DetectionForm: FC<DetectionFormProps> = ({ onValid, withoutImage = 
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeDialog}>Annuler</Button>
-        <Button onClick={handleSubmit} data-cy='process-detection-on-form-button'>
-          Analyser
+        <Button disabled={isQueryImagePending} onClick={closeDialog}>
+          Annuler
+        </Button>
+        <Button
+          disabled={isQueryImagePending}
+          startIcon={isQueryImagePending && <CircularProgress size={25} />}
+          onClick={handleSubmit}
+          data-cy='process-detection-on-form-button'
+        >
+          Continuer
         </Button>
       </DialogActions>
     </FormProvider>

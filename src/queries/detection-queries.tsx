@@ -1,8 +1,8 @@
 import { DomainPolygonType, ErrorMessageDialog } from '@/components';
 import { useDialog, useStep } from '@/hooks';
 import { polygonMapper } from '@/mappers/polygon-mapper';
-import { bpProspectApi, pointsToGeoPoints, processDetection } from '@/providers';
-import { cache, getCached, getImageSize, ParamsUtilities } from '@/utilities';
+import { pointsToGeoPoints, processDetection } from '@/providers';
+import { cache, getImageSize } from '@/utilities';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { useMutation } from '@tanstack/react-query';
 import getAreaOfPolygon from 'geolib/es/getAreaOfPolygon';
@@ -11,27 +11,14 @@ import { useQueryHeightAndSlope } from './height-and-slope-query';
 interface MutationProps {
   polygons: DomainPolygonType[];
   receiverEmail: string;
-  phone: string;
-  firstName?: string;
-  lastName?: string;
-  image?: string;
-  isExtended?: boolean;
-  isExtendedImage?: Promise<{ image?: ArrayBuffer; polygons?: DomainPolygonType[] }>;
-  withoutImage?: boolean;
 }
 
 export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPictureDetails) => {
-  const {
-    params: { prospect },
-    setStep,
-    actualStep,
-  } = useStep();
+  const { setStep, actualStep } = useStep();
   const { open: openDialog } = useDialog();
   const { start: startPropertiesQuery, end: endPropertiesQuery } = useQueryHeightAndSlope(false);
 
-  const mutationFn = async ({ polygons, receiverEmail, phone, firstName, lastName }: MutationProps) => {
-    const { apiKey } = ParamsUtilities.getQueryParams();
-
+  const mutationFn = async ({ polygons, receiverEmail }: MutationProps) => {
     const imageSize = await getImageSize(src);
     cache.roofDelimiterPolygon(polygons[0]);
     const geoJson = polygonMapper.toRefererGeoJson(polygons[0], imageSize, areaPictureDetails);
@@ -58,12 +45,6 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       mappedCoordinates.push([all_points_y[index], x]);
     });
 
-    if (prospect) {
-      const { data } = await bpProspectApi(apiKey).updateProspects(getCached.userInfo().accountHolderId || '', [
-        { ...prospect, email: receiverEmail, firstName, name: lastName, phone },
-      ]);
-      setStep({ params: { prospect: data[0], polygons }, actualStep });
-    }
     startPropertiesQuery();
     return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [mappedCoordinates], receiverEmail);
   };

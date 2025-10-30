@@ -19,8 +19,9 @@ import { DetectionResultStepStyle as style } from './styles';
 
 export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => coveringTypeMap[covering] || covering || 'Autres';
 
+const CONVERTER_BASE_URL = process.env.REACT_APP_ANNOTATOR_GEO_CONVERTER_API_URL || '';
 export const DetectionResultStep = () => {
-  const { imageSrc, useGeoJson } = useStep(({ params }) => params);
+  const { imageSrc, useGeoJson, areaPictureDetails } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const form = useAnnotationFrom();
@@ -77,6 +78,13 @@ export const DetectionResultStep = () => {
                 polygonList={data?.polygons || []}
                 isLoading={isImageLoading || isGeoJsonResultLoading}
                 image={data?.createdImage || ''}
+                polygonLineSizeProps={
+                  areaPictureDetails && {
+                    imageName: `${areaPictureDetails.filename}.jpg`,
+                    showLineSize: true,
+                    converterApiUrl: `${CONVERTER_BASE_URL}`,
+                  }
+                }
               />
             )}
             {data?.properties && showLLMResult && !sendInfoToRooferPending && (

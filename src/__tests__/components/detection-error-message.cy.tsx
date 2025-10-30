@@ -79,6 +79,18 @@ describe('Test process detection error', () => {
 
     cy.contains('24 rue mozart mock 2').click();
 
+    cy.contains('Veuillez saisir les informations suivantes.');
+
+    cy.dataCy(process_detection_on_form_sel).click();
+    cy.contains('Numéro de téléphone non valide');
+    cy.contains('Adresse email non valide');
+
+    cy.dataName('lastName').type('Doe');
+    cy.dataName('firstName').type('John');
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
     cy.wait(['@getWhoami', '@getAccounts', '@getAccountHolders', '@createProspect']);
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
@@ -100,13 +112,6 @@ describe('Test process detection error', () => {
 
     cy.dataCy(process_detection_sel).click();
 
-    cy.dataName('lastName').type('Doe');
-    cy.dataName('firstName').type('John');
-    cy.dataName('phone').type('123987456');
-    cy.dataName('email').type('john@gmail.com');
-
-    cy.dataCy(process_detection_on_form_sel).click();
-
     cy.contains('La détection sur cette zone a échoué, veuillez réessayer');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
@@ -120,6 +125,10 @@ describe('Test process detection error', () => {
     cy.wait('@location-search');
 
     cy.contains('24 rue mozart mock 2').click();
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.dataCy('zoom-in').click();
     cy.dataCy('zoom-in').click();
@@ -136,13 +145,6 @@ describe('Test process detection error', () => {
 
     cy.dataCy(process_detection_sel).click();
 
-    cy.dataName('lastName').type('Doe');
-    cy.dataName('firstName').type('John');
-    cy.dataName('phone').type('123987456');
-    cy.dataName('email').type('john@gmail.com');
-
-    cy.dataCy(process_detection_on_form_sel).click();
-
     cy.contains('La limite des analyses gratuites a été atteinte.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
@@ -156,6 +158,10 @@ describe('Test process detection error', () => {
     cy.wait('@location-search');
 
     cy.contains('24 rue mozart mock 2').click();
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait(['@getWhoami', '@getAccounts', '@getAccountHolders', '@createProspect']);
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
@@ -176,13 +182,6 @@ describe('Test process detection error', () => {
     cy.dataCy('zoom-out').click();
 
     cy.dataCy(process_detection_sel).click();
-
-    cy.dataName('lastName').type('Doe');
-    cy.dataName('firstName').type('John');
-    cy.dataName('phone').type('123987456');
-    cy.dataName('email').type('john@gmail.com');
-
-    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
@@ -200,6 +199,10 @@ describe('Test process detection error', () => {
 
     cy.contains('24 rue mozart mock 2').click();
 
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
     cy.wait(['@getWhoami', '@getAccounts', '@getAccountHolders', '@createProspect']);
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
@@ -220,13 +223,6 @@ describe('Test process detection error', () => {
     cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
 
     cy.dataCy(process_detection_sel).click();
-
-    cy.dataName('lastName').type('Doe');
-    cy.dataName('firstName').type('John');
-    cy.dataName('phone').type('123987456');
-    cy.dataName('email').type('john@gmail.com');
-
-    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait(['@setRoofProperties', '@detectionSync', '@getDetection', '@getDetectionResultVgg']);
     cy.get('.MuiAlert-root').contains('La pente et la hauteur du bâtiment ne sont pas encore disponibles.');

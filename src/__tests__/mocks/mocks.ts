@@ -204,3 +204,22 @@ export const llmResult_mock = `<head>
   </ul>
 </section>
 `;
+
+export const converter_mock = {
+  'mock_image_20_523561_370292.jpg': {
+    size: 1024,
+    filename: 'mock_image_20_523561_370292.jpg',
+    zoom: 20,
+    regions: {
+      'mock_image_20_523561_370292.jpg': {
+        shape_attributes: {
+          name: null,
+          all_points_x: [494.0, 397.0, 363.0, 400.0, 610.0, 887.0, 1117.0, 1164.0, 1172.0, 1028.0, 1059.0, 812.0, 494.0],
+          all_points_y: [966.0, 1297.0, 1472.0, 1548.0, 1618.0, 1652.0, 1662.0, 1500.0, 1372.0, 1290.0, 1141.0, 1039.0, 966.0],
+        },
+        region_attributes: null,
+      },
+    },
+    base64_img_data: null,
+  },
+};

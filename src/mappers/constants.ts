@@ -12,6 +12,7 @@ export const detectionResultColors = {
   OBSTACLE: '#ffffff',
   CHEMINEE: '#ffffff',
   VELUX: '#ffffff',
+  TOIT: '#00ff00',
 };
 
 export const ANNOTATION_COVERING = [

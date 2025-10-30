@@ -1,4 +1,4 @@
-import { useDialog, useStep } from '@/hooks';
+import { useDialog, useSnackbar, useStep } from '@/hooks';
 import { annotatorMapper } from '@/mappers';
 import { checkPolygonSizeUnder1024 } from '@/utilities';
 import { Polygon } from '@bpartners/annotator-component';
@@ -6,24 +6,19 @@ import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
-import {
-  addressStyle,
-  AnnotationTutorialDialog,
-  AnnotatorCanvasCustom,
-  DetectionForm,
-  DetectionFormInfo,
-  DialogFormStyle,
-  DialogTutorialStyle,
-  DomainPolygonType,
-} from '.';
+import { addressStyle, AnnotationTutorialDialog, AnnotatorCanvasCustom, DialogTutorialStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
-  const { setStep } = useStep();
+  const {
+    setStep,
+    params: { prospect },
+  } = useStep();
   const [polygons, setPolygons] = useState<DomainPolygonType[]>([]);
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
-  const { open: openDialog, close: closeDialog } = useDialog();
+  const { open: openDialog } = useDialog();
+  const { open: openSnackbar } = useSnackbar();
   const { data, isPending, isExtended, extendImageToggle, refetchImage: handleGetNewImage } = useQueryUpdateAreaPicture();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -38,39 +33,30 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
     extendImageToggle();
   };
 
-  const handleValidateForm = ({ email, lastName, firstName, phone }: DetectionFormInfo) => {
-    closeDialog();
-    startDetection(
-      {
-        polygons,
-        receiverEmail: email,
-        phone,
-        firstName,
-        lastName,
-        isExtended,
-        image: currentImageSrc,
-        withoutImage: true,
-      },
-      {
-        onSuccess: result =>
-          setStep({
-            actualStep: 2,
-            params: {
-              geoJsonResultUrl: result?.result.geoJsonZone?.[0]?.properties?.vgg_file_url || '',
-              geojsonBody: result?.geoJson as any,
-              useGeoJson: true,
-              imageSrc: result?.result?.geoJsonZone?.[0]?.properties?.original_image_url || '',
-              roofDelimiter: result?.result?.roofDelimiter,
-            },
-          }),
-      }
-    );
+  const handleValidateForm = () => {
+    const { email: receiverEmail = '' } = prospect || {};
+    const detectionParams = { polygons, receiverEmail };
+
+    startDetection(detectionParams, {
+      onSuccess: result =>
+        setStep({
+          actualStep: 2,
+          params: {
+            geoJsonResultUrl: result?.result.geoJsonZone?.[0]?.properties?.vgg_file_url || '',
+            geojsonBody: result?.geoJson as any,
+            useGeoJson: true,
+            imageSrc: result?.result?.geoJsonZone?.[0]?.properties?.original_image_url || '',
+            roofDelimiter: result?.result?.roofDelimiter,
+          },
+        }),
+    });
   };
 
   const handleClickDetectionButton = () => {
     const isValidPolygonSize = checkPolygonSizeUnder1024(polygons[0]);
-
-    openDialog(<DetectionForm onValid={handleValidateForm} withoutImage={!isValidPolygonSize} />, { style: DialogFormStyle });
+    if (!isValidPolygonSize)
+      openSnackbar('La toiture que vous avez sélectionnée est assez grande, la détection sur cette zone prendra un peu plus de temps.', 'warning');
+    handleValidateForm();
   };
 
   // always follow polygons image by storing the shift number in their id in the annotator component polygons and in the shiftNb property in domain polygons
@@ -86,7 +72,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
       <Paper elevation={0} className='info-section'>
         <Stack>
           <Typography>Veuillez délimiter votre toiture sur l'image suivante.</Typography>
-          <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez elargir la zone en cliquant sur le bouton Elargir la zone</Typography>
+          <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez élargir la zone en cliquant sur le bouton Élargir la zone</Typography>
           <Typography>
             Si l'image reçue ne correspond pas à l'adresse que vous avez demandée, cliquez sur le bouton Actualiser l’image pour obtenir une image correspondant
             à votre adresse.
