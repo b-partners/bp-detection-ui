@@ -43,7 +43,7 @@ export const DetectionResultStep = () => {
   };
 
   const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(annotatorCanvasState.image);
-  const { data, isLoading: isGeoJsonResultLoading, refetch: refetchGeojsonQueryResult } = useGeojsonQueryResult(image);
+  const { data, isLoading: isGeoJsonResultLoading } = useGeojsonQueryResult(image);
 
   useEffect(() => {
     if (data?.properties) {
@@ -149,7 +149,6 @@ export const DetectionResultStep = () => {
             <Button data-cy='send-roofer-mail-button' fullWidth loading={sendInfoToRooferPending} disabled={!canSendPdf} onClick={handleSendPdf}>
               Envoyer ces informations à mon couvreur
             </Button>
-            <Button onClick={() => refetchGeojsonQueryResult()}>REFETCH</Button>
           </Stack>
         </Grid2>
       </Grid2>
