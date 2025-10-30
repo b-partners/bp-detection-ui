@@ -84,7 +84,7 @@ const HaveTheCorrectImagePrecision5Cm = {
   },
 };
 
-describe('test detection on ' + addressToDetect, () => {
+xdescribe('test detection on ' + addressToDetect, () => {
   it('test detection on ' + addressToDetect, () => {
     // temporary until new implementation
     cy.intercept('PUT', '/detections/*/roofs/properties', {

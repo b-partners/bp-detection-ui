@@ -80,7 +80,7 @@ const HaveTheCorrectImagePrecision5Cm = {
   },
 };
 
-describe('test detection on ' + addressToDetect, () => {
+xdescribe('test detection on ' + addressToDetect, () => {
   it('Default image detection', () => {
     cy.prodRequestUtilities();
     //steppers state

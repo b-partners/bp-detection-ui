@@ -8,6 +8,7 @@ export * from './check-api-key-dialog';
 export * from './detection-form';
 export * from './error-message-dialog';
 export * from './global-dialog';
+export * from './global-snackbar';
 export * from './legal-files-pdf-renderer';
 export * from './llm-result';
 export * from './llm-switch-button';

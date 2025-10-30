@@ -4,17 +4,20 @@ import { v4 } from 'uuid';
 import { bpAnnotationApi, bpProspectApi } from './api';
 import { userInfoProvider } from './user-info-provider';
 
-export const getImageFromAddress = async (apiKey: string, address: string) => {
+export type ProspectInfo = {
+  lastName?: string;
+  firstName?: string;
+  phone?: string;
+  email?: string;
+  address: string;
+};
+
+export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo) => {
   try {
     const { accountId, accountHolderId } = await userInfoProvider(apiKey);
+    const { address, email, firstName, lastName, phone } = userInfo;
     const { data: prospect } = await bpProspectApi(apiKey).updateProspects(accountHolderId ?? '', [
-      {
-        address,
-        id: v4(),
-        status: 'TO_CONTACT',
-        name: `Analyse de l'adresse : ${address}`,
-        firstName: 'Bouton couvreur',
-      },
+      { address, id: v4(), status: 'TO_CONTACT', firstName, email, phone, name: lastName },
     ]);
     const { data: areaPictureDetails } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', v4(), {
       address,

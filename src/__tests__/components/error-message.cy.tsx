@@ -2,6 +2,7 @@ import { ParamsUtilities } from '@/utilities';
 import { account_holder_mock, account_mock, AppComponent_Mock, area_picture_mock, detection_mock, locations_mock, prospect_mock, whoami_mock } from '../mocks';
 
 const search_input_sel = 'address-search-input';
+const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Error message testing', () => {
   it('Test bad apikey', () => {
@@ -29,6 +30,10 @@ describe('Error message testing', () => {
 
     cy.intercept('GET', '/whoami', { statusCode: 404 }).as('getWhoami');
     cy.contains('24 rue mozart mock 3').click();
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Clé d'API invalide");
   });
@@ -73,12 +78,20 @@ describe('Error message testing', () => {
 
     cy.contains('24 rue mozart mock 2').click();
 
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
     cy.intercept('GET', '/whoami', whoami_mock).as('getWhoami');
 
     cy.contains("Erreur lors de la récupération de l'image.");
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
 
     cy.dataCy(search_input_sel).type('{enter}');
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Erreur lors de la récupération de l'image.");
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
@@ -87,6 +100,10 @@ describe('Error message testing', () => {
 
     cy.dataCy(search_input_sel).type('{enter}');
 
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
     cy.contains("Erreur lors de la récupération de l'image.");
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
 
@@ -94,12 +111,20 @@ describe('Error message testing', () => {
 
     cy.dataCy(search_input_sel).type('{enter}');
 
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
     cy.contains("Erreur lors de la récupération de l'image.");
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
 
     cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
 
     cy.dataCy(search_input_sel).type('{enter}');
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Erreur lors de la récupération de l'image.");
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
@@ -110,6 +135,11 @@ describe('Error message testing', () => {
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, no5CmAreaPictureMock).as('createAreaPicture');
 
     cy.dataCy(search_input_sel).type('{enter}');
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
     cy.contains('Adresse momentanément indisponible.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });

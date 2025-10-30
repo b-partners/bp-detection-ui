@@ -13,6 +13,7 @@ import {
 } from '../mocks';
 
 const search_input_sel = 'address-search-input';
+const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Test legal files not all approved', () => {
   it('Test the app', () => {
@@ -43,6 +44,10 @@ describe('Test legal files not all approved', () => {
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
     cy.dataCy(search_input_sel).type('test{enter}');
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Conditions générales d'utilisation");
 

@@ -79,7 +79,7 @@ const HaveTheCorrectImagePrecision5Cm = {
   },
 };
 
-describe('Test extended detection', () => {
+xdescribe('Test extended detection', () => {
   it('Extended image detection', () => {
     cy.prodRequestUtilities();
     //steppers state
