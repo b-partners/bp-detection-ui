@@ -28,6 +28,7 @@
     "geolib": "^3.3.4",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-google-recaptcha-v3": "^1.10.1",
     "react-hook-form": "^7.54.2",
     "react-pdf": "6.2.2",
     "react-to-pdf": "^2.0.0",

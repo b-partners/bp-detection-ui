@@ -3,6 +3,7 @@ import { useCheckApiKey, useDialog, useStep } from '@/hooks';
 import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { v4 } from 'uuid';
 import { getImageFromAddress, ProspectInfo, sendImageToDetect, updateAreaPicture } from '../providers';
 
@@ -33,27 +34,41 @@ export const sendImageQuery = async (areaPictureDetails: AreaPictureDetails, ima
   await sendImageToDetect(imageAsFile);
 };
 
-const mutationFn = async (userInfo: ProspectInfo) => {
-  const { apiKey } = ParamsUtilities.getQueryParams();
-  const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
-
-  if (areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
-    throw new Error('areaPicturePrecision');
-  }
-
-  const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
-
-  return {
-    areaPictureDetails,
-    fileUrl: imageUrl,
-    fileArrayBuffer: imageAsBase64,
-    prospect,
-  };
-};
-
 export const useQueryImageFromAddress = () => {
   const checkApiKey = useCheckApiKey();
   const { open, close } = useDialog();
+  const { executeRecaptcha } = useGoogleReCaptcha() as any;
+
+  const mutationFn = async (userInfo: ProspectInfo) => {
+    try {
+      const token = await executeRecaptcha('get_image');
+      
+      const result = await fetch(`${process.env.RECAPTCHA_API_URL}`, {
+        body: JSON.stringify({ token }),
+        headers: { 'content-type': 'application/json' },
+        method: 'POST',
+      });
+      const data = await result.json();
+      if (!data.verified) throw new Error();
+    } catch (err) {
+      throw new Error('captcha error');
+    }
+    const { apiKey } = ParamsUtilities.getQueryParams();
+    const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
+
+    if (areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
+      throw new Error('areaPicturePrecision');
+    }
+
+    const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
+
+    return {
+      areaPictureDetails,
+      fileUrl: imageUrl,
+      fileArrayBuffer: imageAsBase64,
+      prospect,
+    };
+  };
 
   const { isPending, data, mutate } = useMutation({
     mutationKey: ['image from address'],
@@ -62,6 +77,7 @@ export const useQueryImageFromAddress = () => {
       if (e?.status === 404 || e.message === 'Network Error') return checkApiKey();
       let errorMessage = '';
 
+      if (e.message === 'captchaError') errorMessage = 'Veuillez résoudre le reCAPTCHA pour continuer.';
       if (e.message === 'zoneNotSupported') errorMessage = "La zone contenant cette adresse n'est pas encore supporté.";
       if (e.message === 'areaPicturePrecision') errorMessage = 'Adresse momentanément indisponible.';
       else if (e.message === 'detectionLimitExceeded') errorMessage = 'La limite des analyses gratuites a été atteinte.';
