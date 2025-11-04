@@ -1,3 +1,4 @@
+import { googleRecaptchaFn } from '@/queries';
 import { ParamsUtilities } from '@/utilities';
 import { account_holder_mock, account_mock, AppComponent_Mock, area_picture_mock, detection_mock, locations_mock, prospect_mock, whoami_mock } from '../mocks';
 
@@ -5,6 +6,11 @@ const search_input_sel = 'address-search-input';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Error message testing', () => {
+  beforeEach(() => {
+    cy.stub(googleRecaptchaFn, 'useGoogleReCaptcha').returns({ executeRecaptcha: () => Promise.resolve('mock-recaptcha-token'), valide: false });
+    cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
+  });
+
   it('Test bad apikey', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
     cy.intercept('POST', '/address/autocomplete*', { statusCode: 403 }).as('location-search');

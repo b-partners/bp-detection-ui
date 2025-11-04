@@ -1,3 +1,4 @@
+import { googleRecaptchaFn } from '@/queries/google-recaptcha-fn';
 import { cache, ParamsUtilities } from '@/utilities';
 import {
   account_holder_mock,
@@ -20,9 +21,13 @@ const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 describe('Component testing', () => {
-  it('Test the app', () => {
+  beforeEach(() => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
+    cy.stub(googleRecaptchaFn, 'useGoogleReCaptcha').returns({ executeRecaptcha: () => Promise.resolve('mock-recaptcha-token'), valide: false });
+    cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
+  });
 
+  it('Test the app', () => {
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
 
     // user informations
@@ -96,6 +101,7 @@ describe('Component testing', () => {
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
 
+    cy.wait('@validateCaptcha');
     cy.wait('@getWhoami');
     cy.wait('@getAccounts');
     cy.wait('@getAccountHolders');

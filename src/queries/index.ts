@@ -1,5 +1,6 @@
 export * from './detection-queries';
 export * from './geojson-result-queries';
+export * from './google-recaptcha-fn';
 export * from './height-and-slope-query';
 export * from './image-queries';
 export * from './llm-result-queries';
