@@ -1,5 +1,6 @@
 import { SxProps } from '@mui/material';
 import { grey } from '@mui/material/colors';
+import { PALETTE_COLORS } from './utilities';
 
 export const MainStyle: SxProps = {
   padding: 0,
@@ -10,7 +11,7 @@ export const MainStyle: SxProps = {
   position: 'relative',
   minHeight: '100vh',
   '& .info-section': {
-    height: 60,
+    minHeight: 50,
     display: 'flex',
     alignItems: 'center',
     px: 2,
@@ -50,6 +51,38 @@ export const MainStyle: SxProps = {
           opacity: 1,
         },
       },
+    },
+    '& .image-info-mobile': {
+      background: PALETTE_COLORS.pine,
+      borderRadius: 2,
+      width: '100%',
+      py: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      '& .MuiTypography-root': {
+        color: '#fff',
+        mx: 1,
+      },
+    },
+    '& .address-info-mobile': {
+      background: PALETTE_COLORS.neon_orange,
+      borderRadius: 2,
+      width: '100%',
+      py: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      '& .MuiTypography-root': {
+        color: '#fff',
+        mx: 1,
+      },
+    },
+    '& .annotator-action-button-container': {
+      flexDirection: { xs: 'column', md: 'row' },
+      width: { xs: '100%', md: 'auto' },
+      '& .MuiButton-root': {
+        width: { xs: '100%', md: 'auto' },
+      },
+      pl: { xs: 0, md: 2 },
     },
   },
   '& > .img-container > img': {
