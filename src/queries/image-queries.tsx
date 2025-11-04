@@ -50,7 +50,7 @@ export const useQueryImageFromAddress = () => {
 
     const result = await fetch(url, { headers: { 'x-api-key': apiKey } });
     const data = await result.json();
-    
+
     if (!data || result.status !== 200) throw new Error();
 
     const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
