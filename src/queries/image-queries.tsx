@@ -3,9 +3,9 @@ import { useCheckApiKey, useDialog, useStep } from '@/hooks';
 import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { v4 } from 'uuid';
 import { getImageFromAddress, ProspectInfo, sendImageToDetect, updateAreaPicture } from '../providers';
+import { googleRecaptchaFn } from './google-recaptcha-fn';
 
 const getImageFile = async (areaPictureDetails: AreaPictureDetails) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
@@ -37,23 +37,22 @@ export const sendImageQuery = async (areaPictureDetails: AreaPictureDetails, ima
 export const useQueryImageFromAddress = () => {
   const checkApiKey = useCheckApiKey();
   const { open, close } = useDialog();
-  const { executeRecaptcha } = useGoogleReCaptcha() as any;
+
+  const { useGoogleReCaptcha } = googleRecaptchaFn;
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const mutationFn = async (userInfo: ProspectInfo) => {
-    try {
-      const token = await executeRecaptcha('get_image');
-      
-      const result = await fetch(`${process.env.RECAPTCHA_API_URL}`, {
-        body: JSON.stringify({ token }),
-        headers: { 'content-type': 'application/json' },
-        method: 'POST',
-      });
-      const data = await result.json();
-      if (!data.verified) throw new Error();
-    } catch (err) {
-      throw new Error('captcha error');
-    }
+    const token = await (executeRecaptcha as Function)('get_image');
     const { apiKey } = ParamsUtilities.getQueryParams();
+
+    const url = new URL(`${process.env.REACT_APP_GEO_DETECTION_API}/captcha/token`);
+    url.searchParams.set('token', token);
+
+    const result = await fetch(url, { headers: { 'x-api-key': apiKey } });
+    const data = await result.json();
+    
+    if (!data || result.status !== 200) throw new Error();
+
     const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
 
     if (areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {

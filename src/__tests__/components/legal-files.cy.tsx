@@ -1,3 +1,4 @@
+import { googleRecaptchaFn } from '@/queries';
 import { ParamsUtilities } from '@/utilities';
 import {
   account_holder_mock,
@@ -18,6 +19,8 @@ const process_detection_on_form_sel = 'process-detection-on-form-button';
 describe('Test legal files not all approved', () => {
   it('Test the app', () => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
+    cy.stub(googleRecaptchaFn, 'useGoogleReCaptcha').returns({ executeRecaptcha: () => Promise.resolve('mock-recaptcha-token'), valide: false });
+    cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
 
