@@ -1,7 +1,7 @@
 import { useStep } from '@/hooks';
 import { ScaleCallbacks } from '@bpartners/annotator-component';
 import { ZoomIn, ZoomInMap, ZoomOut } from '@mui/icons-material';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { Box, IconButton, Stack, Typography, useMediaQuery } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { annotatorCustomButtonStyle } from './style';
 
@@ -14,6 +14,9 @@ export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callback
   const {
     params: { areaPictureDetails },
   } = useStep();
+
+  const isNotMobile = useMediaQuery(theme => theme.breakpoints.up('md'));
+
   return (
     <Stack sx={annotatorCustomButtonStyle} direction='row' width='100%' alignItems='center' justifyContent='space-between' gap={1}>
       <Stack className='annotator-info' gap={0.2}>
@@ -26,16 +29,18 @@ export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callback
           </Box>
         </Stack>
       </Stack>
-      <Stack className='image-info' direction='row' gap={1}>
-        <Box>
-          <Typography>
-            (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.longitude})
-          </Typography>
-        </Box>
-        <Box>
-          <Typography>Source : {areaPictureDetails?.actualLayer?.name}</Typography>
-        </Box>
-      </Stack>
+      {isNotMobile && (
+        <Stack className='image-info' direction='row' gap={1}>
+          <Box>
+            <Typography>
+              (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.longitude})
+            </Typography>
+          </Box>
+          <Box>
+            <Typography>Source : {areaPictureDetails?.actualLayer?.name}</Typography>
+          </Box>
+        </Stack>
+      )}
       <Stack direction='row'>
         {customButtons}
         <IconButton data-cy='zoom-in' onClick={scaleUp}>

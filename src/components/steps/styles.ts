@@ -61,9 +61,11 @@ export const DetectionResultStepStyle: SxProps = {
     boxShadow: 'none',
   },
   gap: 1,
-  '& .degratation-rate-title': {
+  '& .degradation-rate-title': {
     py: 2,
     display: 'flex',
+    flexDirection: { xs: 'column', md: 'row' },
+    gap: 1,
     width: '100%',
     justifyContent: 'space-between',
     '& .MuiTypography-root': {
@@ -78,8 +80,8 @@ export const DetectionResultStepStyle: SxProps = {
       borderRadius: 3,
     },
   },
-  '& .degratation-levels': {
-    '& .degratation-levels-box': {
+  '& .degradation-levels': {
+    '& .degradation-levels-box': {
       width: 40,
       height: 40,
       borderRadius: 2,
@@ -89,10 +91,10 @@ export const DetectionResultStepStyle: SxProps = {
       transition: 'all 500ms',
     },
     '&:hover': {
-      '& .degratation-levels-box:not(.degratation-levels-box-selected)': {
+      '& .degradation-levels-box:not(.degradation-levels-box-selected)': {
         background: '#D9D9D9',
       },
-      '& .degratation-levels-box-selected': {
+      '& .degradation-levels-box-selected': {
         transform: 'scale(1.2)',
       },
     },
