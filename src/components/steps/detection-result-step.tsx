@@ -92,15 +92,15 @@ export const DetectionResultStep = () => {
             )}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
-          <Box className='degratation-rate-title'>
+          <Box className='degradation-rate-title'>
             <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
             <Typography>Note de dégradation globale : {data?.properties?.global_rate_value}%</Typography>
           </Box>
-          <Stack className='degratation-levels' direction='row' justifyContent='center' m={1} gap={1}>
+          <Stack className='degradation-levels' direction='row' justifyContent='center' m={1} gap={1}>
             {degradationLevels.map(({ color, label }) => (
               <Box
                 key={label}
-                className={`degratation-levels-box ${data?.properties?.global_rate_type === label ? 'degratation-levels-box-selected' : ''}`}
+                className={`degradation-levels-box ${data?.properties?.global_rate_type === label ? 'degradation-levels-box-selected' : ''}`}
                 sx={{ bgcolor: color, border: `5px solid ${data?.properties?.global_rate_type === label ? 'black' : 'transparent'}` }}
               >
                 {label}

@@ -4,7 +4,7 @@ import { checkPolygonSizeUnder1024 } from '@/utilities';
 import { Polygon } from '@bpartners/annotator-component';
 import { AreaPictureDetails } from '@bpartners/typescript-client';
 import { HelpCenterOutlined } from '@mui/icons-material';
-import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Paper, Stack, Typography, useMediaQuery } from '@mui/material';
 import { FC, useEffect, useRef, useState } from 'react';
 import { addressStyle, AnnotationTutorialDialog, AnnotatorCanvasCustom, DialogTutorialStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
@@ -67,26 +67,51 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
 
   const openTutorialDialog = () => openDialog(<AnnotationTutorialDialog />, { style: DialogTutorialStyle });
 
+  const isNotMobile = useMediaQuery(theme => theme.breakpoints.up('md'));
   return (
     <Box id='annotator-section'>
       <Paper elevation={0} className='info-section'>
         <Stack>
           <Typography>Veuillez délimiter votre toiture sur l'image suivante.</Typography>
-          <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez élargir la zone en cliquant sur le bouton Élargir la zone</Typography>
-          <Typography>
-            Si l'image reçue ne correspond pas à l'adresse que vous avez demandée, cliquez sur le bouton Actualiser l’image pour obtenir une image correspondant
-            à votre adresse.
-          </Typography>
+          {isNotMobile && (
+            <>
+              <Typography>Si votre toit ne s'affiche pas totalement, vous pouvez élargir la zone en cliquant sur le bouton Élargir la zone</Typography>
+              <Typography>
+                Si l'image reçue ne correspond pas à l'adresse que vous avez demandée, cliquez sur le bouton Actualiser l’image pour obtenir une image
+                correspondant à votre adresse.
+              </Typography>
+            </>
+          )}
         </Stack>
+
         <IconButton onClick={openTutorialDialog} className='help-button'>
           <HelpCenterOutlined fontSize='large' />
         </IconButton>
       </Paper>
       <Stack direction='row' justifyContent='space-between'>
-        <Box sx={addressStyle}>
-          <Typography>Adresse: {areaPictureDetails?.address}</Typography>
-        </Box>
-        <Box display='flex' alignItems='center' gap={2} mb={2}>
+        {isNotMobile && (
+          <Box sx={addressStyle}>
+            <Typography>Adresse: {areaPictureDetails?.address}</Typography>
+          </Box>
+        )}
+        <Box display='flex' className='annotator-action-button-container' alignItems='center' gap={2} mb={2}>
+          {!isNotMobile && (
+            <>
+              <Box className='address-info-mobile'>
+                <Typography>Adresse: {areaPictureDetails?.address}</Typography>
+              </Box>
+              <Stack className='image-info-mobile' direction='row' gap={1}>
+                <Box>
+                  <Typography>
+                    (GPS {areaPictureDetails?.geoPositions?.[0]?.latitude}, {areaPictureDetails?.geoPositions?.[0]?.longitude})
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography>Source : {areaPictureDetails?.actualLayer?.name}</Typography>
+                </Box>
+              </Stack>
+            </>
+          )}
           <Button variant='contained' onClick={handleExtendImage} loading={isPending}>
             {isExtended ? 'Rétrécir la zone' : 'Élargir la zone'}
           </Button>
