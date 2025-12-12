@@ -186,11 +186,7 @@ describe('Error message testing', () => {
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
 
-    cy.contains('24 rue mozart mock');
-
     cy.contains('24 rue mozart mock 2').click();
-
-    cy.dataCy(search_input_sel).type('{enter}');
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
