@@ -148,6 +148,20 @@ describe('Error message testing', () => {
 
     cy.contains('Adresse momentanément indisponible.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
+
+    cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, {
+      statusCode: 400,
+      body: { message: 'Prospect with mail john.doe@example.com already exists.' },
+    }).as('createProspect');
+
+    cy.dataCy(search_input_sel).type('{enter}');
+
+    cy.dataName('phone').type('+000000000000');
+    cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
+    cy.contains('Cette adresse email a déjà été utilisée pour faire une analyse.');
+    cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
   });
 
   it('Test detection initialization error', () => {

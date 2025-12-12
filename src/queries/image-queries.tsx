@@ -78,6 +78,7 @@ export const useQueryImageFromAddress = () => {
 
       if (e.message === 'captchaError') errorMessage = 'Veuillez résoudre le reCAPTCHA pour continuer.';
       if (e.message === 'zoneNotSupported') errorMessage = "La zone contenant cette adresse n'est pas encore supporté.";
+      if (e.message === 'prospectMailAlreadyExist') errorMessage = 'Cette adresse email a déjà été utilisée pour faire une analyse.';
       if (e.message === 'areaPicturePrecision') errorMessage = 'Adresse momentanément indisponible.';
       else if (e.message === 'detectionLimitExceeded') errorMessage = 'La limite des analyses gratuites a été atteinte.';
       else if (e.message === 'legalFileNotApproved') {
