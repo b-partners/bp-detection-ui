@@ -74,20 +74,22 @@ export const useQueryImageFromAddress = () => {
     mutationFn,
     onError: (e: any) => {
       if (e?.status === 404 || e.message === 'Network Error') return checkApiKey();
-      let errorMessage = '';
+      let errorMessage = "Une erreur s'est produite, veuillez réessayer.";
 
       if (e.message === 'captchaError') errorMessage = 'Veuillez résoudre le reCAPTCHA pour continuer.';
       if (e.message === 'zoneNotSupported') errorMessage = "La zone contenant cette adresse n'est pas encore supporté.";
       if (e.message === 'prospectMailAlreadyExist') errorMessage = 'Cette adresse email a déjà été utilisée pour faire une analyse.';
-      if (e.message === 'areaPicturePrecision') errorMessage = 'Adresse momentanément indisponible.';
-      else if (e.message === 'detectionLimitExceeded') errorMessage = 'La limite des analyses gratuites a été atteinte.';
-      else if (e.message === 'legalFileNotApproved') {
-        open(<LegalFilesPdfRenderer />);
 
+      if (e.message === 'areaPicturePrecision') errorMessage = 'Adresse momentanément indisponible.';
+      if (e.message === 'detectionLimitExceeded') errorMessage = 'La limite des analyses gratuites a été atteinte.';
+
+      if (e.message === 'legalFileNotApproved') {
+        open(<LegalFilesPdfRenderer />);
         return;
-      } else if (e.message === 'getImageError') errorMessage = "Erreur lors de la récupération de l'image.";
-      else if (e.message === 'Roofer error') errorMessage = "Erreur lors de l'initialisation de la détection.";
-      else errorMessage = "Une erreur s'est produite, veuillez réessayer.";
+      }
+
+      if (e.message === 'getImageError') errorMessage = "Erreur lors de la récupération de l'image.";
+      if (e.message === 'Roofer error') errorMessage = "Erreur lors de l'initialisation de la détection.";
 
       open(<ErrorMessageDialog message={errorMessage} />);
     },

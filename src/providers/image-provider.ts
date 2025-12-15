@@ -39,10 +39,9 @@ export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo
     const temporarilyUnavailablePattern = /Address or zone [\s\S]* temporarily unavailable/i;
     const mailProspectAlreadyExist = /Prospect with mail [\s\S]* already exists/i;
 
+    if (mailProspectAlreadyExist.test(error?.response?.data?.message)) throw new Error('prospectMailAlreadyExist');
     if (temporarilyUnavailablePattern.test(error.message)) throw new Error('areaPicturePrecision');
     if (notSupportedPattern.test(error.message)) throw new Error('zoneNotSupported');
-    if (mailProspectAlreadyExist.test(error?.response?.data?.message) || mailProspectAlreadyExist.test(error.message))
-      throw new Error('prospectMailAlreadyExist');
 
     if (error?.response?.data?.message?.includes('Provided geojson polygon is too large to be processed synchronously')) {
       throw new Error('polygonTooBig');
