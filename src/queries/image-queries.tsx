@@ -82,7 +82,7 @@ export const useQueryImageFromAddress = () => {
 
       if (e.message === 'areaPicturePrecision') errorMessage = 'Adresse momentanément indisponible.';
       if (e.message === 'detectionLimitExceeded') errorMessage = 'La limite des analyses gratuites a été atteinte.';
-      
+
       if (e.message === 'legalFileNotApproved') {
         open(<LegalFilesPdfRenderer />);
         return;
