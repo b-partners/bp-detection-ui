@@ -91,7 +91,15 @@ describe('Test process detection error', () => {
     cy.dataName('lastName').type('Doe');
     cy.dataName('firstName').type('John');
     cy.dataName('phone').type('+000000000000');
-    cy.dataName('email').type('john.doe@example.com');
+    cy.dataName('email').type('john.doe+229@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+
+    cy.contains('Adresse email non valide');
+
+    cy.dataName('lastName').clear().type('Doe');
+    cy.dataName('firstName').clear().type('John');
+    cy.dataName('phone').clear().type('+000000000000');
+    cy.dataName('email').clear().type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait(['@getWhoami', '@getAccounts', '@getAccountHolders', '@createProspect']);
