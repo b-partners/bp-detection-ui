@@ -1,7 +1,7 @@
+import codeCoverageTask from '@cypress/code-coverage/task';
 import { defineConfig } from 'cypress';
+import cypressSonarqubeReporter from 'cypress-sonarqube-reporter/mergeReports';
 import vitePreprocessor from 'cypress-vite';
-import { createRequire } from 'node:module';
-
 const timeout = 60000;
 
 export default defineConfig({
@@ -36,12 +36,10 @@ export default defineConfig({
 
   e2e: {
     setupNodeEvents(on, config) {
-      const require = createRequire(import.meta.url);
-
       on('file:preprocessor', vitePreprocessor());
-      on('after:run', require('cypress-sonarqube-reporter/mergeReports'));
+      on('after:run', cypressSonarqubeReporter);
 
-      require('@cypress/code-coverage/task')(on, config);
+      codeCoverageTask(on, config);
 
       return config;
     },
