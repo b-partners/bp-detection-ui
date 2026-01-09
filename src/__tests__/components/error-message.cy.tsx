@@ -55,7 +55,7 @@ describe('Error message testing', () => {
     // user informations
 
     // prospect & areaPictures & get image
-    cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, { statusCode: 500 }).as('createProspect');
+    cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects`, { statusCode: 500 }).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, { statusCode: 500 }).as('createAreaPicture');
     cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, { statusCode: 500 }).as('getImage');
     // prospect & areaPictures & get image
@@ -124,7 +124,7 @@ describe('Error message testing', () => {
     cy.contains("Erreur lors de la récupération de l'image.");
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
 
-    cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
+    cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
 
     cy.dataCy(search_input_sel).type('{enter}');
 
@@ -162,7 +162,7 @@ describe('Error message testing', () => {
     // user informations
 
     // prospect & areaPictures & get image
-    cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, {
+    cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects`, {
       statusCode: 400,
       body: {
         message: 'Prospect with mail john.doe@example.com already exists.',
@@ -210,7 +210,7 @@ describe('Error message testing', () => {
     // user informations
 
     // prospect & areaPictures & get image
-    cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
+    cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
     cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
       fixture: 'bp-detection-image.png',

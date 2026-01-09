@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@bpartners/annotator-component": "^0.17.0",
-    "@bpartners/typescript-client": "^0.71.0",
+    "@bpartners/typescript-client": "^0.76.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",
@@ -28,7 +28,7 @@
     "geolib": "^3.3.4",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-google-recaptcha-v3": "^1.10.1",
+    "react-google-recaptcha-v3": "^1.11.0",
     "react-hook-form": "^7.54.2",
     "react-pdf": "6.2.2",
     "react-to-pdf": "^2.0.0",
@@ -42,7 +42,7 @@
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.14.0",
+    "@cypress/code-coverage": "^3.14.7",
     "@eslint/js": "^9.21.0",
     "@types/node": "^22.14.1",
     "@types/react": "^19.0.10",
@@ -50,7 +50,7 @@
     "@types/react-pdf": "^6.2.0",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "cypress": "^14.2.0",
+    "cypress": "14.2.0",
     "cypress-multi-reporters": "^2.0.5",
     "cypress-sonarqube-reporter": "^1.13.5",
     "cypress-vite": "^1.6.0",
