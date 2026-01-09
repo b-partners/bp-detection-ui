@@ -16,7 +16,7 @@ export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo
   try {
     const { accountId, accountHolderId } = await userInfoProvider(apiKey);
     const { address, email, firstName, lastName, phone } = userInfo;
-    const { data: prospect } = await bpProspectApi(apiKey).updateProspects(accountHolderId ?? '', [
+    const { data: prospect } = await bpProspectApi(apiKey).createProspects(accountHolderId ?? '', [
       { address, id: v4(), status: 'TO_CONTACT', firstName, email, phone, name: lastName },
     ]);
     const { data: areaPictureDetails } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', v4(), {
