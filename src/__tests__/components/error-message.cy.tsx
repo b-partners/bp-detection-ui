@@ -162,7 +162,7 @@ describe('Error message testing', () => {
     // user informations
 
     // prospect & areaPictures & get image
-    cy.intercept('PUT', `/accountHolders/${account_holder_mock.id}/prospects`, {
+    cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects`, {
       statusCode: 400,
       body: {
         message: 'Prospect with mail john.doe@example.com already exists.',
