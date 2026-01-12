@@ -33,7 +33,7 @@ export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo
       isOpaque: true,
     });
 
-    cache.prospectId(prospect?.[0]?.id || '')
+    cache.prospectId(prospect?.[0]?.id || '');
 
     return { areaPictureDetails, prospect: prospect?.[0] };
   } catch (error: any) {
