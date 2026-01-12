@@ -11,6 +11,8 @@ const ROOF_DELIMITER_POLYGON_ITEM = 'ROOF_DELIMITER_POLYGON_ITEM';
 const LLM_RESULT = 'LLM_HTML_RESULT';
 const LEGAL_FILES_STATUS_APPROVED = 'LEGAL_FILES_STATUS_APPROVED';
 const IS_ROOF_PROPERTIES_REQUEST_DONE = 'IS_ROOF_PROPERTIES_REQUEST_DONE';
+const PROSPECT_ID = 'PROSPECT_ID';
+const NOTIFICATION_ALREADY_SENT = 'NOTIFICATION_ALREADY_SENT'
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -20,6 +22,12 @@ export const cache = {
   },
   detectionId(id: string) {
     localStorage.setItem(DETECTION_ID_ITEM, id);
+  },
+  prospectId(id: string) {
+    localStorage.setItem(PROSPECT_ID, id);
+  },
+  notificationAlreadySent() {
+    localStorage.setItem(NOTIFICATION_ALREADY_SENT, '1');
   },
   area(area: number) {
     localStorage.setItem(AREA_ITEM, `${area}`);
@@ -58,8 +66,14 @@ export const getCached = {
   detectionId() {
     return localStorage.getItem(DETECTION_ID_ITEM);
   },
+  prospectId() {
+    return localStorage.getItem(PROSPECT_ID);
+  },
   area() {
     return +(localStorage.getItem(AREA_ITEM) || '0');
+  },
+  notificationAlreadySent() {
+    return localStorage.getItem(NOTIFICATION_ALREADY_SENT) === '1';
   },
   isEmailSent() {
     return JSON.parse(localStorage.getItem(EMAIL_SENT_ITEM) || 'false');

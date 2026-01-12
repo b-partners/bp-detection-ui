@@ -5,5 +5,6 @@ export * from './height-and-slope-query';
 export * from './image-queries';
 export * from './llm-result-queries';
 export * from './location-query';
+export * from './notify-pdf-query';
 export * from './post-detection-queries';
 export * from './types';

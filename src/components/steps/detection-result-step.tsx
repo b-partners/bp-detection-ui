@@ -5,6 +5,7 @@ import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
   useLlmResultQuery,
+  useNotifyPdfQuery,
   usePostDetectionQueries,
   useQueryHeightAndSlope,
   useQueryImageFromUrl,
@@ -64,6 +65,12 @@ export const DetectionResultStep = () => {
 
   const canSendPdf =
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
+
+  const { notifyRoofer } = useNotifyPdfQuery();
+
+  useEffect(() => {
+    if (!getCached.notificationAlreadySent() && canSendPdf) notifyRoofer(stepResultRef);
+  }, [canSendPdf]);
 
   return (
     <FormProvider {...form}>
