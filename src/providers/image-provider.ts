@@ -1,4 +1,4 @@
-import { ParamsUtilities } from '@/utilities';
+import { cache, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, ZoomLevel } from '@bpartners/typescript-client';
 import { v4 } from 'uuid';
 import { bpAnnotationApi, bpProspectApi } from './api';
@@ -32,6 +32,8 @@ export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo
       },
       isOpaque: true,
     });
+
+    cache.prospectId(prospect?.[0]?.id || '');
 
     return { areaPictureDetails, prospect: prospect?.[0] };
   } catch (error: any) {

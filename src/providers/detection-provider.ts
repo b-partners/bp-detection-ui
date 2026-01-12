@@ -1,6 +1,8 @@
 import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
+import { bpProspectApi } from './api';
 import { RooferInformations } from './type';
+import { userInfoProvider } from './user-info-provider';
 
 const baseUrl = (process.env.REACT_APP_GEO_DETECTION_API ?? '').replace(/\/$/g, '');
 
@@ -161,4 +163,11 @@ export const sendRooferInformationsToMail = async (info: RooferInformations) => 
   });
 
   return await result.json();
+};
+
+export const notifyRooferAfterAnalyze = async (prospectId: string, pdf: File) => {
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const { accountHolderId = '' } = await userInfoProvider(apiKey);
+  const result = await bpProspectApi(apiKey).notifyProspects(accountHolderId || '', prospectId, pdf);
+  return result.data;
 };
