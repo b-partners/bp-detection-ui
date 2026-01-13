@@ -2,7 +2,9 @@ import { DomainPolygonResultType } from '@/components';
 import { createImage, getCroppedImageAndPolygons, useStep } from '@/hooks';
 import { detectionResultMapper, Feature, geoJsonMapper, geoShapeAttributesToPoints } from '@/mappers';
 import { geoPointsToPoins } from '@/providers';
+import { ExportAreaPictureAnnotationMeasurement } from '@bpartners/typescript-client';
 import { useQuery } from '@tanstack/react-query';
+import getDistance from 'geolib/es/getPreciseDistance';
 import { v4 } from 'uuid';
 import { DetectionResultInVgg, Region, useAnnotatorImageUploadQuery } from '.';
 
@@ -34,11 +36,40 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
 
   const { mutate: uploadAnalyzeImage, isPending: isUploadAnalyzeImagePending } = useAnnotatorImageUploadQuery();
 
-
   const queryFnVgg = async () => {
     const detectionResultText = await fetch(geoJsonResultUrl, { headers: { 'content-type': '*/*' } });
 
-    const roofPolygonInGeoPoint = detection?.roofDelimiter?.polygon || [];
+    const roofPolygonInGeoPoint = (detection?.roofDelimiter?.polygon || []) as [number, number][];
+
+    const measurements: ExportAreaPictureAnnotationMeasurement[] = [];
+
+    if (roofPolygonInGeoPoint.length > 0) {
+      for (let i = 1; i < roofPolygonInGeoPoint.length; i++) {
+        const prevCoordinate = roofPolygonInGeoPoint[i - 1];
+        const currentCoordinate = roofPolygonInGeoPoint[i];
+        const measurement: ExportAreaPictureAnnotationMeasurement = {
+          isInvisible: false,
+          unit: 'm',
+          value: +getDistance(
+            { longitude: prevCoordinate[0], latitude: prevCoordinate[1] },
+            { longitude: currentCoordinate[0], latitude: currentCoordinate[1] },
+            0.2
+          ).toFixed(2),
+        };
+
+        measurements.push(measurement);
+      }
+
+      const startPoint = roofPolygonInGeoPoint[0];
+      const endPoint = roofPolygonInGeoPoint[roofPolygonInGeoPoint.length - 1];
+      const startToEndPointMeasurement: ExportAreaPictureAnnotationMeasurement = {
+        isInvisible: false,
+        unit: 'm',
+        value: +getDistance({ longitude: endPoint[0], latitude: endPoint[1] }, { longitude: startPoint[0], latitude: startPoint[1] }, 0.2).toFixed(2),
+      };
+      measurements.push(startToEndPointMeasurement);
+    }
+
     const feature: Feature = {
       geometry: {
         coordinates: [[roofPolygonInGeoPoint]],
@@ -85,13 +116,13 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
     const image = await createImage(imageUrl);
     const { image: createdImage, polygons: mappedPolygons } = getCroppedImageAndPolygons([roofPolygon, ...filteredPolygons], [roofPolygon], image);
 
-
+    // upload the cropped image and set it as the areaPicture's default image
     uploadAnalyzeImage(createdImage);
 
-    return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons: mappedPolygons, createdImage };
+    return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons: mappedPolygons, measurements, createdImage };
   };
 
   const query = useQuery({ queryKey: [geoJsonResultUrl, imageUrl], queryFn: queryFnVgg, enabled: !!geoJsonResultUrl && !!imageUrl });
 
-  return {...query, isPending: query.isPending || isUploadAnalyzeImagePending, isLoading: query.isLoading || isUploadAnalyzeImagePending}
+  return { ...query, isPending: query.isPending || isUploadAnalyzeImagePending, isLoading: query.isLoading || isUploadAnalyzeImagePending };
 };
