@@ -5,6 +5,7 @@ import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
   useLlmResultQuery,
+  useNotifyPdfQuery,
   usePostDetectionQueries,
   useQueryHeightAndSlope,
   useQueryImageFromUrl,
@@ -65,12 +66,18 @@ export const DetectionResultStep = () => {
   const canSendPdf =
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
+  const { notifyRoofer, isPending: isNotifyRooferPending } = useNotifyPdfQuery();
+
+  useEffect(() => {
+    if (!getCached.notificationAlreadySent() && canSendPdf) notifyRoofer(stepResultRef);
+  }, [canSendPdf]);
+
   return (
     <FormProvider {...form}>
       <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
-        <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: sendInfoToRooferPending ? 10 : 1 }}>
+        <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: sendInfoToRooferPending || isNotifyRooferPending ? 10 : 1 }}>
           <Box position='relative'>
-            {(!showLLMResult || sendInfoToRooferPending) && (
+            {(!showLLMResult || sendInfoToRooferPending || isNotifyRooferPending) && (
               <AnnotatorCanvasCustom
                 height='513px'
                 setPolygons={() => {}}
@@ -87,7 +94,7 @@ export const DetectionResultStep = () => {
                 }
               />
             )}
-            {data?.properties && showLLMResult && !sendInfoToRooferPending && (
+            {data?.properties && showLLMResult && !sendInfoToRooferPending && !isNotifyRooferPending && (
               <LlmResult width='90%' height='513px' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
             )}
           </Box>
@@ -107,7 +114,7 @@ export const DetectionResultStep = () => {
               </Box>
             ))}
           </Stack>
-          {sendInfoToRooferPending && (
+          {(sendInfoToRooferPending || isNotifyRooferPending) && (
             <LlmResult width='90%' height='100%' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
           )}
         </Grid2>

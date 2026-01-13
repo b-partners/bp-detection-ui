@@ -52,7 +52,7 @@ jobs:
           echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env.local
           echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env.local
 
-          npm run test -- --browser firefox
+          npm run test
       - name: Upload screenshots
         if: failure()
         uses: actions/upload-artifact@v4

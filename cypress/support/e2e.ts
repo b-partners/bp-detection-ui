@@ -10,7 +10,7 @@ const prodRequestUtilities = () => {
   // user informations
 
   // prospect & areaPictures & get image
-  cy.intercept('PUT', `/accountHolders/**/prospects`).as('createProspect');
+  cy.intercept('POST', `/accountHolders/**/prospects`).as('createProspect');
   cy.intercept('PUT', `/accounts/**/areaPictures/**`).as('createAreaPicture');
   cy.intercept('GET', `/accounts/**/files/**/raw**`).as('getImage');
   // prospect & areaPictures & get image

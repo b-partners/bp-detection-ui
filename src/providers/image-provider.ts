@@ -1,4 +1,4 @@
-import { ParamsUtilities } from '@/utilities';
+import { cache, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, ZoomLevel } from '@bpartners/typescript-client';
 import { v4 } from 'uuid';
 import { bpAnnotationApi, bpProspectApi } from './api';
@@ -16,7 +16,7 @@ export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo
   try {
     const { accountId, accountHolderId } = await userInfoProvider(apiKey);
     const { address, email, firstName, lastName, phone } = userInfo;
-    const { data: prospect } = await bpProspectApi(apiKey).updateProspects(accountHolderId ?? '', [
+    const { data: prospect } = await bpProspectApi(apiKey).createProspects(accountHolderId ?? '', [
       { address, id: v4(), status: 'TO_CONTACT', firstName, email, phone, name: lastName },
     ]);
     const { data: areaPictureDetails } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', v4(), {
@@ -32,6 +32,8 @@ export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo
       },
       isOpaque: true,
     });
+
+    cache.prospectId(prospect?.[0]?.id || '');
 
     return { areaPictureDetails, prospect: prospect?.[0] };
   } catch (error: any) {
