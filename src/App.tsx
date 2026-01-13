@@ -30,6 +30,7 @@ function App() {
   useEffect(() => {
     setSession(v4());
     clearCached.isEmailSent();
+    clearCached.notificationAlreadySent();
     const { apiKey } = ParamsUtilities.getQueryParams();
     if (!apiKey) checkApiKey();
   }, []);

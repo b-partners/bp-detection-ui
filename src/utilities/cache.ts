@@ -109,6 +109,9 @@ export const clearCached = {
   isEmailSent() {
     localStorage.removeItem(EMAIL_SENT_ITEM);
   },
+  notificationAlreadySent() {
+    localStorage.removeItem(NOTIFICATION_ALREADY_SENT);
+  },
   annotationId() {
     localStorage.removeItem(ANNOTATION_ID_ITEM);
   },
