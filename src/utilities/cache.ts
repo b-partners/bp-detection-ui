@@ -13,6 +13,7 @@ const LEGAL_FILES_STATUS_APPROVED = 'LEGAL_FILES_STATUS_APPROVED';
 const IS_ROOF_PROPERTIES_REQUEST_DONE = 'IS_ROOF_PROPERTIES_REQUEST_DONE';
 const PROSPECT_ID = 'PROSPECT_ID';
 const NOTIFICATION_ALREADY_SENT = 'NOTIFICATION_ALREADY_SENT';
+const IS_ANALYZE_IMAGE_ALREADY_UPLOAD = 'IS_ANALYZE_IMAGE_ALREADY_UPLOAD'
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -68,6 +69,9 @@ export const getCached = {
   },
   prospectId() {
     return localStorage.getItem(PROSPECT_ID);
+  },
+  isAnalyzePictureAlreadyUpload() {
+    return localStorage.getItem('start');
   },
   area() {
     return +(localStorage.getItem(AREA_ITEM) || '0');
