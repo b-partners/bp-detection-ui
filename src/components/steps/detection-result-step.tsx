@@ -8,7 +8,7 @@ import {
   useNotifyPdfQuery,
   usePostDetectionQueries,
   useQueryHeightAndSlope,
-  useQueryImageFromUrl,
+  useQueryImageFromUrl
 } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Grid2, Stack, Typography } from '@mui/material';

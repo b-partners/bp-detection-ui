@@ -4,7 +4,7 @@ import { detectionResultMapper, Feature, geoJsonMapper, geoShapeAttributesToPoin
 import { geoPointsToPoins } from '@/providers';
 import { useQuery } from '@tanstack/react-query';
 import { v4 } from 'uuid';
-import { DetectionResultInVgg, Region } from '.';
+import { DetectionResultInVgg, Region, useAnnotatorImageUploadQuery } from '.';
 
 const getRegions = (detectionResult: DetectionResultInVgg) => {
   const detections = Object.values(detectionResult);
@@ -31,6 +31,9 @@ const isThereAnObstacle = (regions: Region[]) => {
 
 export const useGeojsonQueryResult = (imageUrl?: string) => {
   const { geoJsonResultUrl, detection } = useStep(({ params }) => params);
+
+  const { mutate: uploadAnalyzeImage, isPending: isUploadAnalyzeImagePending } = useAnnotatorImageUploadQuery();
+
 
   const queryFnVgg = async () => {
     const detectionResultText = await fetch(geoJsonResultUrl, { headers: { 'content-type': '*/*' } });
@@ -59,7 +62,7 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
 
     const pixelGeoJsonResult = await geoPointsToPoins(pixelGeoJson);
 
-    const { regions: pixelGeoJsonResultRegion } = Object.values(pixelGeoJsonResult)?.[0] as any;
+    const { regions: pixelGeoJsonResultRegion } = Object.values(pixelGeoJsonResult as any)?.[0] as any;
     const { shape_attributes: pixelGeoJsonResultShapeAttributes } = Object.values(pixelGeoJsonResultRegion)?.[0] as any;
     const roofPolygonPoints = geoShapeAttributesToPoints(pixelGeoJsonResultShapeAttributes);
 
@@ -82,8 +85,13 @@ export const useGeojsonQueryResult = (imageUrl?: string) => {
     const image = await createImage(imageUrl);
     const { image: createdImage, polygons: mappedPolygons } = getCroppedImageAndPolygons([roofPolygon, ...filteredPolygons], [roofPolygon], image);
 
+
+    uploadAnalyzeImage(createdImage);
+
     return { properties: { ...Object.values(detectionResultJson)[0].properties, obstacle: obstacle }, polygons: mappedPolygons, createdImage };
   };
 
-  return useQuery({ queryKey: [geoJsonResultUrl, imageUrl], queryFn: queryFnVgg, enabled: !!geoJsonResultUrl && !!imageUrl });
+  const query = useQuery({ queryKey: [geoJsonResultUrl, imageUrl], queryFn: queryFnVgg, enabled: !!geoJsonResultUrl && !!imageUrl });
+
+  return {...query, isPending: query.isPending || isUploadAnalyzeImagePending, isLoading: query.isLoading || isUploadAnalyzeImagePending}
 };

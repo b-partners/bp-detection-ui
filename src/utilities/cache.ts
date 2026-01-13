@@ -55,6 +55,10 @@ export const cache = {
     localStorage.setItem(IS_ROOF_PROPERTIES_REQUEST_DONE, JSON.stringify(value));
     return value;
   },
+  isAnalyzeImageAlreadyUploaded() {
+    localStorage.setItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD,'1');
+    return true;
+  },
 };
 
 export const getCached = {
@@ -69,9 +73,6 @@ export const getCached = {
   },
   prospectId() {
     return localStorage.getItem(PROSPECT_ID);
-  },
-  isAnalyzePictureAlreadyUpload() {
-    return localStorage.getItem('start');
   },
   area() {
     return +(localStorage.getItem(AREA_ITEM) || '0');
@@ -104,6 +105,10 @@ export const getCached = {
     const value = localStorage.getItem(IS_ROOF_PROPERTIES_REQUEST_DONE);
     return JSON.parse(value || 'false');
   },
+  isAnalyzeImageAlreadyUploaded() {
+    const value = localStorage.getItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD);
+    return value === '1'
+  },
 };
 
 export const clearCached = {
@@ -115,6 +120,9 @@ export const clearCached = {
   },
   notificationAlreadySent() {
     localStorage.removeItem(NOTIFICATION_ALREADY_SENT);
+  },
+  isAnalyzeImageAlreadyUploaded() {
+    localStorage.removeItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD);
   },
   annotationId() {
     localStorage.removeItem(ANNOTATION_ID_ITEM);
