@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { coveringTypeMap, degradationLevels } from '@/mappers';
+import { coveringTypeMap, degradationLevels, exportPdfMapper } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -8,13 +8,13 @@ import {
   useNotifyPdfQuery,
   usePostDetectionQueries,
   useQueryHeightAndSlope,
-  useQueryImageFromUrl
+  useQueryImageFromUrl,
 } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
+import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -69,7 +69,19 @@ export const DetectionResultStep = () => {
   const { notifyRoofer, isPending: isNotifyRooferPending } = useNotifyPdfQuery();
 
   useEffect(() => {
-    if (!getCached.notificationAlreadySent() && canSendPdf) notifyRoofer(stepResultRef);
+    if (!getCached.notificationAlreadySent() && canSendPdf && areaPictureDetails && llmHtmlData && data?.polygons && data?.properties) {
+      const exportAreaPictureAnnotation = exportPdfMapper({
+        areaPictureDetails,
+        height: heightAndSlope?.height || 0,
+        slope: heightAndSlope?.slope || 0,
+        llm: llmHtmlData,
+        polygons: data.polygons as DomainPolygonResultType[],
+        properties: { ...data.properties, obstacle: data.properties.obstacle ? 'OUI' : 'NON' },
+        measurements: data.measurements,
+      });
+
+      notifyRoofer(exportAreaPictureAnnotation);
+    }
   }, [canSendPdf]);
 
   return (

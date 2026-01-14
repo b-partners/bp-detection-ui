@@ -1,17 +1,18 @@
 import { useStep } from '@/hooks';
-import { notifyRooferAfterAnalyze } from '@/providers';
+import { exportAnalyzeAsPdf, notifyRooferAfterAnalyze } from '@/providers';
 import { cache } from '@/utilities';
-import { generateLocalPdf } from '@/utilities/generate-local-pdf';
+import { jsonToFile } from '@/utilities/file-utilities';
+import { ExportAreaPictureAnnotation } from '@bpartners/typescript-client';
 import { useMutation } from '@tanstack/react-query';
-import { RefObject } from 'react';
 
 export const useNotifyPdfQuery = () => {
-  const {
-    params: { areaPictureDetails, prospect },
-  } = useStep();
+  const { prospect } = useStep(p => p.params);
 
-  const mutationFn = async (ref: RefObject<HTMLDivElement | null>) => {
-    const file = await generateLocalPdf(ref, areaPictureDetails?.address || '');
+  const mutationFn = async (exportAreaPictureAnnotation: ExportAreaPictureAnnotation) => {
+    const fileUrls = await exportAnalyzeAsPdf(jsonToFile(exportAreaPictureAnnotation));
+    const result = await fetch(fileUrls.value || '', { headers: { 'content-type': 'application/json' } });
+    const buffer = await result.arrayBuffer();
+    const file = new File([new Uint8Array(buffer)], `${exportAreaPictureAnnotation.address}-analyze.pdf`, { type: 'application/pdf' });
     await notifyRooferAfterAnalyze(prospect?.id || '', file);
     cache.notificationAlreadySent();
   };

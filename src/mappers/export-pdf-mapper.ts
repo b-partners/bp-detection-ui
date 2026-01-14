@@ -1,7 +1,7 @@
 import { DomainPolygonResultType } from '@/components';
 import { DetectionResultInVgg } from '@/queries';
 import { getFileUrl } from '@/utilities';
-import { AreaPictureDetails, ExportAreaPictureAnnotation, ExportAreaPictureAnnotationInstance, FileType } from '@bpartners/typescript-client';
+import { AreaPictureDetails, ExportAreaPictureAnnotation, ExportAreaPictureAnnotationInstance, ExportAreaPictureAnnotationMeasurement, FileType } from '@bpartners/typescript-client';
 import { coveringTypeMap } from './constants';
 
 export const EMPTY_ANNOTATION_INFO_VALUE = 'Non renseigné';
@@ -24,6 +24,7 @@ type ExportPdfMapperParams = {
   properties: DetectionResultInVgg['properties']['properties'] & { obstacle: string };
   slope: number;
   height: number;
+  measurements: ExportAreaPictureAnnotationMeasurement[]
 };
 
 export const exportPdfMapper = (params: ExportPdfMapperParams): ExportAreaPictureAnnotation => {
@@ -37,7 +38,7 @@ export const exportPdfMapper = (params: ExportPdfMapperParams): ExportAreaPictur
     strokeColor: roofPolygon.strokeColor,
     labelName: "Résultats de l'analyse de la toiture",
     polygon: { points: roofPolygon.points },
-    measurements: [],
+    measurements: params.measurements,
     infos: [
       { label: 'Surface', value: `${roofPolygonProperties.roof_area_in_m2}m²` },
       { label: 'Hauteur', value: `${params.height}m²` },
