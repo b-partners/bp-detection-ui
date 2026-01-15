@@ -1,7 +1,13 @@
 import { DomainPolygonResultType } from '@/components';
 import { DetectionResultInVgg } from '@/queries';
 import { getFileUrl } from '@/utilities';
-import { AreaPictureDetails, ExportAreaPictureAnnotation, ExportAreaPictureAnnotationInstance, ExportAreaPictureAnnotationMeasurement, FileType } from '@bpartners/typescript-client';
+import {
+  AreaPictureDetails,
+  ExportAreaPictureAnnotation,
+  ExportAreaPictureAnnotationInstance,
+  ExportAreaPictureAnnotationMeasurement,
+  FileType,
+} from '@bpartners/typescript-client';
 import { coveringTypeMap } from './constants';
 
 export const EMPTY_ANNOTATION_INFO_VALUE = 'Non renseigné';
@@ -24,7 +30,7 @@ type ExportPdfMapperParams = {
   properties: DetectionResultInVgg['properties']['properties'] & { obstacle: string };
   slope: number;
   height: number;
-  measurements: ExportAreaPictureAnnotationMeasurement[]
+  measurements: ExportAreaPictureAnnotationMeasurement[];
 };
 
 export const exportPdfMapper = (params: ExportPdfMapperParams): ExportAreaPictureAnnotation => {
@@ -40,6 +46,7 @@ export const exportPdfMapper = (params: ExportPdfMapperParams): ExportAreaPictur
     polygon: { points: roofPolygon.points },
     measurements: params.measurements,
     infos: [
+      { label: 'key', value: "Résultats de l'analyse de la toiture" },
       { label: 'Surface', value: `${roofPolygonProperties.roof_area_in_m2}m²` },
       { label: 'Hauteur', value: `${params.height}m²` },
       { label: 'Type', value: `Toit` },
@@ -60,12 +67,22 @@ export const exportPdfMapper = (params: ExportPdfMapperParams): ExportAreaPictur
         points: p.points,
       },
       labelName: p.label as string,
-      infos: [{ label: 'Surface', value: `${p.surface}m²` }],
-      measurements: [],
+      infos: [
+        { label: 'key', value: p.label as string },
+        { label: 'Surface', value: `${p.surface}m²` },
+      ],
+      measurements: new Array(p.points.length + 1).fill(0).map(() => ({ isInvisible: true, unit: 'm', value: 0 })),
     };
 
     return exportPdfAnnotation;
   });
 
-  return { address: params.areaPictureDetails.address || '', annotations: [roofAnnotation, ...annotations], imageUrl, llm: params.llm };
+  return {
+    address: params.areaPictureDetails.address || '',
+    imageUrl,
+    llm: params.llm,
+    globalRateValue: params.properties.global_rate_value,
+    globalRateType: params.properties.global_rate_type,
+    annotations: [roofAnnotation, ...annotations],
+  };
 };
