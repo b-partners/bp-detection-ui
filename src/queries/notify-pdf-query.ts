@@ -27,15 +27,8 @@ export const useNotifyPdfQuery = () => {
     const buffer = await result.arrayBuffer();
     const file = new File([new Uint8Array(buffer)], `${exportAreaPictureAnnotation.address}-analyze.pdf`, { type: 'application/pdf' });
 
-    const url = URL.createObjectURL(file);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = file.name;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    // await notifyRooferAfterAnalyze(prospect?.id || '', file);
-    // cache.notificationAlreadySent();
+    await notifyRooferAfterAnalyze(prospect?.id || '', file);
+    cache.notificationAlreadySent();
   };
 
   const { mutateAsync, isPending } = useMutation({ mutationFn, mutationKey: ['postDetectionQuery'] });

@@ -67,10 +67,7 @@ export const exportPdfMapper = (params: ExportPdfMapperParams): ExportAreaPictur
         points: p.points,
       },
       labelName: p.label as string,
-      infos: [
-        { label: 'key', value: p.label as string },
-        { label: 'Surface', value: `${p.surface}m²` },
-      ],
+      infos: [{ label: 'key', value: p.label as string }, formatInfo({ label: 'Surface', value: p.surface, unit: 'm²' })],
       measurements: new Array(p.points.length + 1).fill(0).map(() => ({ isInvisible: true, unit: 'm', value: 0 })),
     };
 
