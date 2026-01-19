@@ -17,7 +17,8 @@ export const saveAnnotationsMapper = (
   const roofAnnotation: AreaPictureAnnotationInstance = {
     annotationId: annotationId,
     id: roofPolygon.id,
-    labelName: roofPolygon.label,
+    labelName: "Résultats de l'analyse de la toiture",
+    labelType: 'roof',
     areaPictureId: areaPictureDetails.id,
     polygon: {
       points: roofPolygon.points,
@@ -33,6 +34,7 @@ export const saveAnnotationsMapper = (
       annotationId: annotationId,
       id: polygon.id,
       labelName: polygon.label,
+      labelType: 'roof',
       areaPictureId: areaPictureDetails.id,
       polygon: {
         points: polygon.points,
