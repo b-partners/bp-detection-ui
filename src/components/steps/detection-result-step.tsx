@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { coveringTypeMap, degradationLevels, exportPdfMapper } from '@/mappers';
+import { coveringTypeMap, degradationLevels, exportPdfMapper, saveAnnotationsMapper } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -9,6 +9,7 @@ import {
   usePostDetectionQueries,
   useQueryHeightAndSlope,
   useQueryImageFromUrl,
+  useSaveAnnotationQuery,
 } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Grid2, Stack, Typography } from '@mui/material';
@@ -67,9 +68,18 @@ export const DetectionResultStep = () => {
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
   const { notifyRoofer, isPending: isNotifyRooferPending } = useNotifyPdfQuery();
+  const { mutate: saveAreaPictureAnnotations } = useSaveAnnotationQuery();
 
   useEffect(() => {
     if (!getCached.notificationAlreadySent() && canSendPdf && areaPictureDetails && llmHtmlData && data?.polygons && data?.properties) {
+      const annotationToSave = saveAnnotationsMapper(
+        areaPictureDetails,
+        data.polygons as DomainPolygonResultType[],
+        { ...data.properties, obstacle: data.properties.obstacle ? 'OUI' : 'NON' },
+        llmHtmlData
+      );
+      if (!getCached.isAnnotationAlreadySaved()) saveAreaPictureAnnotations(annotationToSave);
+
       const exportAreaPictureAnnotation = exportPdfMapper({
         areaPictureDetails,
         height: heightAndSlope?.height || 0,

@@ -4,4 +4,5 @@ export * from './detection-result-mapper';
 export * from './export-pdf-mapper';
 export * from './geojson-mapper';
 export * from './polygon-mapper';
+export * from './save-annotations-mapper';
 export * from './types';
