@@ -43,8 +43,8 @@ export const saveAnnotationsMapper = (
       metadata: {
         area: properties.roof_area_in_m2,
         covering: properties.revetement_1,
-        fillColor: roofPolygon.fillColor,
-        strokeColor: roofPolygon.strokeColor,
+        fillColor: polygon.fillColor,
+        strokeColor: polygon.strokeColor,
         height: properties.roof_height_in_meters,
         slope: properties.roof_slope_in_degrees,
         moldRate: properties.moisissure_rate,
@@ -68,6 +68,7 @@ export const saveAnnotationsMapper = (
       global_rate_value: properties.global_rate_value,
       roofHeight: properties.roof_height_in_meters,
       llm,
+      roofDelimiter: getCached.roofDelimiterLongLat(),
     },
   };
 

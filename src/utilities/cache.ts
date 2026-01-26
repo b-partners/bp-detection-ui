@@ -15,6 +15,7 @@ const PROSPECT_ID = 'PROSPECT_ID';
 const NOTIFICATION_ALREADY_SENT = 'NOTIFICATION_ALREADY_SENT';
 const IS_ANALYZE_IMAGE_ALREADY_UPLOAD = 'IS_ANALYZE_IMAGE_ALREADY_UPLOAD';
 const IS_ANNOTATION_ALREADY_SAVED = 'IS_ANNOTATION_ALREADY_SAVED';
+const ROOF_DELIMITER_LONG_LAT = 'ROOF_DELIMITER_LONG_LAT';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -62,6 +63,9 @@ export const cache = {
   isAnalyzeImageAlreadyUploaded() {
     localStorage.setItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD, '1');
     return true;
+  },
+  roofDelimiterLongLat(coordinates: number[][]) {
+    localStorage.setItem(ROOF_DELIMITER_LONG_LAT, JSON.stringify(coordinates));
   },
 };
 
@@ -115,6 +119,9 @@ export const getCached = {
   isAnalyzeImageAlreadyUploaded() {
     const value = localStorage.getItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD);
     return value === '1';
+  },
+  roofDelimiterLongLat() {
+    return JSON.parse(localStorage.getItem(ROOF_DELIMITER_LONG_LAT) || 'null') as number[][];
   },
 };
 
