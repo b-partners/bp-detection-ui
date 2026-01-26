@@ -31,6 +31,7 @@ function App() {
     setSession(v4());
     clearCached.isEmailSent();
     clearCached.notificationAlreadySent();
+    clearCached.isAnnotationAlreadySaved();
     const { apiKey } = ParamsUtilities.getQueryParams();
     if (!apiKey) checkApiKey();
   }, []);

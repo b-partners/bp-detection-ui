@@ -49,3 +49,5 @@ export const degradationLevels = [
   { label: 'D', color: '#F38F4B', name: 'Réparation nécessaire' },
   { label: 'E', color: '#EF2C2D', name: 'Intervention urgente' },
 ];
+
+export const roofGlobalIdRef = 'roof-polygon';

@@ -13,6 +13,9 @@ const LEGAL_FILES_STATUS_APPROVED = 'LEGAL_FILES_STATUS_APPROVED';
 const IS_ROOF_PROPERTIES_REQUEST_DONE = 'IS_ROOF_PROPERTIES_REQUEST_DONE';
 const PROSPECT_ID = 'PROSPECT_ID';
 const NOTIFICATION_ALREADY_SENT = 'NOTIFICATION_ALREADY_SENT';
+const IS_ANALYZE_IMAGE_ALREADY_UPLOAD = 'IS_ANALYZE_IMAGE_ALREADY_UPLOAD';
+const IS_ANNOTATION_ALREADY_SAVED = 'IS_ANNOTATION_ALREADY_SAVED';
+const ROOF_DELIMITER_LONG_LAT = 'ROOF_DELIMITER_LONG_LAT';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -28,6 +31,9 @@ export const cache = {
   },
   notificationAlreadySent() {
     localStorage.setItem(NOTIFICATION_ALREADY_SENT, '1');
+  },
+  isAnnotationAlreadySaved() {
+    localStorage.setItem(IS_ANNOTATION_ALREADY_SAVED, '1');
   },
   area(area: number) {
     localStorage.setItem(AREA_ITEM, `${area}`);
@@ -54,6 +60,13 @@ export const cache = {
     localStorage.setItem(IS_ROOF_PROPERTIES_REQUEST_DONE, JSON.stringify(value));
     return value;
   },
+  isAnalyzeImageAlreadyUploaded() {
+    localStorage.setItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD, '1');
+    return true;
+  },
+  roofDelimiterLongLat(coordinates: number[][]) {
+    localStorage.setItem(ROOF_DELIMITER_LONG_LAT, JSON.stringify(coordinates));
+  },
 };
 
 export const getCached = {
@@ -74,6 +87,9 @@ export const getCached = {
   },
   notificationAlreadySent() {
     return localStorage.getItem(NOTIFICATION_ALREADY_SENT) === '1';
+  },
+  isAnnotationAlreadySaved() {
+    return localStorage.getItem(IS_ANNOTATION_ALREADY_SAVED) === '1';
   },
   isEmailSent() {
     return JSON.parse(localStorage.getItem(EMAIL_SENT_ITEM) || 'false');
@@ -100,6 +116,13 @@ export const getCached = {
     const value = localStorage.getItem(IS_ROOF_PROPERTIES_REQUEST_DONE);
     return JSON.parse(value || 'false');
   },
+  isAnalyzeImageAlreadyUploaded() {
+    const value = localStorage.getItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD);
+    return value === '1';
+  },
+  roofDelimiterLongLat() {
+    return JSON.parse(localStorage.getItem(ROOF_DELIMITER_LONG_LAT) || 'null') as number[][];
+  },
 };
 
 export const clearCached = {
@@ -111,6 +134,12 @@ export const clearCached = {
   },
   notificationAlreadySent() {
     localStorage.removeItem(NOTIFICATION_ALREADY_SENT);
+  },
+  isAnnotationAlreadySaved() {
+    localStorage.removeItem(IS_ANNOTATION_ALREADY_SAVED);
+  },
+  isAnalyzeImageAlreadyUploaded() {
+    localStorage.removeItem(IS_ANALYZE_IMAGE_ALREADY_UPLOAD);
   },
   annotationId() {
     localStorage.removeItem(ANNOTATION_ID_ITEM);
