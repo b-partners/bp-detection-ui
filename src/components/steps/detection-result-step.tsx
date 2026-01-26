@@ -75,7 +75,12 @@ export const DetectionResultStep = () => {
       const annotationToSave = saveAnnotationsMapper(
         areaPictureDetails,
         data.polygons as DomainPolygonResultType[],
-        { ...data.properties, obstacle: data.properties.obstacle ? 'OUI' : 'NON' },
+        {
+          ...data.properties,
+          obstacle: data.properties.obstacle ? 'OUI' : 'NON',
+          roof_height_in_meters: heightAndSlope?.height || 0,
+          roof_slope_in_degrees: heightAndSlope?.slope || 0,
+        },
         llmHtmlData
       );
       if (!getCached.isAnnotationAlreadySaved()) saveAreaPictureAnnotations(annotationToSave);
