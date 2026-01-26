@@ -32,3 +32,19 @@ export const geoPointsToPoins = async (geoJson: any) => {
     console.log(error);
   }
 };
+
+export const referencerPointsToGeoPoints = async (body: any) => {
+  try {
+    const res = await fetch(process.env.REACT_APP_ANNOTATOR_GEO_REFERENCER_API_URL || '', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    return (await res.json()) as GeojsonReturn[];
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

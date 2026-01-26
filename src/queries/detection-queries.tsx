@@ -45,6 +45,8 @@ export const useQueryStartDetection = (src: string, areaPictureDetails: AreaPict
       mappedCoordinates.push([all_points_y[index], x]);
     });
 
+    cache.roofDelimiterLongLat(mappedCoordinates);
+
     startPropertiesQuery();
     return await processDetection(areaPictureDetails.actualLayer?.name ?? '', `${areaPictureDetails.address}`, [mappedCoordinates], receiverEmail);
   };

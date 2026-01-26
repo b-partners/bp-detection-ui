@@ -1,6 +1,6 @@
 import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
-import { bpProspectApi } from './api';
+import { bpAnnotationApi, bpProspectApi } from './api';
 import { RooferInformations } from './type';
 import { userInfoProvider } from './user-info-provider';
 
@@ -169,5 +169,12 @@ export const notifyRooferAfterAnalyze = async (prospectId: string, pdf: File) =>
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountHolderId = '' } = await userInfoProvider(apiKey);
   const result = await bpProspectApi(apiKey).notifyProspects(accountHolderId || '', prospectId, pdf);
+  return result.data;
+};
+
+export const exportAnalyzeAsPdf = async (data: File) => {
+  const { apiKey } = ParamsUtilities.getQueryParams();
+  const { accountId = '' } = await userInfoProvider(apiKey);
+  const result = await bpAnnotationApi(apiKey).exportAreaPictureAnnotationToPdf(accountId || '', undefined, data);
   return result.data;
 };

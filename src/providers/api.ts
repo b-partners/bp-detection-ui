@@ -1,7 +1,8 @@
-import { AddressAutocompletionApi, AreaPictureApi, Configuration, ProspectingApi, SecurityApi, UserAccountsApi } from '@bpartners/typescript-client';
+import { AddressAutocompletionApi, AreaPictureApi, Configuration, FilesApi, ProspectingApi, SecurityApi, UserAccountsApi } from '@bpartners/typescript-client';
 
 export const bpSecurityApi = (apiKey: string) => new SecurityApi(new Configuration({ apiKey }));
 export const bpUserAccountApi = (apiKey: string) => new UserAccountsApi(new Configuration({ apiKey }));
 export const bpAnnotationApi = (apiKey: string) => new AreaPictureApi(new Configuration({ apiKey }));
 export const bpProspectApi = (apiKey: string) => new ProspectingApi(new Configuration({ apiKey }));
 export const autocompleteApi = (apiKey: string) => new AddressAutocompletionApi(new Configuration({ apiKey }));
+export const filesApi = (apiKey: string) => new FilesApi(new Configuration({ apiKey }));

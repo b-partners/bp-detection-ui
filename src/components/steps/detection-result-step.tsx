@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { coveringTypeMap, degradationLevels } from '@/mappers';
+import { coveringTypeMap, degradationLevels, exportPdfMapper, saveAnnotationsMapper } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -9,12 +9,13 @@ import {
   usePostDetectionQueries,
   useQueryHeightAndSlope,
   useQueryImageFromUrl,
+  useSaveAnnotationQuery,
 } from '@/queries';
 import { cache, getCached } from '@/utilities';
 import { Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, LlmResult, LlmSwitchButton } from '..';
+import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -67,9 +68,35 @@ export const DetectionResultStep = () => {
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
   const { notifyRoofer, isPending: isNotifyRooferPending } = useNotifyPdfQuery();
+  const { mutate: saveAreaPictureAnnotations } = useSaveAnnotationQuery();
 
   useEffect(() => {
-    if (!getCached.notificationAlreadySent() && canSendPdf) notifyRoofer(stepResultRef);
+    if (!getCached.notificationAlreadySent() && canSendPdf && areaPictureDetails && llmHtmlData && data?.polygons && data?.properties) {
+      const annotationToSave = saveAnnotationsMapper(
+        areaPictureDetails,
+        data.polygons as DomainPolygonResultType[],
+        {
+          ...data.properties,
+          obstacle: data.properties.obstacle ? 'OUI' : 'NON',
+          roof_height_in_meters: heightAndSlope?.height || 0,
+          roof_slope_in_degrees: heightAndSlope?.slope || 0,
+        },
+        llmHtmlData
+      );
+      if (!getCached.isAnnotationAlreadySaved()) saveAreaPictureAnnotations(annotationToSave);
+
+      const exportAreaPictureAnnotation = exportPdfMapper({
+        areaPictureDetails,
+        height: heightAndSlope?.height || 0,
+        slope: heightAndSlope?.slope || 0,
+        llm: llmHtmlData,
+        polygons: data.polygons as DomainPolygonResultType[],
+        properties: { ...data.properties, obstacle: data.properties.obstacle ? 'OUI' : 'NON' },
+        measurements: data.measurements,
+      });
+
+      notifyRoofer(exportAreaPictureAnnotation);
+    }
   }, [canSendPdf]);
 
   return (
