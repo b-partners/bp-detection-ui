@@ -1,6 +1,6 @@
 import { useStep } from '@/hooks';
 import { ScaleCallbacks } from '@bpartners/annotator-component';
-import { ZoomIn, ZoomInMap, ZoomOut } from '@mui/icons-material';
+import { Edit, PanTool, ZoomIn, ZoomInMap, ZoomOut } from '@mui/icons-material';
 import { Box, IconButton, Stack, Typography, useMediaQuery } from '@mui/material';
 import { FC, ReactNode } from 'react';
 import { annotatorCustomButtonStyle } from './style';
@@ -10,7 +10,7 @@ interface AnnotatorCustomButtonProps extends Record<'callbacks', ScaleCallbacks>
 }
 
 export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callbacks, customButtons }) => {
-  const { scaleDown, scaleReste, scaleUp, xRef, yRef } = callbacks;
+  const { scaleDown, scaleReste, scaleUp, xRef, yRef, clickActionValue, toggleClickAction } = callbacks;
   const {
     params: { areaPictureDetails },
   } = useStep();
@@ -51,6 +51,9 @@ export const AnnotatorCustomButton: FC<AnnotatorCustomButtonProps> = ({ callback
         </IconButton>
         <IconButton data-cy='zoom-out' onClick={scaleDown}>
           <ZoomOut />
+        </IconButton>
+        <IconButton data-cy='move-image' onClick={toggleClickAction}>
+          {clickActionValue ? <Edit /> : <PanTool />}
         </IconButton>
       </Stack>
     </Stack>
