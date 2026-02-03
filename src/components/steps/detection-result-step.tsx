@@ -12,7 +12,7 @@ import {
   useSaveAnnotationQuery,
 } from '@/queries';
 import { cache, getCached } from '@/utilities';
-import { Box, Button, Grid2, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
@@ -67,7 +67,7 @@ export const DetectionResultStep = () => {
   const canSendPdf =
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
-  const { notifyRoofer, isPending: isNotifyRooferPending } = useNotifyPdfQuery();
+  const { notifyRoofer } = useNotifyPdfQuery();
   const { mutate: saveAreaPictureAnnotations } = useSaveAnnotationQuery();
 
   useEffect(() => {
@@ -102,9 +102,9 @@ export const DetectionResultStep = () => {
   return (
     <FormProvider {...form}>
       <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
-        <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: sendInfoToRooferPending || isNotifyRooferPending ? 10 : 1 }}>
+        <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
           <Box position='relative'>
-            {(!showLLMResult || sendInfoToRooferPending || isNotifyRooferPending) && (
+            {!showLLMResult && (
               <AnnotatorCanvasCustom
                 height='513px'
                 setPolygons={() => {}}
@@ -121,7 +121,7 @@ export const DetectionResultStep = () => {
                 }
               />
             )}
-            {data?.properties && showLLMResult && !sendInfoToRooferPending && !isNotifyRooferPending && (
+            {data?.properties && showLLMResult && (
               <LlmResult width='90%' height='513px' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
             )}
           </Box>
@@ -141,9 +141,11 @@ export const DetectionResultStep = () => {
               </Box>
             ))}
           </Stack>
-          {(sendInfoToRooferPending || isNotifyRooferPending) && (
-            <LlmResult width='90%' height='100%' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
-          )}
+          <Box className='disclaimer-container'>
+            <Alert variant='filled' color='warning'>
+              Disclaimer : rapport généré par IA statistique nécessitant confirmation par votre expert toiture.
+            </Alert>
+          </Box>
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
           <Stack className='analyse-result-info'>

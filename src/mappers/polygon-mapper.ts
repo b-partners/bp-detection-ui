@@ -20,15 +20,17 @@ export const polygonMapper = {
   toRefererGeoJson(polygon: Polygon, image_size: number, areaPicture: AreaPictureDetails) {
     const filename = `${v4().replace(/\-/gi, '')}_20_${(areaPicture.xTile || 0) - 1}_${(areaPicture.yTile || 0) - 1}.jpg`;
 
+    const size = image_size > 1024 ? 1024 : image_size;
+
     const result: ConverterPayload = {
-      size: image_size,
+      size,
       filename,
-      zoom: 20,
+      zoom: areaPicture.zoom?.number || 20,
       regions: {},
       base64_img_data: null,
     };
 
-    const offsets = { x: areaPicture.xOffset || 0, y: areaPicture.yOffset || 0 };
+    const offsets = !areaPicture.isExtended ? { x: areaPicture.xOffset || 0, y: areaPicture.yOffset || 0 } : { x: 0, y: 0 };
 
     result.regions = {
       '1': {
