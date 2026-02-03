@@ -12,7 +12,7 @@ import {
   useSaveAnnotationQuery,
 } from '@/queries';
 import { cache, getCached } from '@/utilities';
-import { Box, Button, Grid2, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
@@ -141,6 +141,11 @@ export const DetectionResultStep = () => {
               </Box>
             ))}
           </Stack>
+          <Box className='disclaimer-container'>
+            <Alert variant='filled' color='warning'>
+              Disclaimer : rapport généré par IA statistique nécessitant confirmation par votre expert toiture.
+            </Alert>
+          </Box>
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
           <Stack className='analyse-result-info'>

@@ -99,6 +99,11 @@ export const DetectionResultStepStyle: SxProps = {
       },
     },
   },
+  '& .disclaimer-container': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 };
 
 export const GetAddressStepStyle: SxProps = {

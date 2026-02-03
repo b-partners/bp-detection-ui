@@ -45,7 +45,7 @@ export const useQueryImageFromAddress = () => {
     const token = await (executeRecaptcha as Function)('get_image');
     const { apiKey } = ParamsUtilities.getQueryParams();
 
-    const url = new URL(`${process.env.REACT_APP_GEO_DETECTION_API}/captcha/token`);
+    const url = new URL(`${process.env.REACT_APP_BPARTNERS_API_URL}/captcha/token`);
     url.searchParams.set('token', token);
 
     const result = await fetch(url, { headers: { 'x-api-key': apiKey } });
