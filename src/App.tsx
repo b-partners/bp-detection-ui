@@ -10,15 +10,15 @@ import { clearCached, ParamsUtilities } from './utilities';
 
 const steps = [
   {
-    label: 'Récupération de votre adresse',
+    label: 'Renseignez votre adresse',
     content: <GetAddressStep />,
   },
   {
-    label: 'Délimitation de votre toiture',
+    label: 'Visualisez et délimitez votre toiture',
     content: <AnnotateImageStep />,
   },
   {
-    label: "Résultat de l'analyse",
+    label: 'Analysez l’état via BIRDIA',
     content: <DetectionResultStep />,
   },
 ];

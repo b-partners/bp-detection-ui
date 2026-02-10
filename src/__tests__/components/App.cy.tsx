@@ -72,11 +72,11 @@ describe('Component testing', () => {
     cy.contains("Clé d'API invalide");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.contains('Récupération de votre adresse');
+    cy.contains('Renseignez votre adresse');
 
     //steppers state
-    cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Délimitation de votre toiture').should('not.have.class', 'Mui-active');
+    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
+    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
     //steppers state
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
@@ -110,8 +110,8 @@ describe('Component testing', () => {
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
-    cy.contains('Récupération de votre adresse').should('have.class', 'Mui-completed');
-    cy.contains('Délimitation de votre toiture').should('have.class', 'Mui-active');
+    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-completed');
+    cy.contains('Visualisez et délimitez votre toiture').should('have.class', 'Mui-active');
     //steppers state
     //llm result
     cy.intercept('GET', '/toiture**', res => {
