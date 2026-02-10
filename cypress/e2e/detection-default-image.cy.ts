@@ -76,8 +76,8 @@ xdescribe('test detection', () => {
     });
     cy.prodRequestUtilities();
     //steppers state
-    cy.contains('Récupération de votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Délimitation de votre toiture').should('not.have.class', 'Mui-active');
+    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
+    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
     //steppers state
 
     cy.contains("Clé d'API invalide");
@@ -86,7 +86,7 @@ xdescribe('test detection', () => {
     cy.dataCy('api-key-input').type(process.env.REACT_PROD_API_KEY || '');
     cy.contains('Valider').click();
 
-    cy.contains('Récupération de votre adresse');
+    cy.contains('Renseignez votre adresse');
     cy.dataCy(search_input_sel).type('13 Rue Honoré Daumier, 56000 Vannes');
     detectionGetImage('13 Rue Honoré Daumier, 56000 Vannes', () => HaveTheCorrectImagePrecision5Cm.yes());
   });
