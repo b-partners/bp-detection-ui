@@ -6,6 +6,7 @@ import { MainStyle as style } from '@/style';
 import { Box, Step, StepLabel, Stepper } from '@mui/material';
 import { useEffect } from 'react';
 import { v4 } from 'uuid';
+import { useGetRooferLogoQuery } from './queries';
 import { clearCached, ParamsUtilities } from './utilities';
 
 const steps = [
@@ -36,10 +37,12 @@ function App() {
     if (!apiKey) checkApiKey();
   }, []);
 
+  const { data } = useGetRooferLogoQuery();
+
   return (
     <Box sx={style}>
       <Box className={`img-container ${actualStep === 0 ? 'img-full' : 'img-min'}`}>
-        <img alt='bird-ia-logo' src='/assets/images/bird-ia-lg-logo.png' />
+        <img alt='bird-ia-logo' src={data || '/assets/images/bird-ia-lg-logo.png'} />
       </Box>
       <Stepper activeStep={actualStep} alternativeLabel>
         {steps.map(({ label }) => (

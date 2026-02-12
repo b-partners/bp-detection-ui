@@ -6,3 +6,4 @@ export * from './location-provider';
 export * from './polygon-converter-provider';
 export * from './type';
 export * from './user-info-provider';
+export * from './user-provider';
