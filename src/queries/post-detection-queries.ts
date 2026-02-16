@@ -3,7 +3,7 @@ import { sendPdfToMail, sendRooferInformationsToMail } from '@/providers';
 import { cache } from '@/utilities';
 import { useMutation } from '@tanstack/react-query';
 
-export const usePostDetectionQueries = () => {
+export const usePostDetectionQueries = (onSuccess?: () => void) => {
   const {
     params: { areaPictureDetails, prospect },
   } = useStep();
@@ -20,7 +20,7 @@ export const usePostDetectionQueries = () => {
     cache.isEmailSent();
   };
 
-  const { mutateAsync: postDetection, isPending } = useMutation({ mutationFn, mutationKey: ['postDetectionQuery'] });
+  const { mutateAsync: postDetection, isPending } = useMutation({ mutationFn, mutationKey: ['postDetectionQuery'], onSuccess });
 
   return { sendInfoToRoofer: postDetection, isPending };
 };

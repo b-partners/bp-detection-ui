@@ -174,7 +174,7 @@ export const DetectionResultStep = () => {
             <DetectionResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
             <DetectionResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
             <DetectionResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
-            <Button data-cy='send-roofer-mail-button' fullWidth loading={isEmailSentPending} disabled={!canSendPdf} onClick={handleDone}>
+            <Button data-cy='send-roofer-mail-button' fullWidth loading={isEmailSentPending} disabled={!isEmailSent} onClick={handleDone}>
               Terminer
             </Button>
           </Stack>

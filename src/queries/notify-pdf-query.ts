@@ -10,7 +10,13 @@ import { usePostDetectionQueries } from './post-detection-queries';
 export const useNotifyPdfQuery = () => {
   const { prospect } = useStep(p => p.params);
   const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
-  const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
+
+  const handleSuccess = () => {
+    setIsEmailSent(true);
+    cache.isEmailSent();
+  };
+
+  const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries(handleSuccess);
 
   const mutationFn = async (exportAreaPictureAnnotation: ExportAreaPictureAnnotation) => {
     let counter = 0;
@@ -32,11 +38,7 @@ export const useNotifyPdfQuery = () => {
     const file = new File([new Uint8Array(buffer)], `${exportAreaPictureAnnotation.address}-analyze.pdf`, { type: 'application/pdf' });
 
     await notifyRooferAfterAnalyze(prospect?.id || '', file);
-    if (!isEmailSent) {
-      sendInfoToRoofer(file);
-      cache.isEmailSent();
-      setIsEmailSent(!isEmailSent);
-    }
+    if (!isEmailSent) sendInfoToRoofer(file);
     cache.notificationAlreadySent();
   };
 
