@@ -5,9 +5,8 @@ import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
 import { Box, Step, StepLabel, Stepper } from '@mui/material';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { v4 } from 'uuid';
-import { useGetRooferLogoQuery } from './queries';
 import { clearCached, ParamsUtilities } from './utilities';
 
 const steps = [
@@ -27,6 +26,7 @@ const steps = [
 
 function App() {
   const { actualStep, setSession } = useStep();
+  const { image } = useLoaderData();
 
   const navigate = useNavigate();
 
@@ -39,12 +39,10 @@ function App() {
     if (!apiKey) navigate('/api-key');
   }, []);
 
-  const { data } = useGetRooferLogoQuery();
-
   return (
     <Box sx={style}>
       <Box className={`img-container ${actualStep === 0 ? 'img-full' : 'img-min'}`}>
-        <img alt='bird-ia-logo' src={data || '/assets/images/bird-ia-lg-logo.png'} />
+        <img alt='bird-ia-logo' src={image} />
       </Box>
       <Stepper activeStep={actualStep} alternativeLabel>
         {steps.map(({ label }) => (

@@ -1,5 +1,5 @@
 import { userInfoProvider, userProvider } from '@/providers';
-import { cache, getFileUrl } from '@/utilities';
+import { cache, getFileUrl, ParamsUtilities } from '@/utilities';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ export const useValidateApiKey = () => {
     const { logoFileId } = await userProvider.whoamiWithApiKey(apikey);
     const logoUrl = getFileUrl(logoFileId ?? '', 'LOGO');
     cache.rooferLogo(logoUrl);
+    ParamsUtilities.setQueryParams('apiKey', apikey);
     navigate(`/?apiKey=${apikey}`);
   };
   const {
