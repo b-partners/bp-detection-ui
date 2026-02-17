@@ -1,5 +1,5 @@
 import { userInfoProvider, userProvider } from '@/providers';
-import { arrayBufferToBase64, getFileUrl, ParamsUtilities } from '@/utilities';
+import { arrayBufferToBase64, cache, getFileUrl, ParamsUtilities } from '@/utilities';
 import { useQuery } from '@tanstack/react-query';
 
 export const useGetRooferLogoQuery = (keys = []) => {
@@ -11,7 +11,7 @@ export const useGetRooferLogoQuery = (keys = []) => {
     const url = getFileUrl(logoFileId, 'LOGO');
     const file = await fetch(url, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
     const imageAsArrayBuffer = await file.arrayBuffer();
-
+    cache.rooferLogo(url);
     return arrayBufferToBase64(imageAsArrayBuffer);
   };
 

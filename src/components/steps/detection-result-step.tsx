@@ -14,6 +14,7 @@ import { getCached } from '@/utilities';
 import { Alert, Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
@@ -28,6 +29,13 @@ export const DetectionResultStep = () => {
   const { watch, setValue: setFormValue } = form;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleValue: tootleLLMResultView, value: showLLMResult } = useToggle(false);
+  const navigate = useNavigate();
+  const [endLoading, setEndLoading] = useState(false);
+
+  const acknowledgementsRedirect = () => {
+    setEndLoading(true);
+    navigate('/acknowledgements');
+  };
 
   const { data: heightAndSlope, isPending: isHeightAndSlopePending } = useQueryHeightAndSlope();
 
@@ -88,8 +96,6 @@ export const DetectionResultStep = () => {
       notifyRoofer(exportAreaPictureAnnotation);
     }
   }, [canSendPdf]);
-
-  const handleDone = () => {};
 
   return (
     <FormProvider {...form}>
@@ -174,7 +180,13 @@ export const DetectionResultStep = () => {
             <DetectionResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
             <DetectionResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
             <DetectionResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
-            <Button data-cy='send-roofer-mail-button' fullWidth loading={isEmailSentPending} disabled={!isEmailSent} onClick={handleDone}>
+            <Button
+              data-cy='send-roofer-mail-button'
+              fullWidth
+              loading={isEmailSentPending || endLoading}
+              disabled={!isEmailSent}
+              onClick={acknowledgementsRedirect}
+            >
               Terminer
             </Button>
           </Stack>

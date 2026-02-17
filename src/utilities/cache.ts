@@ -16,6 +16,7 @@ const NOTIFICATION_ALREADY_SENT = 'NOTIFICATION_ALREADY_SENT';
 const IS_ANALYZE_IMAGE_ALREADY_UPLOAD = 'IS_ANALYZE_IMAGE_ALREADY_UPLOAD';
 const IS_ANNOTATION_ALREADY_SAVED = 'IS_ANNOTATION_ALREADY_SAVED';
 const ROOF_DELIMITER_LONG_LAT = 'ROOF_DELIMITER_LONG_LAT';
+const ROOFER_LOGO_URL = 'ROOFER_LOGO_URL_ITEM';
 
 export const cache = {
   userInfo(userId: string, accountId: string, accountHolderId: string) {
@@ -66,6 +67,9 @@ export const cache = {
   },
   roofDelimiterLongLat(coordinates: number[][]) {
     localStorage.setItem(ROOF_DELIMITER_LONG_LAT, JSON.stringify(coordinates));
+  },
+  rooferLogo(url: string) {
+    localStorage.setItem(ROOFER_LOGO_URL, url);
   },
 };
 
@@ -122,6 +126,9 @@ export const getCached = {
   },
   roofDelimiterLongLat() {
     return JSON.parse(localStorage.getItem(ROOF_DELIMITER_LONG_LAT) || 'null') as number[][];
+  },
+  rooferLogo() {
+    return localStorage.getItem(ROOFER_LOGO_URL);
   },
 };
 
