@@ -1,10 +1,11 @@
 import '@/App.css';
 import { GlobalDialog, GlobalSnackbar } from '@/components';
 import { AnnotateImageStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
-import { useCheckApiKey, useStep } from '@/hooks';
+import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
 import { Box, Step, StepLabel, Stepper } from '@mui/material';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { v4 } from 'uuid';
 import { useGetRooferLogoQuery } from './queries';
 import { clearCached, ParamsUtilities } from './utilities';
@@ -26,7 +27,8 @@ const steps = [
 
 function App() {
   const { actualStep, setSession } = useStep();
-  const checkApiKey = useCheckApiKey();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSession(v4());
@@ -34,7 +36,7 @@ function App() {
     clearCached.notificationAlreadySent();
     clearCached.isAnnotationAlreadySaved();
     const { apiKey } = ParamsUtilities.getQueryParams();
-    if (!apiKey) checkApiKey();
+    if (!apiKey) navigate('/api-key');
   }, []);
 
   const { data } = useGetRooferLogoQuery();

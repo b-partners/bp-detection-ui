@@ -1,9 +1,9 @@
-import { useCheckApiKey } from '@/hooks';
 import { locationProvider } from '@/providers';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 export const useLocationQuery = (sessionId: string) => {
-  const checkApiKey = useCheckApiKey();
+  const navigate = useNavigate();
 
   const mutationFn = async (query: string) => {
     if (!query || query.length === 0) {
@@ -17,9 +17,7 @@ export const useLocationQuery = (sessionId: string) => {
     mutationFn,
     mutationKey: ['findlocation'],
     onError: (e: any) => {
-      if (e?.status === 403) {
-        checkApiKey();
-      }
+      if (e?.status === 403) navigate('/api-key');
     },
   });
 
