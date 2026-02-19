@@ -13,7 +13,7 @@ export const logoLoader = async () => {
   const { data: accountHolders } = await bpUserAccountApi(apiKey).getAccountHolders(userId ?? '', accountId ?? '');
   const website = accountHolders?.[0]?.companyInfo?.website || defaultSite;
 
-  if (url.includes('null') || url.includes('undefined')) return { image: defaultLogo, website };
+  if (url.includes('null') || url.includes('undefined') || url.includes('//')) return { image: defaultLogo, website };
 
   const file = await fetch(url, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
   const imageAsArrayBuffer = await file.arrayBuffer();
