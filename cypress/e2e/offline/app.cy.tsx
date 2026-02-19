@@ -12,6 +12,7 @@ import {
   prospect_mock,
   whoami_mock,
 } from '../../../src/__tests__/mocks';
+import { offlineUrl } from './utilities';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
@@ -23,7 +24,7 @@ const requestsInterceptions = () => {
   cy.intercept('GET', `/accounts/account-mock-id/files/${whoami_mock.user.logoFileId}/raw?apiKey=api-key-mock&fileType=LOGO`, {
     fixture: 'bird-ia-lg-logo.png',
     headers: { 'content-type': 'image/png' },
-  }).as('location-search');
+  }).as('getRooferLogo');
 
   // user informations
   cy.intercept('GET', '/whoami', whoami_mock).as('getWhoami');
@@ -70,7 +71,7 @@ describe('Component testing', () => {
 
   it('Test the app', () => {
     requestsInterceptions();
-    cy.visit('http://localhost:5173');
+    cy.visit(offlineUrl);
 
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -150,6 +151,7 @@ describe('Component testing', () => {
     cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
     cy.intercept('POST', '/accounts/*/annotations/convert', converter_mock);
     cy.intercept('POST', `/accounts/${account_mock.id}/annotations/exports`, { statusCode: 200 });
+    cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects/${prospect_mock.id}/notifications`, { statusCode: 200 });
     cy.dataCy(process_detection_sel).click();
 
     cy.contains('Calcule de la pente en cours...');
