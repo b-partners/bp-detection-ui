@@ -50,7 +50,7 @@
     "@types/react-pdf": "^6.2.0",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "cypress": "14.2.0",
+    "cypress": "^15.10.0",
     "cypress-multi-reporters": "^2.0.5",
     "cypress-sonarqube-reporter": "^1.13.5",
     "cypress-vite": "^1.6.0",
