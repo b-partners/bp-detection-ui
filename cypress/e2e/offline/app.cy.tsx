@@ -64,8 +64,6 @@ const requestsInterceptions = () => {
 
 describe('Component testing', () => {
   beforeEach(() => {
-    // cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
-    // cy.stub(googleRecaptchaFn, 'useGoogleReCaptcha').returns({ executeRecaptcha: () => Promise.resolve('mock-recaptcha-token'), valide: false });
     cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
   });
 
