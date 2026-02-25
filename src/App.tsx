@@ -1,5 +1,4 @@
 import '@/App.css';
-import { GlobalDialog, GlobalSnackbar } from '@/components';
 import { AnnotateImageStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
 import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
@@ -52,8 +51,6 @@ function App() {
         ))}
       </Stepper>
       {steps[actualStep].content}
-      <GlobalDialog />
-      <GlobalSnackbar />
     </Box>
   );
 }

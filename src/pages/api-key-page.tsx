@@ -1,10 +1,13 @@
+import { LegalFilesPdfRenderer } from '@/components';
+import { useDialog } from '@/hooks';
 import { useValidateApiKey } from '@/queries';
 import { Button, Card, CardContent, CardHeader, Stack, TextField, useMediaQuery, useTheme } from '@mui/material';
-import { ChangeEventHandler, FormEventHandler, useState } from 'react';
+import { ChangeEventHandler, FormEventHandler, useEffect, useState } from 'react';
 
 export const ApiKeyPage = () => {
   const [apiKey, setApiKey] = useState('');
   const { isValidating, validate, validationError } = useValidateApiKey();
+  const { open } = useDialog();
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -14,6 +17,12 @@ export const ApiKeyPage = () => {
     event.preventDefault();
     validate(apiKey ?? '');
   };
+
+  useEffect(() => {
+    if (validationError?.message?.includes('legalFileNotApproved')) {
+      open(<LegalFilesPdfRenderer />, { closeOnBlur: false });
+    }
+  }, [validationError]);
 
   return (
     <Card
