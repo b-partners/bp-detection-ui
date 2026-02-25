@@ -51,8 +51,11 @@ jobs:
           echo LLM_API_KEY=${{ env.LLM_API_KEY }} >> .env.local
           echo REACT_PROD_API_KEY=react-prod-mock-api-key >> .env.local
           echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env.local
+          npm run build
+          npm run preview -- --port 3000 &
+      - name: run test
+        run: npm run test
 
-          npm run test
       - name: Upload screenshots
         if: failure()
         uses: actions/upload-artifact@v4
