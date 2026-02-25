@@ -3,7 +3,6 @@ import { cache, ParamsUtilities } from '@/utilities';
 import {
   account_holder_mock,
   account_mock,
-  AppComponent_Mock,
   area_picture_mock,
   detection_mock,
   detectionSync,
@@ -14,7 +13,8 @@ import {
   roofAnalyseLimitExceededResponse_Mock,
   tooBigPolygonResponse_mock,
   whoami_mock,
-} from '../mocks';
+} from '../../../src/__tests__/mocks';
+import { offlineUrl } from './utilities';
 
 const search_input_sel = 'address-search-input';
 const canvas_cursor_sel = 'annotator-canvas-cursor';
@@ -33,6 +33,11 @@ describe('Test process detection error', () => {
     cy.intercept('GET', '/whoami', whoami_mock).as('getWhoami');
     cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts`, [account_mock]).as('getAccounts');
     cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts/${account_mock.id}/accountHolders`, [account_holder_mock]).as('getAccountHolders');
+    cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
+    cy.intercept('GET', `/accounts/account-mock-id/files/${whoami_mock.user.logoFileId}/raw?apiKey=api-key-mock&fileType=LOGO`, {
+      fixture: 'bird-ia-lg-logo.png',
+      headers: { 'content-type': 'image/png' },
+    }).as('getRooferLogo');
     // user informations
 
     // prospect & areaPictures & get image
@@ -68,13 +73,13 @@ describe('Test process detection error', () => {
 
     cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
 
-    cy.mount(<AppComponent_Mock />);
+    cy.visit(offlineUrl);
   });
 
   it('Test /sync error 500', () => {
     cy.intercept('POST', `/detections/*/sync`, { statusCode: 500 }).as('detectionSync');
 
-    cy.contains("Clé d'API invalide");
+    cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
     cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
@@ -162,7 +167,7 @@ describe('Test process detection error', () => {
 
   it('Test too big polygon', () => {
     cy.intercept('POST', `/detections/*/sync`, tooBigPolygonResponse_mock).as('detectionSync');
-    cy.contains("Clé d'API invalide");
+    cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
     cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
