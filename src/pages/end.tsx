@@ -1,5 +1,5 @@
 import { PALETTE_COLORS } from '@/utilities/theme';
-import { Button, Paper, SxProps, Typography } from '@mui/material';
+import { Button, Paper, Stack, SxProps, Typography } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
 const endPagePaperStyle: SxProps = {
@@ -28,18 +28,29 @@ const backButtonStyle = {
   '&:hover': { backgroundColor: PALETTE_COLORS.forest },
 };
 
+const cta = {
+  ...backButtonStyle,
+  backgroundColor: PALETTE_COLORS.neon_orange,
+  '&:hover': { backgroundColor: PALETTE_COLORS.neon_orange + '80' },
+};
+
 export const EndPage = () => {
-  const { image, website } = useLoaderData();
+  const { image, website, feedbackLink } = useLoaderData();
 
   return (
     <Paper sx={endPagePaperStyle} elevation={1}>
       <img src={image} alt='logo' />
       <Typography variant='h5' sx={titleStyle}>
-        Votre analyse de toiture est terminée. Nous vous remercions d'avoir utilisé Birdia.
+        Merci d’avoir analysé votre toiture, notre expert toiture va vous contacter dans les plus bref délais.
       </Typography>
-      <Button variant='contained' size='large' onClick={() => (window.location.href = website)} sx={backButtonStyle}>
-        Retourner à l'accueil
-      </Button>
+      <Stack direction='row' spacing={2}>
+        <Button variant='contained' size='large' onClick={() => window.location.replace(website)} sx={cta}>
+          LAisser un commentaire
+        </Button>
+        <Button variant='contained' size='large' onClick={() => window.location.replace(feedbackLink)} sx={backButtonStyle}>
+          Retourner à l'accueil
+        </Button>
+      </Stack>
     </Paper>
   );
 };
