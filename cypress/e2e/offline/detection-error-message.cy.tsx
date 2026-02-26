@@ -107,7 +107,7 @@ describe('Test process detection error', () => {
     cy.dataName('email').clear().type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait(['@getWhoami', '@getAccounts', '@getAccountHolders', '@createProspect']);
+    cy.wait('@createProspect');
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
     cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
@@ -179,7 +179,7 @@ describe('Test process detection error', () => {
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait(['@getWhoami', '@getAccounts', '@getAccountHolders', '@createProspect']);
+    cy.wait('@createProspect');
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
     cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');

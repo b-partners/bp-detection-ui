@@ -103,10 +103,6 @@ describe('Component testing', () => {
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@validateCaptcha');
-    cy.wait('@getWhoami');
-    cy.wait('@getAccounts');
-    cy.wait('@getAccountHolders');
     cy.wait('@createProspect');
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
