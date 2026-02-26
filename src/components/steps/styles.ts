@@ -1,4 +1,4 @@
-import { PALETTE_COLORS } from '@/utilities';
+import { PALETTE_COLORS } from '@/utilities/theme';
 import { SxProps, Theme } from '@mui/material';
 
 export const DetectionResultStepStyle: SxProps = {

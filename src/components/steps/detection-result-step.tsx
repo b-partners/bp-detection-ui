@@ -6,15 +6,15 @@ import {
   useGeojsonQueryResult,
   useLlmResultQuery,
   useNotifyPdfQuery,
-  usePostDetectionQueries,
   useQueryHeightAndSlope,
   useQueryImageFromUrl,
   useSaveAnnotationQuery,
 } from '@/queries';
-import { cache, getCached } from '@/utilities';
+import { getCached } from '@/utilities';
 import { Alert, Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
@@ -25,24 +25,21 @@ const CONVERTER_BASE_URL = process.env.REACT_APP_ANNOTATOR_GEO_CONVERTER_API_URL
 export const DetectionResultStep = () => {
   const { imageSrc, useGeoJson, areaPictureDetails } = useStep(({ params }) => params);
   const stepResultRef = useRef<HTMLDivElement>(null);
-  const { sendInfoToRoofer, isPending: sendInfoToRooferPending } = usePostDetectionQueries();
   const form = useAnnotationFrom();
   const { watch, setValue: setFormValue } = form;
-  const [isEmailSent, setIsEmailSent] = useState(getCached.isEmailSent());
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleValue: tootleLLMResultView, value: showLLMResult } = useToggle(false);
+  const navigate = useNavigate();
+  const [endLoading, setEndLoading] = useState(false);
+
+  const acknowledgementsRedirect = () => {
+    setEndLoading(true);
+    navigate('/acknowledgements');
+  };
 
   const { data: heightAndSlope, isPending: isHeightAndSlopePending } = useQueryHeightAndSlope();
 
   const [annotatorCanvasState, setAnnotatorCanvasState] = useState<{ image: string; polygons: any[] }>({ image: '', polygons: [] });
-
-  const handleSendPdf = () => {
-    if (!isEmailSent) {
-      sendInfoToRoofer(stepResultRef);
-      cache.isEmailSent();
-      setIsEmailSent(!isEmailSent);
-    }
-  };
 
   const { data: image, isLoading: isImageLoading } = useQueryImageFromUrl(annotatorCanvasState.image);
   const { data, isLoading: isGeoJsonResultLoading } = useGeojsonQueryResult(image);
@@ -64,10 +61,11 @@ export const DetectionResultStep = () => {
 
   const { data: llmHtmlData, isPending: isLlmHtmlDataPending, isLoading: isLlmHtmlDataLoading } = useLlmResultQuery(data?.properties as any);
 
+  const { notifyRoofer, isEmailSent, isPending: isEmailSentPending } = useNotifyPdfQuery();
+
   const canSendPdf =
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
-  const { notifyRoofer } = useNotifyPdfQuery();
   const { mutate: saveAreaPictureAnnotations } = useSaveAnnotationQuery();
 
   useEffect(() => {
@@ -182,8 +180,14 @@ export const DetectionResultStep = () => {
             <DetectionResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
             <DetectionResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
             <DetectionResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
-            <Button data-cy='send-roofer-mail-button' fullWidth loading={sendInfoToRooferPending} disabled={!canSendPdf} onClick={handleSendPdf}>
-              Envoyer ces informations à mon couvreur
+            <Button
+              data-cy='send-roofer-mail-button'
+              fullWidth
+              loading={isEmailSentPending || endLoading}
+              disabled={!isEmailSent}
+              onClick={acknowledgementsRedirect}
+            >
+              Terminer
             </Button>
           </Stack>
         </Grid2>

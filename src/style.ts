@@ -1,6 +1,6 @@
 import { SxProps } from '@mui/material';
 import { grey } from '@mui/material/colors';
-import { PALETTE_COLORS } from './utilities';
+import { PALETTE_COLORS } from './utilities/theme';
 
 export const MainStyle: SxProps = {
   padding: 0,

@@ -6,8 +6,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
-import App from './App.tsx';
-import { theme } from './utilities';
+import { RouterProvider } from 'react-router-dom';
+import { routes } from './utilities/routes';
+import { theme } from './utilities/theme';
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,7 @@ const Main = () => {
       <StrictMode>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={theme}>
-            <App />
+            <RouterProvider router={routes} />
           </ThemeProvider>
         </QueryClientProvider>
       </StrictMode>

@@ -11,3 +11,4 @@ export * from './post-detection-queries';
 export * from './roofer-logo-query';
 export * from './save-annotations-query';
 export * from './types';
+export * from './validate-api-key';

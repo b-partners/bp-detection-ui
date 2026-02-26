@@ -10,6 +10,7 @@ export const locations_mock = [
 export const whoami_mock = {
   user: {
     id: 'user-mock-id',
+    logoFileId: 'logo-file-id-mock',
   },
 };
 
