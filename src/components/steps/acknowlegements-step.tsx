@@ -1,4 +1,4 @@
-import { PALETTE_COLORS } from '@/utilities';
+import { PALETTE_COLORS } from '@/utilities/theme';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useLoaderData } from 'react-router-dom';
