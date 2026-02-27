@@ -20,7 +20,12 @@ export const usePostDetectionQueries = (onSuccess?: () => void) => {
     cache.isEmailSent();
   };
 
-  const { mutateAsync: postDetection, isPending } = useMutation({ mutationFn, mutationKey: ['postDetectionQuery'], onSuccess });
+  const { mutateAsync: postDetection, isPending } = useMutation({
+    mutationFn,
+    mutationKey: ['postDetectionQuery'],
+    onSuccess,
+    onError: () => onSuccess?.(),
+  });
 
   return { sendInfoToRoofer: postDetection, isPending };
 };
