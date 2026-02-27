@@ -1,3 +1,4 @@
+export * from './acknowlegements-step';
 export * from './annotate-image-step';
 export * from './detection-result-item';
 export * from './detection-result-step';

@@ -14,7 +14,6 @@ import { getCached } from '@/utilities';
 import { Alert, Box, Button, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
@@ -24,17 +23,17 @@ export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalys
 const CONVERTER_BASE_URL = process.env.REACT_APP_ANNOTATOR_GEO_CONVERTER_API_URL || '';
 export const DetectionResultStep = () => {
   const { imageSrc, useGeoJson, areaPictureDetails } = useStep(({ params }) => params);
+  const setStep = useStep(p => p.setStep);
   const stepResultRef = useRef<HTMLDivElement>(null);
   const form = useAnnotationFrom();
   const { watch, setValue: setFormValue } = form;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleValue: tootleLLMResultView, value: showLLMResult } = useToggle(false);
-  const navigate = useNavigate();
   const [endLoading, setEndLoading] = useState(false);
 
   const acknowledgementsRedirect = () => {
+    setStep({ actualStep: 3, params: {} });
     setEndLoading(true);
-    navigate('/acknowledgements');
   };
 
   const { data: heightAndSlope, isPending: isHeightAndSlopePending } = useQueryHeightAndSlope();

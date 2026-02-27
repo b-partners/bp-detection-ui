@@ -1,5 +1,5 @@
 import '@/App.css';
-import { AnnotateImageStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
+import { AcknowledgementsStep, AnnotateImageStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
 import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
 import { Box, Step, StepLabel, Stepper } from '@mui/material';
@@ -21,6 +21,10 @@ const steps = [
     label: 'Analysez l’état via BIRDIA',
     content: <DetectionResultStep />,
   },
+  {
+    label: 'Notre couvreur vous téléphone',
+    content: <AcknowledgementsStep />,
+  },
 ];
 
 function App() {
@@ -40,7 +44,7 @@ function App() {
 
   return (
     <Box sx={style}>
-      <Box className={`img-container ${actualStep === 0 ? 'img-full' : 'img-min'}`}>
+      <Box className={`img-container ${actualStep === 0 || actualStep === 3 ? 'img-full' : 'img-min'}`}>
         <img alt='bird-ia-logo' src={image} />
       </Box>
       <Stepper activeStep={actualStep} alternativeLabel>

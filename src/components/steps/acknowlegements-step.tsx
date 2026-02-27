@@ -1,25 +1,22 @@
 import { PALETTE_COLORS } from '@/utilities/theme';
-import { Button, Paper, Stack, SxProps, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { Stack } from '@mui/system';
 import { useLoaderData } from 'react-router-dom';
 
-const endPagePaperStyle: SxProps = {
+const endPagePaperStyle = {
   p: 6,
-  maxWidth: 600,
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  '& img': {
-    maxWidth: 300,
-    mb: 6,
-  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexDirection: 'column',
+  width: {
+    xs: '90vw',
+    md: '80vw',
+    lg: '70vw',
+  },
 };
 
-const titleStyle = { mb: 3, color: '#455a64', textAlign: 'center' };
+const titleStyle = { mb: 3, color: '#455a64', textAlign: 'center', width: { xs: '50%', md: '60%' } };
 
 const backButtonStyle = {
   borderRadius: 2,
@@ -34,23 +31,22 @@ const cta = {
   '&:hover': { backgroundColor: PALETTE_COLORS.neon_orange + '80' },
 };
 
-export const EndPage = () => {
-  const { image, website, feedbackLink } = useLoaderData();
+export const AcknowledgementsStep = () => {
+  const { website, feedbackLink } = useLoaderData();
 
   return (
-    <Paper sx={endPagePaperStyle} elevation={1}>
-      <img src={image} alt='logo' />
+    <Stack sx={endPagePaperStyle}>
       <Typography variant='h5' sx={titleStyle}>
         Merci d’avoir analysé votre toiture, notre expert toiture va vous contacter dans les plus bref délais.
       </Typography>
-      <Stack direction='row' spacing={2}>
+      <Stack direction='row' spacing={2} mt={2}>
         <Button variant='contained' size='large' onClick={() => window.location.replace(website)} sx={cta}>
-          LAisser un commentaire
+          Laisser un commentaire
         </Button>
         <Button variant='contained' size='large' onClick={() => window.location.replace(feedbackLink)} sx={backButtonStyle}>
           Retourner à l'accueil
         </Button>
       </Stack>
-    </Paper>
+    </Stack>
   );
 };
