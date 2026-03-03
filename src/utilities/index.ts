@@ -7,5 +7,6 @@ export * from './get-image-size';
 export * from './get-query-params';
 export * from './image-cropper';
 export * from './local-db';
+export * from './routes';
 export * from './scroll-bottom';
 export * from './theme';

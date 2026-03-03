@@ -67,10 +67,10 @@ export const LegalFilesPdfRenderer = () => {
             Accepter
           </Button>
           <Stack direction='row' gap={2}>
-            <Button disabled={page === 1 || isLoading} onClick={prevPage} startIcon={<ChevronLeft />}>
+            <Button data-cy='prev-button' disabled={page === 1 || isLoading} onClick={prevPage} startIcon={<ChevronLeft />}>
               Précédent
             </Button>
-            <Button disabled={page === lastPage || isLoading} onClick={nextPage} endIcon={<ChevronRight />}>
+            <Button data-cy='next-button' disabled={page === lastPage || isLoading} onClick={nextPage} endIcon={<ChevronRight />}>
               Suivant
             </Button>
           </Stack>

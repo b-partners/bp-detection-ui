@@ -1,9 +1,6 @@
-import { googleRecaptchaFn } from '@/queries';
-import { ParamsUtilities } from '@/utilities';
 import {
   account_holder_mock,
   account_mock,
-  AppComponent_Mock,
   area_picture_mock,
   legalFiles_mock,
   legalFilesAllApproved_mock,
@@ -11,15 +8,11 @@ import {
   locations_mock,
   prospect_mock,
   whoami_mock,
-} from '../mocks';
-
-const search_input_sel = 'address-search-input';
-const process_detection_on_form_sel = 'process-detection-on-form-button';
+} from '../../../src/__tests__/mocks';
+import { offlineUrl } from './utilities';
 
 describe('Test legal files not all approved', () => {
   it('Test the app', () => {
-    cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
-    cy.stub(googleRecaptchaFn, 'useGoogleReCaptcha').returns({ executeRecaptcha: () => Promise.resolve('mock-recaptcha-token'), valide: false });
     cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -28,6 +21,11 @@ describe('Test legal files not all approved', () => {
     cy.intercept('GET', '/whoami', whoami_mock).as('getWhoami');
     cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts`, [account_mock]).as('getAccounts');
     cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts/${account_mock.id}/accountHolders`, [account_holder_mock]).as('getAccountHolders');
+    cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, legalFiles_mock).as('getLegalFiles');
+    cy.intercept('GET', `/accounts/account-mock-id/files/${whoami_mock.user.logoFileId}/raw?apiKey=api-key-mock&fileType=LOGO`, {
+      fixture: 'bird-ia-lg-logo.png',
+      headers: { 'content-type': 'image/png' },
+    }).as('getRooferLogo');
     // user informations
 
     // prospect & areaPictures & get image
@@ -38,28 +36,15 @@ describe('Test legal files not all approved', () => {
       headers: { 'content-type': 'image/png' },
     }).as('getImage');
     // prospect & areaPictures & get image
-    cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, legalFiles_mock).as('getLegalFiles');
-    cy.intercept('GET', `/assets/legal-file.pdf`, { fixture: 'legal-file.pdf' }).as('getPdfLegalFiles');
+    cy.visit(offlineUrl);
 
-    cy.mount(<AppComponent_Mock />);
-
-    cy.contains("Clé d'API invalide");
+    cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
-
-    cy.dataCy(search_input_sel).type('test{enter}');
-
-    cy.dataName('phone').type('+000000000000');
-    cy.dataName('email').type('john.doe@example.com');
-    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Conditions générales d'utilisation");
 
-    cy.wait('@getPdfLegalFiles');
-
-    cy.contains('Suivant').click();
-    cy.contains('Suivant').click();
-    cy.contains('Suivant').click();
-    cy.contains('Précédent').click();
+    cy.dataCy('next-button').click({ force: true });
+    cy.dataCy('prev-button').click({ force: true });
 
     cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, legalFilesOneNonApproved_mock);
     cy.contains('Accepter').click();

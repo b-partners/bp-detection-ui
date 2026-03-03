@@ -1,8 +1,9 @@
 import { ErrorMessageDialog, LegalFilesPdfRenderer } from '@/components';
-import { useCheckApiKey, useDialog, useStep } from '@/hooks';
+import { useDialog, useStep } from '@/hooks';
 import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { v4 } from 'uuid';
 import { getImageFromAddress, ProspectInfo, sendImageToDetect, updateAreaPicture } from '../providers';
 import { googleRecaptchaFn } from './google-recaptcha-fn';
@@ -35,7 +36,7 @@ export const sendImageQuery = async (areaPictureDetails: AreaPictureDetails, ima
 };
 
 export const useQueryImageFromAddress = () => {
-  const checkApiKey = useCheckApiKey();
+  const navigate = useNavigate();
   const { open, close } = useDialog();
 
   const { useGoogleReCaptcha } = googleRecaptchaFn;
@@ -73,7 +74,7 @@ export const useQueryImageFromAddress = () => {
     mutationKey: ['image from address'],
     mutationFn,
     onError: (e: any) => {
-      if (e?.status === 404 || e.message === 'Network Error') return checkApiKey();
+      if (e?.status === 404 || e.message === 'Network Error') return navigate('/api-key');
       let errorMessage = "Une erreur s'est produite, veuillez réessayer.";
 
       if (e.message === 'captchaError') errorMessage = 'Veuillez résoudre le reCAPTCHA pour continuer.';

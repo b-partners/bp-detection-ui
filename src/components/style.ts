@@ -1,5 +1,5 @@
 import { degradationLevels } from '@/mappers';
-import { PALETTE_COLORS } from '@/utilities';
+import { PALETTE_COLORS } from '@/utilities/theme';
 import { SxProps } from '@mui/material';
 
 export const DialogFormStyle: SxProps = {
