@@ -85,7 +85,7 @@ export const MainStyle: SxProps = {
       pl: { xs: 0, md: 2 },
     },
   },
-  '& > .img-container > img': {
+  '& > .img-container > .logo': {
     transition: 'all 200ms linear',
     margin: 2,
     maxHeight: 200,
@@ -96,7 +96,7 @@ export const MainStyle: SxProps = {
   '& > .img-container.img-min': {
     alignSelf: 'flex-start',
   },
-  '& > .img-container.img-full > img': {
+  '& > .img-container.img-full > .logo': {
     objectFit: 'contain',
     width: {
       xs: '70vw',
@@ -106,7 +106,7 @@ export const MainStyle: SxProps = {
     mt: 10,
     alignSelf: 'center',
   },
-  '& > .img-container.img-min > img': {
+  '& > .img-container.img-min > .logo': {
     objectFit: 'contain',
     width: '10rem',
     mt: 2,

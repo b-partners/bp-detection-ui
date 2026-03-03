@@ -1,11 +1,31 @@
 import { bpUserAccountApi, userInfoProvider, userProvider } from '@/providers';
 import { arrayBufferToBase64, getFileUrl, ParamsUtilities } from '@/utilities';
+import { useQuery } from '@tanstack/react-query';
+import { create } from 'zustand';
 
 const defaultLogo = '/assets/images/bird-ia-lg-logo.png';
 const defaultSite = 'https://www.birdia.fr';
 const defaultFeedbackLink = 'https://www.bpartners.app/contact';
 
-export const logoLoader = async () => {
+export interface AccountInfo {
+  image: string;
+  website: string;
+  feedbackLink: string;
+}
+interface AccountInfoAction {
+  setAccountInfo: (data: AccountInfo) => void;
+}
+
+export const useAccountInfoStore = create<AccountInfo & AccountInfoAction>(set => ({
+  image: '',
+  website: '',
+  feedbackLink: '',
+  setAccountInfo(data) {
+    set(data);
+  },
+}));
+
+export const queryFn = async () => {
   let defaultReturnValue = { image: defaultLogo, website: defaultSite, feedbackLink: defaultFeedbackLink };
   try {
     const { apiKey } = ParamsUtilities.getQueryParams();
@@ -19,15 +39,21 @@ export const logoLoader = async () => {
 
     defaultReturnValue = { image: defaultLogo, website, feedbackLink };
 
-    if (url.includes('null') || url.includes('undefined') || url.split('://')[1].includes('//')) return defaultReturnValue;
+    if (url.includes('null') || url.includes('undefined') || url.split('://')[1].includes('//')) throw new Error();
 
     const file = await fetch(url, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
     const imageAsArrayBuffer = await file.arrayBuffer();
     if (imageAsArrayBuffer.byteLength === 0) throw new Error('There is no roofer logo available');
     const imageAsBase64 = arrayBufferToBase64(imageAsArrayBuffer);
 
-    return { image: imageAsBase64, website, feedbackLink };
+    useAccountInfoStore.getState().setAccountInfo({ image: imageAsBase64, website, feedbackLink });
   } catch {
-    return defaultReturnValue;
+    useAccountInfoStore.getState().setAccountInfo(defaultReturnValue);
   }
+};
+
+export const useAccountInfoQuery = () => {
+  const { feedbackLink, image, website } = useAccountInfoStore();
+  const { isLoading } = useQuery({ queryFn, queryKey: ['accountInfo'], enabled: !feedbackLink && !image && !website });
+  return isLoading;
 };
