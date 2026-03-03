@@ -1,8 +1,7 @@
 import App from '@/App';
 import { useRestStore } from '@/hooks';
 import { GlobalLayout } from '@/layout';
-import { logoLoader } from '@/loader';
-import { ApiKeyPage, EndPage } from '@/pages';
+import { ApiKeyPage } from '@/pages';
 import { theme } from '@/utilities';
 import { ThemeProvider } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -19,13 +18,7 @@ export const routes = createBrowserRouter([
       {
         path: '/',
         Component: App,
-        loader: logoLoader,
         index: true,
-      },
-      {
-        path: '/acknowledgements',
-        Component: EndPage,
-        loader: logoLoader,
       },
       {
         path: '/api-key',

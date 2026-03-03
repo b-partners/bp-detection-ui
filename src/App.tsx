@@ -2,10 +2,11 @@ import '@/App.css';
 import { AcknowledgementsStep, AnnotateImageStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
 import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
-import { Box, Step, StepLabel, Stepper } from '@mui/material';
+import { Box, Skeleton, Step, StepLabel, Stepper } from '@mui/material';
 import { useEffect } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { v4 } from 'uuid';
+import { useAccountInfoQuery, useAccountInfoStore } from './queries';
 import { clearCached, ParamsUtilities } from './utilities';
 
 const steps = [
@@ -29,7 +30,7 @@ const steps = [
 
 function App() {
   const { actualStep, setSession } = useStep();
-  const { image } = useLoaderData();
+  const { image } = useAccountInfoStore();
 
   const navigate = useNavigate();
 
@@ -42,10 +43,12 @@ function App() {
     if (!apiKey) navigate('/api-key');
   }, []);
 
+  const isAccountLoading = useAccountInfoQuery();
+
   return (
     <Box sx={style}>
       <Box className={`img-container ${actualStep === 0 || actualStep === 3 ? 'img-full' : 'img-min'}`}>
-        <img alt='bird-ia-logo' src={image} />
+        {isAccountLoading ? <Skeleton variant='rectangular' className='logo' height={100} /> : <img className='logo' alt='bird-ia-logo' src={image} />}
       </Box>
       <Stepper activeStep={actualStep} alternativeLabel>
         {steps.map(({ label }) => (

@@ -1,7 +1,7 @@
+import { useAccountInfoStore } from '@/queries';
 import { PALETTE_COLORS } from '@/utilities/theme';
 import { Button, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import { useLoaderData } from 'react-router-dom';
 
 const endPagePaperStyle = {
   p: 6,
@@ -32,7 +32,7 @@ const cta = {
 };
 
 export const AcknowledgementsStep = () => {
-  const { website, feedbackLink } = useLoaderData();
+  const { website, feedbackLink } = useAccountInfoStore();
 
   return (
     <Stack sx={endPagePaperStyle}>
