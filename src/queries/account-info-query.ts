@@ -30,7 +30,9 @@ export const queryFn = async () => {
   try {
     const { apiKey } = ParamsUtilities.getQueryParams();
     const { accountId, userId } = await userInfoProvider(apiKey);
-    const { logoFileId } = await userProvider.whoamiWithApiKey(apiKey);
+    const { logoFileId } = (await userProvider.whoami()) || {};
+    console.log({ logoFileId });
+
     const url = getFileUrl(logoFileId ?? '', 'LOGO', accountId ?? '');
 
     const { data: accountHolders } = await bpUserAccountApi(apiKey).getAccountHolders(userId ?? '', accountId ?? '');
@@ -38,8 +40,10 @@ export const queryFn = async () => {
     const feedbackLink = accountHolders?.[0]?.feedback?.feedbackLink || defaultFeedbackLink;
 
     defaultReturnValue = { image: defaultLogo, website, feedbackLink };
+    console.log({ url }, 'here 1');
 
     if (url.includes('null') || url.includes('undefined') || url.split('://')[1].includes('//')) throw new Error();
+    console.log({ url }, 'here');
 
     const file = await fetch(url, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
     const imageAsArrayBuffer = await file.arrayBuffer();
