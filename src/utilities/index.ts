@@ -10,3 +10,4 @@ export * from './local-db';
 export * from './routes';
 export * from './scroll-bottom';
 export * from './theme';
+export * from './wait';
