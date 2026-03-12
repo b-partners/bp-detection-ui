@@ -8,6 +8,7 @@ import { Box, Button, IconButton, Paper, Stack, Typography, useMediaQuery } from
 import { FC, useEffect, useRef, useState } from 'react';
 import { addressStyle, AnnotationTutorialDialog, AnnotatorCanvasCustom, DialogTutorialStyle, DomainPolygonType } from '.';
 import { useQueryStartDetection, useQueryUpdateAreaPicture } from '../queries';
+import { RoofAnalysisDialog } from './loading';
 
 export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPictureDetails }> = ({ imageSrc, areaPictureDetails }) => {
   const {
@@ -17,7 +18,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const [polygons, setPolygons] = useState<DomainPolygonType[]>([]);
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
   const { isDetectionPending, geoJsonResult, startDetection } = useQueryStartDetection(imageSrc, areaPictureDetails);
-  const { open: openDialog } = useDialog();
+  const { open: openDialog, close: closeDialog } = useDialog();
   const { open: openSnackbar } = useSnackbar();
   const { data, isPending, isExtended, extendImageToggle, refetchImage: handleGetNewImage } = useQueryUpdateAreaPicture();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,9 +37,12 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
   const handleValidateForm = () => {
     const { email: receiverEmail = '' } = prospect || {};
     const detectionParams = { polygons, receiverEmail };
-
+    openDialog(<RoofAnalysisDialog imageHeight={1024 * 3} imageWidth={1024 * 3} imageUrl={currentImageSrc} polygon={polygons?.[0]?.points?.slice()} />, {
+      closeOnBlur: false,
+    });
     startDetection(detectionParams, {
-      onSuccess: result =>
+      onSuccess: result => {
+        closeDialog();
         setStep({
           actualStep: 2,
           params: {
@@ -48,7 +52,8 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
             imageSrc: result?.result?.geoJsonZone?.[0]?.properties?.original_image_url || '',
             roofDelimiter: result?.result?.roofDelimiter,
           },
-        }),
+        });
+      },
     });
   };
 
