@@ -172,11 +172,10 @@ export const GetAddressStepStyle: SxProps = {
     color: PALETTE_COLORS.pine,
   },
   '& .location-input > .MuiStack-root:last-of-type .MuiIconButton-root': {
-    backgroundColor: PALETTE_COLORS.neon_orange,
-    color: PALETTE_COLORS.white,
-    boxShadow: '0 4px 12px -4px rgba(255,82,27,0.5)',
+    color: PALETTE_COLORS.neon_orange,
     '&:hover': {
-      backgroundColor: '#E0451A',
+      color: '#E0451A',
+      backgroundColor: 'rgba(255,82,27,0.08)',
     },
   },
   '& .location-input > .MuiStack-root': {
