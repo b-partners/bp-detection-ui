@@ -34,6 +34,17 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
   const fullAddress = [address, [postalCode, city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
   const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
+  // Try the native mailto first; if no mail client handles it (the window never
+  // loses focus), fall back to Gmail's web compose in a new tab.
+  const handleEmailClick = () => {
+    if (!email) return;
+    const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+    const timer = window.setTimeout(() => {
+      if (!document.hidden && document.hasFocus()) window.open(gmailHref, '_blank', 'noopener,noreferrer');
+    }, 600);
+    window.addEventListener('blur', () => window.clearTimeout(timer), { once: true });
+  };
+
   return (
     <Box sx={HeaderStyle}>
       <Box className='hero-card'>
@@ -60,7 +71,7 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
               {(email || phone) && (
                 <Typography className='contact-line'>
                   {email && (
-                    <Box component='a' href={`mailto:${email}`} className='contact-link'>
+                    <Box component='a' href={`mailto:${email}`} onClick={handleEmailClick} className='contact-link'>
                       {email}
                     </Box>
                   )}
