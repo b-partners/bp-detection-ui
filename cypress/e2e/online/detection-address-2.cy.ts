@@ -95,8 +95,8 @@ xdescribe('test detection on ' + addressToDetect, () => {
     });
     cy.prodRequestUtilities();
     //steppers state
-    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
+    cy.contains('Renseignez votre adresse').closest('.step-item').should('have.class', 'active');
+    cy.contains('Visualisez et délimitez votre toiture').closest('.step-item').should('not.have.class', 'active');
     //steppers state
 
     cy.contains("Clé d'API invalide");

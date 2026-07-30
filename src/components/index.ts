@@ -4,6 +4,7 @@ export * from './annotator-canvas-custom';
 export * from './annotator-custom-button';
 export * from './annotator-section';
 export * from './annotator-shift-buttons';
+export * from './app-header';
 export * from './detection-form';
 export * from './error-message-dialog';
 export * from './global-dialog';

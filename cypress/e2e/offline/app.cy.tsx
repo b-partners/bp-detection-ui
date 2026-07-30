@@ -77,8 +77,8 @@ describe('Component testing', () => {
     cy.contains('Renseignez votre adresse');
 
     //steppers state
-    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
+    cy.contains('Renseignez votre adresse').closest('.step-item').should('have.class', 'active');
+    cy.contains('Visualisez et délimitez votre toiture').closest('.step-item').should('not.have.class', 'active');
     //steppers state
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
@@ -107,8 +107,8 @@ describe('Component testing', () => {
 
     cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
-    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-completed');
-    cy.contains('Visualisez et délimitez votre toiture').should('have.class', 'Mui-active');
+    cy.contains('Renseignez votre adresse').closest('.step-item').should('have.class', 'done');
+    cy.contains('Visualisez et délimitez votre toiture').closest('.step-item').should('have.class', 'active');
     //steppers state
     //llm result
     cy.intercept('GET', '/toiture**', res => {
