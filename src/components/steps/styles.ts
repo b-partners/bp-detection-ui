@@ -248,9 +248,9 @@ export const DemoVideoStyle: SxProps = {
 
 export const BirdiaTechnologyStyle: SxProps = {
   width: {
-    xs: '90vw',
-    md: '80vw',
-    lg: '70vw',
+    xs: '92vw',
+    md: '86vw',
+    lg: '78vw',
   },
   mt: 6,
   gap: 4,
@@ -300,8 +300,9 @@ export const BirdiaTechnologyStyle: SxProps = {
     position: 'relative',
     overflow: 'hidden',
     flex: 1,
+    aspectRatio: '16 / 9',
     minHeight: {
-      xs: 520,
+      xs: 0,
       md: 0,
     },
     borderRadius: 4,
