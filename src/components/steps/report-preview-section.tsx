@@ -144,7 +144,9 @@ export const ReportPreviewSection = () => {
             </Stack>
             <Divider className='card-divider card-divider-dashed' />
             <Typography className='degradation-verdict'>Catégorie D — Réparation nécessaire.</Typography>
-            <Typography className='degradation-detail'>Moisissure significative, vigilance autour des cheminées et velux. Pas de fissure ni d'usure visible.</Typography>
+            <Typography className='degradation-detail'>
+              Moisissure significative, vigilance autour des cheminées et velux. Pas de fissure ni d'usure visible.
+            </Typography>
           </Stack>
         </Box>
       </Box>

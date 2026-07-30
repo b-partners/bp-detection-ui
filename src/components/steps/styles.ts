@@ -479,7 +479,7 @@ export const ReportPreviewStyle: SxProps = {
     display: 'grid',
     gridTemplateColumns: {
       xs: '1fr',
-      md: '1fr 1fr 1fr',
+      md: 'repeat(3, minmax(0, 1fr))',
     },
     gap: 3,
     width: '100%',
@@ -659,11 +659,12 @@ export const ReportPreviewStyle: SxProps = {
   },
   '& .advice-panel': {
     width: '100%',
+    position: 'relative',
     borderRadius: 4,
-    p: { xs: 2.5, md: 4 },
     background: 'linear-gradient(180deg, #FFF7EF 0%, #FFF1E6 100%)',
     border: '1px solid #FBD9BE',
     '& .advice-header': {
+      padding: 2,
       alignItems: 'center',
       gap: 1.5,
       mb: 3,
@@ -678,9 +679,10 @@ export const ReportPreviewStyle: SxProps = {
     },
     '& .advice-grid': {
       display: 'grid',
+      padding: 2,
       gridTemplateColumns: {
-        xs: '1fr',
-        md: '1fr 1fr',
+        xs: '95%',
+        md: '45% 45%',
       },
       gap: { xs: 2.5, md: 3 },
     },
@@ -714,6 +716,7 @@ export const ReportPreviewStyle: SxProps = {
     },
     '& .advice-disclaimer': {
       mt: 3,
+      m: 2,
       p: 2,
       borderRadius: 3,
       textAlign: 'center',
