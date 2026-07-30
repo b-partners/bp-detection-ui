@@ -193,22 +193,22 @@ export const BirdiaTechnologyStyle: SxProps = {
     },
   },
   '& .section-content': {
-    display: 'grid',
-    gridTemplateColumns: {
-      xs: '1fr',
-      md: '1fr 1fr',
+    display: 'flex',
+    flexDirection: {
+      xs: 'column',
+      md: 'row',
     },
+    alignItems: 'stretch',
     gap: 3,
     width: '100%',
-    alignItems: 'stretch',
   },
   '& .preview-card': {
     position: 'relative',
     overflow: 'hidden',
-    height: '100%',
+    flex: 1,
     minHeight: {
       xs: 520,
-      md: 'auto',
+      md: 0,
     },
     borderRadius: 4,
     p: 3,
@@ -286,6 +286,7 @@ export const BirdiaTechnologyStyle: SxProps = {
     },
   },
   '& .feature-list': {
+    flex: 1,
     gap: 2,
   },
   '& .feature-card': {

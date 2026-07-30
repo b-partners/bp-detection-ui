@@ -49,7 +49,7 @@ export const BirdiaTechnologySection = () => {
         </Typography>
       </Stack>
 
-      <Box className='section-content'>
+      <Stack className='section-content'>
         <Box className='preview-card'>
           <Box className='corner corner-tr' />
           <Box className='corner corner-bl' />
@@ -101,7 +101,7 @@ export const BirdiaTechnologySection = () => {
             </Box>
           ))}
         </Stack>
-      </Box>
+      </Stack>
     </Stack>
   );
 };
