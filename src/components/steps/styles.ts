@@ -154,9 +154,9 @@ export const GetAddressStepStyle: SxProps = {
 
 export const DemoVideoStyle: SxProps = {
   width: {
-    xs: '90vw',
-    md: '70vw',
-    lg: '50vw',
+    xs: '92vw',
+    md: '86vw',
+    lg: '78vw',
   },
   mt: 3,
   mb: 2,
