@@ -152,6 +152,126 @@ export const GetAddressStepStyle: SxProps = {
   },
 };
 
+export const DemoVideoStyle: SxProps = {
+  width: {
+    xs: '90vw',
+    md: '80vw',
+    lg: '70vw',
+  },
+  mt: 3,
+  mb: 2,
+  alignItems: 'center',
+  '& .demo-card': {
+    width: '100%',
+    borderRadius: 4,
+    overflow: 'hidden',
+    background: `radial-gradient(circle at 15% 0%, #1b2a3a 0%, ${PALETTE_COLORS.forest} 45%, #0a1410 100%)`,
+    boxShadow: '0 24px 70px -24px rgba(0,0,0,0.55)',
+  },
+  '& .demo-topbar': {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 1,
+    px: { xs: 2, md: 3 },
+    py: 1.5,
+    borderBottom: '1px solid rgba(255,255,255,0.06)',
+  },
+  '& .demo-badge': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1,
+    px: 1.5,
+    py: 0.6,
+    borderRadius: 999,
+    background: 'rgba(255,82,27,0.14)',
+    color: t => (t as Theme).palette.primary.light,
+    fontWeight: 800,
+    letterSpacing: '0.1em',
+    fontSize: '0.72rem',
+    textTransform: 'uppercase',
+    flexShrink: 0,
+    '& .dot': {
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      background: t => (t as Theme).palette.primary.main,
+      boxShadow: '0 0 0 4px rgba(255,82,27,0.25)',
+    },
+  },
+  '& .demo-topbar-title': {
+    color: 'rgba(255,255,255,0.7)',
+    fontWeight: 600,
+    fontSize: '0.85rem',
+    textAlign: 'right',
+    display: { xs: 'none', sm: 'block' },
+  },
+  '& .demo-body': {
+    flexDirection: {
+      xs: 'column',
+      md: 'row',
+    },
+    alignItems: 'center',
+    gap: { xs: 2.5, md: 4 },
+    p: { xs: 2.5, md: 4 },
+  },
+  '& .demo-player': {
+    position: 'relative',
+    flex: 1,
+    width: '100%',
+    aspectRatio: '16 / 9',
+    borderRadius: 3,
+    overflow: 'hidden',
+    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#0a1410',
+    '& iframe, & video': {
+      display: 'block',
+    },
+  },
+  '& .demo-caption': {
+    flex: 1,
+    gap: 1.5,
+    '& .demo-eyebrow': {
+      color: t => (t as Theme).palette.primary.main,
+      fontWeight: 800,
+      letterSpacing: '0.12em',
+      textTransform: 'uppercase',
+      fontSize: '0.8rem',
+    },
+    '& .demo-title': {
+      color: PALETTE_COLORS.white,
+      fontWeight: 800,
+      lineHeight: 1.15,
+      fontSize: {
+        xs: '1.5rem',
+        md: '2rem',
+      },
+    },
+    '& .demo-desc': {
+      color: 'rgba(255,255,255,0.6)',
+      fontSize: {
+        xs: '0.9rem',
+        md: '1rem',
+      },
+      lineHeight: 1.5,
+    },
+  },
+  '& .demo-progress': {
+    gap: 1.5,
+    px: { xs: 2.5, md: 4 },
+    pb: 3,
+    '& .demo-progress-segment': {
+      flex: 1,
+      height: 4,
+      borderRadius: 999,
+      background: 'rgba(255,255,255,0.12)',
+      transition: 'background 400ms',
+      '&.is-active': {
+        background: t => (t as Theme).palette.primary.main,
+      },
+    },
+  },
+};
+
 export const BirdiaTechnologyStyle: SxProps = {
   width: {
     xs: '90vw',

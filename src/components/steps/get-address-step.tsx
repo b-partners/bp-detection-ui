@@ -8,6 +8,7 @@ import { ChangeEvent, useEffect, useMemo } from 'react';
 import { DetectionForm } from '../detection-form';
 import { DialogFormStyle } from '../style';
 import { BirdiaTechnologySection } from './birdia-technology-section';
+import { DemoVideoSection } from './demo-video-section';
 import { GetAddressStepStyle as style } from './styles';
 
 export const GetAddressStep = () => {
@@ -78,6 +79,7 @@ export const GetAddressStep = () => {
           </Paper>
         </Box>
       )}
+      <DemoVideoSection />
       <BirdiaTechnologySection />
     </Stack>
   );
