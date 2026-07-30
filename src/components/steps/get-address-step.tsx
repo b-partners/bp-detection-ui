@@ -52,7 +52,7 @@ export const GetAddressStep = () => {
 
   return (
     <Stack sx={style} alignItems='center'>
-      <Typography sx={{ fontWeight: 700, textAlign: 'center' }}>↓ Lancez votre diagnostic ici ↓</Typography>
+      <Typography className='diagnostic-cta'>↓ Lancez votre diagnostic ici ↓</Typography>
       <Paper onSubmit={onSubmit} {...others} component='form' className='location-input' elevation={1}>
         <Stack>
           <IconButton>

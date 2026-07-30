@@ -112,6 +112,10 @@ export const GetAddressStepStyle: SxProps = {
     md: '80vw',
     lg: '70vw',
   },
+  '& .diagnostic-cta': {
+    fontWeight: 700,
+    textAlign: 'center',
+  },
   '& .location-input': {
     width: {
       xs: '90vw',
