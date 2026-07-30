@@ -112,6 +112,7 @@ export const HeaderStyle: SxProps<Theme> = {
     textTransform: 'uppercase',
     color: PALETTE_COLORS.forest,
     fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.4rem', lg: '1.6rem' },
+    marginTop: { md: 2, xs: 0.5 },
     '& .accent': {
       color: PALETTE_COLORS.neon_orange,
     },

@@ -115,6 +115,7 @@ export const GetAddressStepStyle: SxProps = {
   '& .diagnostic-cta': {
     fontWeight: 700,
     textAlign: 'center',
+    marginTop: 5,
   },
   '& .location-input': {
     width: {
@@ -124,22 +125,20 @@ export const GetAddressStepStyle: SxProps = {
     },
     height: 64,
     marginTop: 2,
-    marginBottom: 1,
+    marginBottom: 5,
     display: 'flex',
     alignItems: 'center',
     px: 1.5,
     gap: 1,
     borderRadius: 5,
     backgroundColor: PALETTE_COLORS.white,
-    border: `2px solid ${PALETTE_COLORS.linen}`,
-    boxShadow: '0 6px 20px -10px rgba(17,39,23,0.2)',
-    transition: 'border-color 180ms ease, box-shadow 180ms ease',
+    boxShadow: '0 4px 16px -6px rgba(17,39,23,0.18), 0 1px 3px rgba(17,39,23,0.08)',
+    transition: 'box-shadow 180ms ease',
     '&:hover': {
-      borderColor: PALETTE_COLORS.pine,
+      boxShadow: '0 8px 24px -8px rgba(17,39,23,0.22), 0 1px 3px rgba(17,39,23,0.1)',
     },
     '&:focus-within': {
-      borderColor: PALETTE_COLORS.neon_orange,
-      boxShadow: `0 8px 28px -10px rgba(255,82,27,0.4), 0 0 0 4px rgba(255,82,27,0.12)`,
+      boxShadow: `0 8px 28px -8px rgba(255,82,27,0.28), 0 0 0 3px rgba(255,82,27,0.14)`,
     },
   },
   '& .location-list': {
