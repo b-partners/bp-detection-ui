@@ -1,4 +1,4 @@
-import { PALETTE_COLORS } from '@/utilities/theme';
+import { FONT_SIZES, PALETTE_COLORS } from '@/utilities/theme';
 import { SxProps, Theme } from '@mui/material';
 
 export const DetectionResultStepStyle: SxProps = {
@@ -18,27 +18,27 @@ export const DetectionResultStepStyle: SxProps = {
   flexWrap: 'wrap',
   '& .MuiGrid2-root > .title': {
     fontSize: {
-      xs: '1rem',
-      sm: '1.125rem',
-      md: '1.25rem',
-      lg: '1.5rem',
+      xs: FONT_SIZES.md,
+      sm: FONT_SIZES.lg,
+      md: FONT_SIZES.xl,
+      lg: FONT_SIZES['2xl'],
     },
   },
   '& .MuiGrid2-root > .MuiPaper-root > .MuiTypography-root.label': {
     fontSize: {
-      xs: '0.875rem',
-      sm: '1rem',
-      md: '1.125rem',
-      lg: '1.25rem',
+      xs: FONT_SIZES.sm,
+      sm: FONT_SIZES.md,
+      md: FONT_SIZES.lg,
+      lg: FONT_SIZES.xl,
     },
     textTransform: 'lowercase',
   },
   '& .MuiGrid2-root > .MuiPaper-root > .MuiTypography-root.result': {
     fontSize: {
-      xs: '0.875rem',
-      sm: '1rem',
-      md: '1.125rem',
-      lg: '1.25rem',
+      xs: FONT_SIZES.sm,
+      sm: FONT_SIZES.md,
+      md: FONT_SIZES.lg,
+      lg: FONT_SIZES.xl,
     },
     textTransform: 'capitalize',
   },
@@ -46,7 +46,7 @@ export const DetectionResultStepStyle: SxProps = {
     '& .title': {
       color: t => (t as Theme).palette.primary.main,
       fontWeight: 'bold',
-      fontSize: 20,
+      fontSize: FONT_SIZES.xl,
       textAlign: 'center',
     },
     p: 2,
@@ -157,7 +157,7 @@ export const GetAddressStepStyle: SxProps = {
     justifyContent: 'center',
     alignItems: 'center',
     px: 1.5,
-    fontSize: '1.05rem',
+    fontSize: FONT_SIZES.md,
     flexGrow: 1,
     '& input': {
       py: 1.5,
@@ -216,7 +216,7 @@ export const DemoVideoStyle: SxProps = {
     color: t => (t as Theme).palette.primary.light,
     fontWeight: 800,
     letterSpacing: '0.1em',
-    fontSize: '0.72rem',
+    fontSize: FONT_SIZES.xs,
     textTransform: 'uppercase',
     flexShrink: 0,
     '& .dot': {
@@ -230,7 +230,7 @@ export const DemoVideoStyle: SxProps = {
   '& .demo-topbar-title': {
     color: 'rgba(255,255,255,0.7)',
     fontWeight: 600,
-    fontSize: '0.85rem',
+    fontSize: FONT_SIZES.sm,
     textAlign: 'right',
     display: { xs: 'none', sm: 'block' },
   },
@@ -262,15 +262,15 @@ export const BirdiaTechnologyStyle: SxProps = {
       fontWeight: 800,
       letterSpacing: '0.12em',
       textTransform: 'uppercase',
-      fontSize: '0.8rem',
+      fontSize: FONT_SIZES.xs,
     },
     '& .section-title': {
       fontWeight: 800,
       lineHeight: 1.1,
       color: PALETTE_COLORS.black,
       fontSize: {
-        xs: '1.6rem',
-        md: '2.2rem',
+        xs: FONT_SIZES['2xl'],
+        md: FONT_SIZES['4xl'],
       },
       '& .accent': {
         color: t => (t as Theme).palette.primary.main,
@@ -281,8 +281,8 @@ export const BirdiaTechnologyStyle: SxProps = {
       maxWidth: 620,
       mx: 'auto',
       fontSize: {
-        xs: '0.9rem',
-        md: '1rem',
+        xs: FONT_SIZES.sm,
+        md: FONT_SIZES.md,
       },
     },
   },
@@ -337,7 +337,7 @@ export const BirdiaTechnologyStyle: SxProps = {
       gap: 1,
       color: PALETTE_COLORS.white,
       fontWeight: 700,
-      fontSize: '0.9rem',
+      fontSize: FONT_SIZES.sm,
       zIndex: 1,
       '& .dot': {
         width: 10,
@@ -367,13 +367,13 @@ export const BirdiaTechnologyStyle: SxProps = {
         '& .stat-value': {
           color: PALETTE_COLORS.white,
           fontWeight: 800,
-          fontSize: '1.15rem',
+          fontSize: FONT_SIZES.lg,
         },
         '& .stat-label': {
           color: 'rgba(255,255,255,0.55)',
           fontWeight: 600,
           letterSpacing: '0.08em',
-          fontSize: '0.7rem',
+          fontSize: FONT_SIZES.xs,
           textTransform: 'uppercase',
         },
       },
@@ -399,17 +399,17 @@ export const BirdiaTechnologyStyle: SxProps = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: '1.6rem',
+      fontSize: FONT_SIZES['2xl'],
       background: PALETTE_COLORS.peach,
     },
     '& .feature-title': {
       fontWeight: 800,
       color: PALETTE_COLORS.black,
-      fontSize: '1.05rem',
+      fontSize: FONT_SIZES.md,
     },
     '& .feature-desc': {
       color: '#6B7280',
-      fontSize: '0.9rem',
+      fontSize: FONT_SIZES.sm,
       my: 0.5,
     },
     '& .feature-tags': {
@@ -421,7 +421,7 @@ export const BirdiaTechnologyStyle: SxProps = {
         py: 0.4,
         borderRadius: 2,
         fontWeight: 700,
-        fontSize: '0.72rem',
+        fontSize: FONT_SIZES.xs,
         textTransform: 'uppercase',
         letterSpacing: '0.03em',
         background: '#F1F1F3',

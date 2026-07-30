@@ -1,4 +1,4 @@
-import { PALETTE_COLORS } from '@/utilities/theme';
+import { FONT_SIZES, PALETTE_COLORS } from '@/utilities/theme';
 import { SxProps, Theme } from '@mui/material';
 
 export const HeaderStyle: SxProps<Theme> = {
@@ -53,11 +53,11 @@ export const HeaderStyle: SxProps<Theme> = {
     gap: 0.5,
     '& .company-name': {
       fontWeight: 800,
-      fontSize: '0.85rem',
+      fontSize: FONT_SIZES.sm,
       color: PALETTE_COLORS.forest,
     },
     '& .contact-line': {
-      fontSize: '0.72rem',
+      fontSize: FONT_SIZES.xs,
       color: '#5b6470',
       lineHeight: 1.5,
     },
@@ -96,7 +96,7 @@ export const HeaderStyle: SxProps<Theme> = {
     background: 'rgba(255, 82, 27, 0.06)',
     color: PALETTE_COLORS.neon_orange,
     fontWeight: 700,
-    fontSize: '0.75rem',
+    fontSize: FONT_SIZES.xs,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
     '& .dot': {
@@ -111,7 +111,7 @@ export const HeaderStyle: SxProps<Theme> = {
     lineHeight: 1.05,
     textTransform: 'uppercase',
     color: PALETTE_COLORS.forest,
-    fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.4rem', lg: '1.6rem' },
+    fontSize: { xs: FONT_SIZES.lg, sm: FONT_SIZES.xl, md: FONT_SIZES['2xl'], lg: FONT_SIZES['3xl'] },
     marginTop: { md: 2, xs: 0.5 },
     '& .accent': {
       color: PALETTE_COLORS.neon_orange,
@@ -125,11 +125,11 @@ export const HeaderStyle: SxProps<Theme> = {
     gap: 1.5,
     '& .aside-title': {
       fontWeight: 800,
-      fontSize: '1.05rem',
+      fontSize: FONT_SIZES.md,
       color: PALETTE_COLORS.forest,
     },
     '& .aside-text': {
-      fontSize: '0.95rem',
+      fontSize: FONT_SIZES.sm,
       color: '#5b6470',
       lineHeight: 1.6,
     },
@@ -159,13 +159,13 @@ export const HeaderStyle: SxProps<Theme> = {
     },
     '& .stat-value': {
       fontWeight: 800,
-      fontSize: { xs: '1.6rem', md: '2rem' },
+      fontSize: { xs: FONT_SIZES['2xl'], md: FONT_SIZES['3xl'] },
       lineHeight: 1,
       color: '#fff',
       '& .unit': { color: PALETTE_COLORS.neon_orange },
     },
     '& .stat-label': {
-      fontSize: { xs: '0.65rem', md: '0.75rem' },
+      fontSize: FONT_SIZES.xs,
       letterSpacing: '0.06em',
       textTransform: 'uppercase',
       color: 'rgba(255,255,255,0.6)',
@@ -196,7 +196,7 @@ export const HeaderStyle: SxProps<Theme> = {
       alignItems: 'center',
       justifyContent: 'center',
       fontWeight: 800,
-      fontSize: '1rem',
+      fontSize: FONT_SIZES.md,
       background: '#fff',
       border: '2px solid rgba(31, 39, 55, 0.12)',
       color: '#9aa2ad',
@@ -215,17 +215,17 @@ export const HeaderStyle: SxProps<Theme> = {
     },
     '& .step-label': {
       fontWeight: 700,
-      fontSize: '0.95rem',
+      fontSize: FONT_SIZES.md,
       color: PALETTE_COLORS.forest,
       mt: 0.5,
     },
     '& .step-subtitle': {
       fontWeight: 700,
-      fontSize: '0.85rem',
+      fontSize: FONT_SIZES.sm,
       color: PALETTE_COLORS.forest,
     },
     '& .step-desc': {
-      fontSize: '0.8rem',
+      fontSize: FONT_SIZES.xs,
       color: '#5b6470',
       lineHeight: 1.5,
     },

@@ -1,5 +1,5 @@
 import { degradationLevels } from '@/mappers';
-import { PALETTE_COLORS } from '@/utilities/theme';
+import { FONT_SIZES, PALETTE_COLORS } from '@/utilities/theme';
 import { SxProps } from '@mui/material';
 
 export const DialogFormStyle: SxProps = {
@@ -108,7 +108,7 @@ export const llmResultStyle: SxProps = {
     width: '100%',
     background: '#00000020',
     '& svg': {
-      fontSize: '50px',
+      fontSize: FONT_SIZES['5xl'],
     },
     '& .MuiStack-root': {
       display: 'flex',
