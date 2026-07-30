@@ -10,9 +10,9 @@ const endPagePaperStyle = {
   justifyContent: 'center',
   flexDirection: 'column',
   width: {
-    xs: '90vw',
-    md: '80vw',
-    lg: '70vw',
+    xs: '96vw',
+    md: '92vw',
+    lg: '86vw',
   },
 };
 

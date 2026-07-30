@@ -25,9 +25,9 @@ export const MainStyle: SxProps = {
   },
   '& #annotator-section': {
     width: {
-      xs: '90vw',
-      md: '80vw',
-      lg: '70vw',
+      xs: '96vw',
+      md: '92vw',
+      lg: '86vw',
     },
     height: '600px',
     mb: 20,
@@ -114,9 +114,9 @@ export const MainStyle: SxProps = {
   },
   '& .progress-bar-detection': {
     width: {
-      xs: '90vw',
-      md: '80vw',
-      lg: '70vw',
+      xs: '96vw',
+      md: '92vw',
+      lg: '86vw',
     },
     py: 10,
     '& .MuiPaper-root:first-child': {
