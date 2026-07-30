@@ -307,7 +307,10 @@ export const BirdiaTechnologyStyle: SxProps = {
     },
     borderRadius: 4,
     p: 3,
-    background: `radial-gradient(circle at 20% 0%, #1b2a3a 0%, ${PALETTE_COLORS.forest} 45%, #0a1410 100%)`,
+    background: `linear-gradient(to bottom, rgba(10,20,16,0.55) 0%, rgba(10,20,16,0.35) 45%, rgba(10,20,16,0.85) 100%), url(/assets/images/illustration.webp)`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
     boxShadow: '0 20px 60px -20px rgba(0,0,0,0.45)',
     '& .corner': {
       position: 'absolute',
