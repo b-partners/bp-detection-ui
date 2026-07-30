@@ -23,9 +23,9 @@ const QCM_QUESTIONS: QcmQuestion[] = [
 
 /**
  * Builds the prospect comment that is saved alongside the created prospect,
- * pairing each question with the answer the user selected.
+ * keeping only the answers the user selected.
  */
-const buildComment = (answers: string[]) => QCM_QUESTIONS.map((question, index) => `${question.label} ${answers[index]}`).join('\n');
+const buildComment = (answers: string[]) => answers.join('\n');
 
 interface QcmFormProps {
   address: string;
