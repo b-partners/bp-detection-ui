@@ -351,7 +351,7 @@ export const BirdiaTechnologyStyle: SxProps = {
       },
     },
     '& .preview-label-usure': { top: 40, left: 30 },
-    '& .preview-label-moisissure': { top: '38%', right: 30 },
+    '& .preview-label-moisissure': { top: '20%', right: 40 },
     '& .preview-label-humide': { bottom: 150, left: '25%' },
     '& .preview-stats': {
       position: 'absolute',
