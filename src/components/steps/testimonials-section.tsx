@@ -77,22 +77,25 @@ export const TestimonialsSection = () => {
         </Stack>
       </Stack>
 
-      <Box className='review-cards'>
-        {reviews.map(({ rating, quote, initials, name, role }) => (
-          <Box className='review-card' key={name}>
-            <Typography className='review-mark'>“</Typography>
-            <Box className='review-stars'>{renderStars(rating)}</Box>
-            <Typography className='review-quote'>{quote}</Typography>
-            <Divider className='review-divider' />
-            <Stack direction='row' className='review-author'>
-              <Box className='review-avatar'>{initials}</Box>
-              <Box>
-                <Typography className='review-name'>{name}</Typography>
-                <Typography className='review-role'>{role}</Typography>
-              </Box>
-            </Stack>
-          </Box>
-        ))}
+      <Box className='review-carousel'>
+        <Box className='review-track'>
+          {/* Duplicated once so the marquee loops seamlessly. */}
+          {[...reviews, ...reviews].map(({ rating, quote, initials, name, role }, index) => (
+            <Box className='review-card' key={`${name}-${index}`}>
+              <Typography className='review-mark'>“</Typography>
+              <Box className='review-stars'>{renderStars(rating)}</Box>
+              <Typography className='review-quote'>{quote}</Typography>
+              <Divider className='review-divider' />
+              <Stack direction='row' className='review-author'>
+                <Box className='review-avatar'>{initials}</Box>
+                <Box>
+                  <Typography className='review-name'>{name}</Typography>
+                  <Typography className='review-role'>{role}</Typography>
+                </Box>
+              </Stack>
+            </Box>
+          ))}
+        </Box>
       </Box>
 
       <Divider className='trust-divider' />

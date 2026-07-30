@@ -788,17 +788,33 @@ export const TestimonialsStyle: SxProps = {
       },
     },
   },
-  '& .review-cards': {
-    display: 'grid',
-    gridTemplateColumns: {
-      xs: '1fr',
-      sm: 'repeat(2, minmax(0, 1fr))',
-      lg: 'repeat(4, minmax(0, 1fr))',
-    },
-    gap: 3,
+  '& .review-carousel': {
     width: '100%',
+    overflow: 'hidden',
+    py: 1,
+    // Fade the edges so cards slide in/out smoothly.
+    maskImage: 'linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%)',
+    WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%)',
+    '&:hover .review-track': {
+      animationPlayState: 'paused',
+    },
+    '@keyframes review-marquee': {
+      from: { transform: 'translateX(0)' },
+      to: { transform: 'translateX(-50%)' },
+    },
+  },
+  '& .review-track': {
+    display: 'flex',
+    width: 'max-content',
+    gap: 3,
+    animation: 'review-marquee 40s linear infinite',
   },
   '& .review-card': {
+    flexShrink: 0,
+    width: {
+      xs: '80vw',
+      sm: '340px',
+    },
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
