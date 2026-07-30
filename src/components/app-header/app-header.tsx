@@ -1,4 +1,5 @@
 import { useAccountInfoQuery, useAccountInfoStore } from '@/queries';
+import { Star } from '@mui/icons-material';
 import { Box, Skeleton, Typography } from '@mui/material';
 import { HeaderStyle } from './style';
 
@@ -23,7 +24,7 @@ const stats: StatInfo[] = [
   { value: '<2', unit: 'min', label: 'Pour votre pré-diagnostic' },
   { value: '5', unit: 'cm/px', label: 'Précision image satellite' },
   { value: '48', unit: 'h', label: 'Recontact par votre couvreur' },
-  { value: '100', unit: '%', label: 'Gratuit · sans engagement' },
+  { value: '100', unit: '%', label: 'Sécurisé - RGPD' },
 ];
 
 export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
@@ -91,8 +92,8 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
         {/* Headline */}
         <Box className='hero-headline'>
           <Box className='hero-badge'>
-            <Box component='span' className='dot' />
-            <Box component='span'>★ Nouveau · Diagnostic IA par satellite</Box>
+            <Star />
+            <Box component='span'>Nouveau · Diagnostic IA sur image aériennes très haute résolution</Box>
           </Box>
           <Typography className='hero-title' component='h1'>
             Pré-diagnostiquez votre toiture sans monter dessus{' '}
