@@ -6,10 +6,10 @@ export const DetectionResultStepStyle: SxProps = {
   mb: 10,
   p: 1,
   width: {
-    xs: '96vw',
-    sm: '94vw',
-    md: '92vw',
-    lg: '86vw',
+    xs: '97vw',
+    sm: '95vw',
+    md: '94vw',
+    lg: '92vw',
   },
   minHeight: '600px',
   height: 'fit-content',
@@ -108,9 +108,9 @@ export const DetectionResultStepStyle: SxProps = {
 
 export const GetAddressStepStyle: SxProps = {
   width: {
-    xs: '96vw',
-    md: '92vw',
-    lg: '86vw',
+    xs: '97vw',
+    md: '94vw',
+    lg: '92vw',
   },
   '@keyframes diagnosticPulse': {
     '0%, 100%': {
@@ -199,9 +199,9 @@ export const GetAddressStepStyle: SxProps = {
 
 export const DemoVideoStyle: SxProps = {
   width: {
-    xs: '96vw',
-    md: '92vw',
-    lg: '86vw',
+    xs: '97vw',
+    md: '94vw',
+    lg: '92vw',
   },
   mt: 3,
   mb: 2,
@@ -263,9 +263,9 @@ export const DemoVideoStyle: SxProps = {
 
 export const BirdiaTechnologyStyle: SxProps = {
   width: {
-    xs: '96vw',
-    md: '92vw',
-    lg: '86vw',
+    xs: '97vw',
+    md: '94vw',
+    lg: '92vw',
   },
   mt: 6,
   gap: 4,
@@ -455,9 +455,9 @@ export const BirdiaTechnologyStyle: SxProps = {
 
 export const ReportPreviewStyle: SxProps = {
   width: {
-    xs: '96vw',
-    md: '92vw',
-    lg: '86vw',
+    xs: '97vw',
+    md: '94vw',
+    lg: '92vw',
   },
   mt: 6,
   gap: 4,
@@ -797,9 +797,9 @@ export const ReportPreviewStyle: SxProps = {
 
 export const TestimonialsStyle: SxProps = {
   width: {
-    xs: '96vw',
-    md: '92vw',
-    lg: '86vw',
+    xs: '97vw',
+    md: '94vw',
+    lg: '92vw',
   },
   mt: 6,
   mb: 4,

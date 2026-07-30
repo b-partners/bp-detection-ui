@@ -2,7 +2,7 @@ import { FONT_SIZES, PALETTE_COLORS } from '@/utilities/theme';
 import { SxProps, Theme } from '@mui/material';
 
 export const HeaderStyle: SxProps<Theme> = {
-  width: { xs: '96vw', md: '92vw', lg: '86vw' },
+  width: { xs: '97vw', md: '94vw', lg: '92vw' },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
