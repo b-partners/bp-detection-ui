@@ -113,20 +113,22 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
         </Box>
       </Box>
 
-      {/* Stats bar */}
-      <Box className='hero-stats'>
-        {stats.map(({ value, unit, label }) => (
-          <Box key={label} className='stat'>
-            <Typography className='stat-value'>
-              {value}
-              <Box component='span' className='unit'>
-                {unit}
-              </Box>
-            </Typography>
-            <Typography className='stat-label'>{label}</Typography>
-          </Box>
-        ))}
-      </Box>
+      {/* Stats bar — only on the get-address step */}
+      {activeStep === 0 && (
+        <Box className='hero-stats'>
+          {stats.map(({ value, unit, label }) => (
+            <Box key={label} className='stat'>
+              <Typography className='stat-value'>
+                {value}
+                <Box component='span' className='unit'>
+                  {unit}
+                </Box>
+              </Typography>
+              <Typography className='stat-label'>{label}</Typography>
+            </Box>
+          ))}
+        </Box>
+      )}
 
       {/* Steps strip (wired to wizard progress) */}
       <Box className='hero-steps'>
