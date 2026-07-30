@@ -10,14 +10,15 @@ export type ProspectInfo = {
   phone?: string;
   email?: string;
   address: string;
+  comment?: string;
 };
 
 export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo) => {
   try {
     const { accountId, accountHolderId } = await userInfoProvider(apiKey);
-    const { address, email, firstName, lastName, phone } = userInfo;
+    const { address, email, firstName, lastName, phone, comment } = userInfo;
     const { data: prospect } = await bpProspectApi(apiKey).createProspects(accountHolderId ?? '', [
-      { address, id: v4(), status: 'TO_CONTACT', firstName, email, phone, name: lastName },
+      { address, id: v4(), status: 'TO_CONTACT', firstName, email, phone, name: lastName, comment } as any,
     ]);
     const { data: areaPictureDetails } = await bpAnnotationApi(apiKey).crupdateAreaPictureDetails(accountId ?? '', v4(), {
       address,

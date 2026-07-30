@@ -19,6 +19,106 @@ export const DialogTutorialStyle: SxProps = {
   '& .MuiDialogContent-root': {},
 };
 
+export const QcmDialogStyle: SxProps = {
+  '& .MuiPaper-root': {
+    borderRadius: 4,
+  },
+  '& .MuiDialogTitle-root': {
+    pt: 3,
+    px: 3,
+    '& .qcm-eyebrow': {
+      color: PALETTE_COLORS.neon_orange,
+      fontWeight: 800,
+      letterSpacing: '0.12em',
+      textTransform: 'uppercase',
+      fontSize: FONT_SIZES.xs,
+    },
+    '& .qcm-title': {
+      fontWeight: 800,
+      color: PALETTE_COLORS.black,
+      fontSize: FONT_SIZES['2xl'],
+      mt: 0.5,
+    },
+    '& .qcm-subtitle': {
+      color: '#6B7280',
+      fontSize: FONT_SIZES.sm,
+      mt: 0.5,
+    },
+    '& .qcm-info': {
+      flexShrink: 0,
+      width: 32,
+      height: 32,
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: PALETTE_COLORS.neon_orange,
+      color: PALETTE_COLORS.white,
+      '& svg': { fontSize: FONT_SIZES.lg },
+    },
+  },
+  '& .MuiDialogContent-root': {
+    minWidth: { md: 560 },
+    px: 3,
+  },
+  '& .qcm-question': {
+    mt: 2,
+    mb: 1,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1.25,
+    '& .qcm-badge': {
+      flexShrink: 0,
+      width: 26,
+      height: 26,
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: PALETTE_COLORS.neon_orange,
+      color: PALETTE_COLORS.white,
+      fontWeight: 800,
+      fontSize: FONT_SIZES.sm,
+    },
+    '& .qcm-question-label': {
+      fontWeight: 800,
+      color: PALETTE_COLORS.black,
+      fontSize: FONT_SIZES.lg,
+    },
+  },
+  '& .qcm-options': {
+    gap: 1.25,
+    '& .qcm-option': {
+      m: 0,
+      px: 2,
+      py: 0.5,
+      borderRadius: 3,
+      border: '1px solid #E3E1DC',
+      transition: 'all 150ms ease',
+      '&:hover': {
+        borderColor: PALETTE_COLORS.neon_orange,
+        background: 'rgba(255,82,27,0.04)',
+      },
+    },
+    '& .qcm-option-selected': {
+      borderColor: PALETTE_COLORS.neon_orange,
+      background: 'rgba(255,82,27,0.06)',
+    },
+    '& .MuiRadio-root.Mui-checked': {
+      color: PALETTE_COLORS.neon_orange,
+    },
+    '& .MuiFormControlLabel-label': {
+      fontSize: FONT_SIZES.md,
+      color: PALETTE_COLORS.black,
+    },
+  },
+  '& .MuiDialogActions-root': {
+    px: 3,
+    pb: 3,
+    pt: 2,
+  },
+};
+
 export const LegalFileDialogStyle: Record<'dialogContent' | 'dialogActions', SxProps> = {
   dialogContent: {
     minHeight: 500,

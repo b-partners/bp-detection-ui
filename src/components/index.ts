@@ -12,5 +12,6 @@ export * from './global-snackbar';
 export * from './legal-files-pdf-renderer';
 export * from './llm-result';
 export * from './llm-switch-button';
+export * from './qcm-form';
 export * from './style';
 export * from './types';

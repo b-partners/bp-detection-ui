@@ -5,8 +5,8 @@ import { clearCached } from '@/utilities';
 import { LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
 import { Box, debounce, IconButton, InputBase, MenuItem, Paper, Stack, Typography } from '@mui/material';
 import { ChangeEvent, useEffect, useMemo } from 'react';
-import { DetectionForm } from '../detection-form';
-import { DialogFormStyle } from '../style';
+import { QcmForm } from '../qcm-form';
+import { QcmDialogStyle } from '../style';
 import { BirdiaTechnologySection } from './birdia-technology-section';
 import { DemoVideoSection } from './demo-video-section';
 import { ReportPreviewSection } from './report-preview-section';
@@ -32,7 +32,7 @@ export const GetAddressStep = () => {
   } = useAddressFrom();
 
   const onSubmit = handleSubmit(
-    data => openDialog(<DetectionForm address={data.address} />, { style: DialogFormStyle }),
+    data => openDialog(<QcmForm address={data.address} />, { style: QcmDialogStyle }),
     error => alert(error.address)
   );
 

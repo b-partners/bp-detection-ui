@@ -19,9 +19,10 @@ export interface DetectionFormInfo {
 
 interface DetectionFormProps {
   address: string;
+  comment?: string;
 }
 
-export const DetectionForm: FC<DetectionFormProps> = ({ address }) => {
+export const DetectionForm: FC<DetectionFormProps> = ({ address, comment }) => {
   const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails, prospect } = useQueryImageFromAddress();
   const { close: closeDialog } = useDialog();
   const { setStep } = useStep();
@@ -38,7 +39,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address }) => {
 
   const handleSubmit = form.handleSubmit(async data => {
     const { email, phone, firstName, lastName } = data;
-    queryImage({ address, email, firstName, lastName, phone });
+    queryImage({ address, email, firstName, lastName, phone, comment });
     await animate('.input-anime', { transform: 'translateX(100%)', opacity: 0, display: 'none' }, { duration: 0.5, delay: stagger(0.2, { from: 'last' }) });
     setSatellites({ end: false, show: true, screnShot: false });
     await wait(12000);
