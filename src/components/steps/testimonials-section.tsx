@@ -114,7 +114,7 @@ export const TestimonialsSection = () => {
 
       <Divider className='trust-divider' />
 
-      <Typography className='trust-footer'>🛡️ Données 100% sécurisées · Conforme RGPD · Aucun engagement</Typography>
+      <Typography className='trust-footer'>🛡️ Données 100% sécurisées · Conforme RGPD · Aucun engagement · Ce service est fourni par Birdia</Typography>
     </Stack>
   );
 };
