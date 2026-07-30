@@ -112,10 +112,25 @@ export const GetAddressStepStyle: SxProps = {
     md: '80vw',
     lg: '70vw',
   },
+  '@keyframes diagnosticPulse': {
+    '0%, 100%': {
+      transform: 'scale(1)',
+      opacity: 0.85,
+    },
+    '50%': {
+      transform: 'scale(1.06)',
+      opacity: 1,
+    },
+  },
   '& .diagnostic-cta': {
     fontWeight: 700,
+    fontSize: {
+      xs: '1.35rem',
+      md: '1.75rem',
+    },
     textAlign: 'center',
     marginTop: 5,
+    animation: 'diagnosticPulse 1.6s ease-in-out infinite',
   },
   '& .location-input': {
     width: {
