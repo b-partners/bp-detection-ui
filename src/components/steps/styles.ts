@@ -205,7 +205,11 @@ export const BirdiaTechnologyStyle: SxProps = {
   '& .preview-card': {
     position: 'relative',
     overflow: 'hidden',
-    minHeight: 560,
+    height: '100%',
+    minHeight: {
+      xs: 520,
+      md: 'auto',
+    },
     borderRadius: 4,
     p: 3,
     background: `radial-gradient(circle at 20% 0%, #1b2a3a 0%, ${PALETTE_COLORS.forest} 45%, #0a1410 100%)`,
