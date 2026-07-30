@@ -12,6 +12,7 @@ body {
 
 #root {
   min-height: 100vh;
+  zoom: 0.9;
 }
 
 :root {
