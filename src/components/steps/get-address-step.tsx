@@ -11,6 +11,7 @@ import { BirdiaTechnologySection } from './birdia-technology-section';
 import { DemoVideoSection } from './demo-video-section';
 import { ReportPreviewSection } from './report-preview-section';
 import { GetAddressStepStyle as style } from './styles';
+import { TestimonialsSection } from './testimonials-section';
 
 export const GetAddressStep = () => {
   const { open: openDialog, isOpen } = useDialog();
@@ -83,6 +84,7 @@ export const GetAddressStep = () => {
       <DemoVideoSection />
       <BirdiaTechnologySection />
       <ReportPreviewSection />
+      <TestimonialsSection />
     </Stack>
   );
 };

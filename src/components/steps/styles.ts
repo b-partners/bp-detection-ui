@@ -729,6 +729,186 @@ export const ReportPreviewStyle: SxProps = {
   },
 };
 
+export const TestimonialsStyle: SxProps = {
+  width: {
+    xs: '92vw',
+    md: '86vw',
+    lg: '78vw',
+  },
+  mt: 6,
+  mb: 4,
+  gap: 4,
+  '& .section-header': {
+    flexDirection: {
+      xs: 'column',
+      md: 'row',
+    },
+    justifyContent: 'space-between',
+    alignItems: {
+      xs: 'flex-start',
+      md: 'flex-end',
+    },
+    gap: 2,
+    '& .section-heading': {
+      gap: 1,
+      '& .section-eyebrow': {
+        color: t => (t as Theme).palette.primary.main,
+        fontWeight: 800,
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        fontSize: FONT_SIZES.xs,
+      },
+      '& .section-title': {
+        fontWeight: 800,
+        lineHeight: 1.1,
+        color: PALETTE_COLORS.black,
+        fontSize: {
+          xs: FONT_SIZES['2xl'],
+          md: FONT_SIZES['4xl'],
+        },
+      },
+    },
+    '& .rating-summary': {
+      alignItems: 'center',
+      gap: 1,
+      flexShrink: 0,
+      '& .rating-stars .star': {
+        color: '#F5A623',
+        fontSize: FONT_SIZES.lg,
+        letterSpacing: '0.05em',
+      },
+      '& .rating-score': {
+        fontWeight: 800,
+        color: PALETTE_COLORS.black,
+        fontSize: FONT_SIZES.md,
+      },
+      '& .rating-count': {
+        color: '#6B7280',
+        fontSize: FONT_SIZES.sm,
+      },
+    },
+  },
+  '& .review-cards': {
+    display: 'grid',
+    gridTemplateColumns: {
+      xs: '1fr',
+      sm: 'repeat(2, minmax(0, 1fr))',
+      lg: 'repeat(4, minmax(0, 1fr))',
+    },
+    gap: 3,
+    width: '100%',
+  },
+  '& .review-card': {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    background: PALETTE_COLORS.white,
+    border: '1px solid #EFEAE0',
+    borderRadius: 4,
+    p: 3,
+    boxShadow: '0 10px 30px -18px rgba(0,0,0,0.25)',
+    '& .review-mark': {
+      color: t => (t as Theme).palette.primary.light,
+      fontWeight: 800,
+      lineHeight: 0.6,
+      fontSize: FONT_SIZES['4xl'],
+    },
+    '& .review-stars': {
+      mt: 1,
+      '& .star': {
+        color: '#F5A623',
+        fontSize: FONT_SIZES.md,
+        letterSpacing: '0.05em',
+      },
+    },
+    '& .review-quote': {
+      color: PALETTE_COLORS.black,
+      fontSize: FONT_SIZES.sm,
+      lineHeight: 1.5,
+      mt: 1.5,
+      flexGrow: 1,
+    },
+    '& .review-divider': {
+      my: 2,
+      borderColor: '#EFEAE0',
+    },
+    '& .review-author': {
+      alignItems: 'center',
+      gap: 1.5,
+      '& .review-avatar': {
+        flexShrink: 0,
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 800,
+        fontSize: FONT_SIZES.xs,
+        color: PALETTE_COLORS.white,
+        background: t => (t as Theme).palette.primary.main,
+      },
+      '& .review-name': {
+        fontWeight: 800,
+        color: PALETTE_COLORS.black,
+        fontSize: FONT_SIZES.sm,
+      },
+      '& .review-role': {
+        color: '#6B7280',
+        fontSize: FONT_SIZES.xs,
+      },
+    },
+  },
+  '& .trust-divider': {
+    borderColor: '#EFEAE0',
+    width: '100%',
+  },
+  '& .trust-badges': {
+    display: 'grid',
+    gridTemplateColumns: {
+      xs: '1fr',
+      sm: 'repeat(2, minmax(0, 1fr))',
+      md: 'repeat(4, minmax(0, 1fr))',
+    },
+    gap: { xs: 2, md: 3 },
+    width: '100%',
+  },
+  '& .trust-badge': {
+    alignItems: 'center',
+    gap: 1.5,
+    justifyContent: { xs: 'flex-start', md: 'center' },
+    '& .trust-icon': {
+      flexShrink: 0,
+      width: 44,
+      height: 44,
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: FONT_SIZES.md,
+    },
+    '& .trust-icon-rgpd': { background: '#E4F7E9' },
+    '& .trust-icon-ssl': { background: '#E4EEFF' },
+    '& .trust-icon-rge': { background: '#FDF3D8' },
+    '& .trust-icon-ia': { background: PALETTE_COLORS.peach },
+    '& .trust-title': {
+      fontWeight: 800,
+      color: PALETTE_COLORS.black,
+      fontSize: FONT_SIZES.sm,
+    },
+    '& .trust-subtitle': {
+      color: '#6B7280',
+      fontSize: FONT_SIZES.xs,
+    },
+  },
+  '& .trust-footer': {
+    textAlign: 'center',
+    color: '#6B7280',
+    fontWeight: 600,
+    fontSize: FONT_SIZES.sm,
+  },
+};
+
 export const detectionResultItemStyle: SxProps = {
   border: `3px solid ${PALETTE_COLORS.pine}`,
   '& .detection-result-item-loading': {
