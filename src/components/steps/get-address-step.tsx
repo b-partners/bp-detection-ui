@@ -7,6 +7,7 @@ import { Box, debounce, IconButton, InputBase, MenuItem, Paper, Stack, Typograph
 import { ChangeEvent, useEffect, useMemo } from 'react';
 import { DetectionForm } from '../detection-form';
 import { DialogFormStyle } from '../style';
+import { BirdiaTechnologySection } from './birdia-technology-section';
 import { GetAddressStepStyle as style } from './styles';
 
 export const GetAddressStep = () => {
@@ -77,6 +78,7 @@ export const GetAddressStep = () => {
           </Paper>
         </Box>
       )}
+      <BirdiaTechnologySection />
     </Stack>
   );
 };
