@@ -1,10 +1,16 @@
+import type { SvgIconComponent } from '@mui/icons-material';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { ReportPreviewStyle as style } from './styles';
 
 type IdentityRow = { label: string; value: string; highlight?: boolean };
 type HealthBar = { label: string; value: string; ratio: number; alert?: boolean };
 type HealthFlag = { label: string; value: string };
-type Grade = { letter: string; label: string };
+type Grade = { letter: string; variant: string; title: string; description: string; Icon: SvgIconComponent };
 type Advice = { icon: string; title: string; description: string; variant: 'search' | 'broom' | 'pick' | 'calendar' };
 
 const identityRows: IdentityRow[] = [
@@ -29,11 +35,11 @@ const healthFlags: HealthFlag[] = [
 ];
 
 const grades: Grade[] = [
-  { letter: 'A', label: 'Excellent' },
-  { letter: 'B', label: 'Bon' },
-  { letter: 'C', label: 'Moyen' },
-  { letter: 'D', label: 'Réparation' },
-  { letter: 'E', label: 'Critique' },
+  { letter: 'A', variant: 'good', title: 'Toiture en bon état', description: 'Aucune intervention visible nécessaire', Icon: GppGoodOutlinedIcon },
+  { letter: 'B', variant: 'preventive', title: 'Entretien préventif', description: 'Pour garder la toiture en bonne santé', Icon: BlockOutlinedIcon },
+  { letter: 'C', variant: 'maintenance', title: 'Intervention nécessaire', description: 'Pour ralentir le vieillissement', Icon: BuildOutlinedIcon },
+  { letter: 'D', variant: 'repair', title: 'Réparation prioritaire', description: 'Dégradation visible, risque à traiter', Icon: TrendingUpOutlinedIcon },
+  { letter: 'E', variant: 'critical', title: 'Risque critique', description: 'Intervention urgente à prévoir', Icon: WarningAmberRoundedIcon },
 ];
 
 const selectedGrade = 'D';
@@ -134,13 +140,26 @@ export const ReportPreviewSection = () => {
               22,88<span className='degradation-unit'>%</span>
             </Typography>
             <Typography className='degradation-caption'>Dégradation globale</Typography>
-            <Stack direction='row' className='grade-scale'>
-              {grades.map(({ letter, label }) => (
-                <Box className={`grade-box grade-box-${letter.toLowerCase()} ${letter === selectedGrade ? 'grade-box-selected' : ''}`} key={letter}>
-                  <Typography className='grade-letter'>{letter}</Typography>
-                  <Typography className='grade-label'>{label}</Typography>
-                </Box>
-              ))}
+            <Stack className='grade-scale'>
+              <Box className='grade-cards'>
+                {grades.map(({ letter, variant, title, description, Icon }) => (
+                  <Box className={`grade-card grade-card-${variant} ${letter === selectedGrade ? 'grade-card-selected' : ''}`} key={letter}>
+                    <Box className='grade-icon'>
+                      <Icon fontSize='inherit' />
+                    </Box>
+                    <Typography className='grade-title'>{title}</Typography>
+                    <Typography className='grade-desc'>{description}</Typography>
+                  </Box>
+                ))}
+              </Box>
+              <Box className='grade-meter'>
+                {grades.map(({ letter, variant }) => (
+                  <Box className='grade-meter-col' key={letter}>
+                    <Box className={`grade-meter-bar grade-meter-bar-${variant}`} />
+                    {letter === selectedGrade ? <Box className='grade-meter-pointer' /> : <Box className='grade-meter-dot' />}
+                  </Box>
+                ))}
+              </Box>
             </Stack>
             <Divider className='card-divider card-divider-dashed' />
             <Typography className='degradation-verdict'>Catégorie D - Réparation nécessaire.</Typography>
