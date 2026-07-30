@@ -22,14 +22,14 @@ export const HeaderStyle: SxProps<Theme> = {
     gridTemplateColumns: { xs: '1fr', md: '0.9fr 1.4fr 1fr' },
     columnGap: { md: 5 },
     rowGap: { xs: 3, md: 0 },
-    alignItems: 'start',
+    alignItems: { xs: 'stretch', md: 'center' },
   },
 
   // Left column : logo + contact
   '& .hero-brand': {
     display: 'flex',
     flexDirection: 'column',
-    gap: 1,
+    gap: 1.5,
   },
   '& .hero-logo-card': {
     borderRadius: 3,
@@ -50,13 +50,11 @@ export const HeaderStyle: SxProps<Theme> = {
   '& .hero-contact': {
     display: 'flex',
     flexDirection: 'column',
-    gap: 0,
-    mt: 0.5,
+    gap: 0.5,
     '& .company-name': {
       fontWeight: 800,
       fontSize: '0.85rem',
       color: PALETTE_COLORS.forest,
-      mb: 0.25,
     },
     '& .contact-line': {
       fontSize: '0.72rem',
@@ -85,7 +83,7 @@ export const HeaderStyle: SxProps<Theme> = {
     flexDirection: 'column',
     alignItems: { xs: 'flex-start', md: 'center' },
     textAlign: { xs: 'left', md: 'center' },
-    gap: 2,
+    gap: 1.5,
   },
   '& .hero-badge': {
     display: 'inline-flex',
@@ -180,14 +178,13 @@ export const HeaderStyle: SxProps<Theme> = {
     display: 'grid',
     gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(4, 1fr)' },
     gap: { xs: 2, md: 3 },
-    mt: 1,
     '& .step-item': {
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       textAlign: 'center',
-      gap: 1,
+      gap: 0.75,
       px: 1,
     },
     '& .step-index': {
