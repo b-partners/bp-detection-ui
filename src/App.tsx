@@ -13,7 +13,7 @@ const steps = [
   {
     label: 'Renseignez votre adresse',
     subtitle: 'Saisissez votre adresse',
-    description: 'Tapez simplement votre adresse postale — c’est tout ce dont nous avons besoin.',
+    description: 'Tapez simplement votre adresse postale - c’est tout ce dont nous avons besoin.',
     content: <GetAddressStep />,
   },
   {
@@ -25,7 +25,7 @@ const steps = [
   {
     label: 'Analysez l’état via BIRDIA',
     subtitle: 'L’IA analyse votre toit',
-    description: 'Surface, pente, matériaux, fissures, mousses, humidité — détectés automatiquement.',
+    description: 'Surface, pente, matériaux, fissures, mousses, humidité - détectés automatiquement.',
     content: <DetectionResultStep />,
   },
   {

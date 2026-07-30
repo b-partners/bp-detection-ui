@@ -73,7 +73,7 @@ export const ReportPreviewSection = () => {
         <Typography className='section-title' component='h2'>
           Voici ce que vous recevez après l'analyse
         </Typography>
-        <Typography className='section-subtitle'>Exemple réel — toiture en tuiles, 273,70 m², analysée à Toulouse.</Typography>
+        <Typography className='section-subtitle'>Exemple réel - toiture en tuiles, 273,70 m², analysée à Toulouse.</Typography>
       </Stack>
 
       <Box className='report-cards'>
@@ -143,7 +143,7 @@ export const ReportPreviewSection = () => {
               ))}
             </Stack>
             <Divider className='card-divider card-divider-dashed' />
-            <Typography className='degradation-verdict'>Catégorie D — Réparation nécessaire.</Typography>
+            <Typography className='degradation-verdict'>Catégorie D - Réparation nécessaire.</Typography>
             <Typography className='degradation-detail'>
               Moisissure significative, vigilance autour des cheminées et velux. Pas de fissure ni d'usure visible.
             </Typography>

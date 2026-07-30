@@ -15,7 +15,7 @@ type TrustBadge = { icon: string; title: string; subtitle: string; variant: 'rgp
 const reviews: Review[] = [
   {
     rating: 5,
-    quote: "Rapport clair de l'état de ma toiture. L'artisan m'a rappelée le lendemain avec un devis adapté — sans monter sur le toit.",
+    quote: "Rapport clair de l'état de ma toiture. L'artisan m'a rappelée le lendemain avec un devis adapté - sans monter sur le toit.",
     initials: 'CM',
     name: 'Claire M.',
     role: 'Propriétaire · Seyssinet',

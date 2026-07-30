@@ -107,7 +107,7 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
         <Box className='hero-aside'>
           <Typography className='aside-title'>Diagnostic instantané et vous êtes recontactés dans les 48 h.</Typography>
           <Typography className='aside-text'>
-            Notre outil d'analyse par satellite et intelligence artificielle vous donne un pré-diagnostic complet sur l'état de votre toiture — accompagné des
+            Notre outil d'analyse par satellite et intelligence artificielle vous donne un pré-diagnostic complet sur l'état de votre toiture - accompagné des
             conseils de votre couvreur de confiance.
           </Typography>
         </Box>

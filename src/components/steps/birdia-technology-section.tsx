@@ -44,8 +44,8 @@ export const BirdiaTechnologySection = () => {
           Votre toiture, vue par notre <span className='accent'>IA satellite</span>
         </Typography>
         <Typography className='section-subtitle'>
-          Imagerie haute résolution + intelligence artificielle : nous détectons en quelques secondes les pathologies de votre toit, sans qu'un
-          humain ne monte sur l'échelle.
+          Imagerie haute résolution + intelligence artificielle : nous détectons en quelques secondes les pathologies de votre toit, sans qu'un humain ne monte
+          sur l'échelle.
         </Typography>
       </Stack>
 
@@ -60,7 +60,7 @@ export const BirdiaTechnologySection = () => {
           </Box>
           <Box className='preview-label preview-label-moisissure'>
             <Box className='dot' sx={{ bgcolor: '#FF521B' }} />
-            <span>Moisissure 28,6 %</span>
+            <span>Moisissure</span>
           </Box>
           <Box className='preview-label preview-label-humide'>
             <Box className='dot' sx={{ bgcolor: '#3B82F6' }} />
