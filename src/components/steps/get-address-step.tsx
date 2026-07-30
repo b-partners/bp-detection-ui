@@ -55,7 +55,7 @@ export const GetAddressStep = () => {
   return (
     <Stack sx={style} alignItems='center'>
       <Typography className='diagnostic-cta'>↓ Lancez votre diagnostic ici ↓</Typography>
-      <Paper onSubmit={onSubmit} {...others} component='form' className='location-input' elevation={1}>
+      <Paper onSubmit={onSubmit} {...others} component='form' className='location-input' elevation={0}>
         <Stack>
           <IconButton>
             <LocationOnIcon />
