@@ -131,14 +131,14 @@ export const GetAddressStepStyle: SxProps = {
     gap: 1,
     borderRadius: 5,
     backgroundColor: PALETTE_COLORS.white,
-    border: '2px solid #E2DBCE',
-    boxShadow: '0 6px 20px -10px rgba(0,0,0,0.25)',
+    border: `2px solid ${PALETTE_COLORS.linen}`,
+    boxShadow: '0 6px 20px -10px rgba(17,39,23,0.2)',
     transition: 'border-color 180ms ease, box-shadow 180ms ease',
     '&:hover': {
-      borderColor: PALETTE_COLORS.linen,
+      borderColor: PALETTE_COLORS.pine,
     },
     '&:focus-within': {
-      borderColor: 'primary.main',
+      borderColor: PALETTE_COLORS.neon_orange,
       boxShadow: `0 8px 28px -10px rgba(255,82,27,0.4), 0 0 0 4px rgba(255,82,27,0.12)`,
     },
   },
@@ -172,10 +172,11 @@ export const GetAddressStepStyle: SxProps = {
     color: PALETTE_COLORS.pine,
   },
   '& .location-input > .MuiStack-root:last-of-type .MuiIconButton-root': {
-    backgroundColor: 'primary.main',
+    backgroundColor: PALETTE_COLORS.neon_orange,
     color: PALETTE_COLORS.white,
+    boxShadow: '0 4px 12px -4px rgba(255,82,27,0.5)',
     '&:hover': {
-      backgroundColor: 'primary.dark',
+      backgroundColor: '#E0451A',
     },
   },
   '& .location-input > .MuiStack-root': {
