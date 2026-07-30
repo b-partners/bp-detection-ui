@@ -3,7 +3,7 @@ import { useDialog, useStep } from '@/hooks';
 import { useLocationQuery } from '@/queries';
 import { clearCached } from '@/utilities';
 import { LocationOn as LocationOnIcon, Search as SearchIcon } from '@mui/icons-material';
-import { Box, debounce, IconButton, InputBase, MenuItem, Paper, Stack } from '@mui/material';
+import { Box, debounce, IconButton, InputBase, MenuItem, Paper, Stack, Typography } from '@mui/material';
 import { ChangeEvent, useEffect, useMemo } from 'react';
 import { DetectionForm } from '../detection-form';
 import { DialogFormStyle } from '../style';
@@ -52,6 +52,7 @@ export const GetAddressStep = () => {
 
   return (
     <Stack sx={style} alignItems='center'>
+      <Typography sx={{ fontWeight: 700, textAlign: 'center' }}>↓ Lancez votre diagnostic ici ↓</Typography>
       <Paper onSubmit={onSubmit} {...others} component='form' className='location-input' elevation={1}>
         <Stack>
           <IconButton>

@@ -119,7 +119,7 @@ export const GetAddressStepStyle: SxProps = {
       lg: '50vw',
     },
     height: 50,
-    marginTop: 10,
+    marginTop: 2,
     marginBottom: 1,
     display: 'flex',
     px: 1,
