@@ -67,6 +67,16 @@ export const HeaderStyle: SxProps<Theme> = {
       color: PALETTE_COLORS.forest,
       fontWeight: 700,
     },
+    '& .contact-link': {
+      color: 'inherit',
+      textDecoration: 'none',
+      cursor: 'pointer',
+      transition: 'color 150ms linear',
+      '&:hover': {
+        color: PALETTE_COLORS.neon_orange,
+        textDecoration: 'underline',
+      },
+    },
   },
 
   // Center column : badge + title

@@ -31,6 +31,8 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
   const { image, name, address, city, postalCode, email, phone, website } = useAccountInfoStore();
 
   const websiteLabel = website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const fullAddress = [address, [postalCode, city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+  const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
   return (
     <Box sx={HeaderStyle}>
@@ -50,10 +52,26 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
           ) : (
             <Box className='hero-contact'>
               {name && <Typography className='company-name'>{name}</Typography>}
-              {(address || postalCode || city) && (
-                <Typography className='contact-line strong'>{[address, [postalCode, city].filter(Boolean).join(' ')].filter(Boolean).join(', ')}</Typography>
+              {fullAddress && (
+                <Typography component='a' href={mapsHref} target='_blank' rel='noopener noreferrer' className='contact-line strong contact-link'>
+                  {fullAddress}
+                </Typography>
               )}
-              {(email || phone) && <Typography className='contact-line'>{[email, phone].filter(Boolean).join(' · ')}</Typography>}
+              {(email || phone) && (
+                <Typography className='contact-line'>
+                  {email && (
+                    <Box component='a' href={`mailto:${email}`} className='contact-link'>
+                      {email}
+                    </Box>
+                  )}
+                  {email && phone && ' · '}
+                  {phone && (
+                    <Box component='a' href={`tel:${phone.replace(/[^\d+]/g, '')}`} className='contact-link'>
+                      {phone}
+                    </Box>
+                  )}
+                </Typography>
+              )}
               {websiteLabel && <Typography className='contact-line'>{websiteLabel}</Typography>}
             </Box>
           )}
