@@ -87,7 +87,7 @@ describe('Test process detection error', () => {
 
     cy.contains('24 rue mozart mock 2').click();
 
-    cy.contains('Veuillez saisir les informations suivantes.');
+    cy.contains("Renseignez vos informations pour recevoir les résultats de l'analyse de votre toiture.");
 
     cy.dataCy(process_detection_on_form_sel).click();
     cy.contains('Numéro de téléphone non valide');

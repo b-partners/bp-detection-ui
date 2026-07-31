@@ -13,9 +13,6 @@ export const DialogTutorialStyle: SxProps = {
  * modals share the same look.
  */
 const brandedDialogChrome = {
-  '& .MuiPaper-root': {
-    borderRadius: 4,
-  },
   '& .MuiDialogTitle-root': {
     pt: 3,
     px: 3,

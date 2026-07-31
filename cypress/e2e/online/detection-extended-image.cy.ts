@@ -59,7 +59,7 @@ const HaveTheCorrectImagePrecision5Cm = {
 
     cy.dataCy(process_detection_sel).click();
 
-    cy.contains('Veuillez saisir les informations suivantes.');
+    cy.contains("Renseignez vos informations pour recevoir les résultats de l'analyse de votre toiture.");
 
     cy.dataName('lastName').type('Doe');
     cy.dataName('firstName').type('John');
