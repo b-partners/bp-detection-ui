@@ -29,7 +29,7 @@ export const MainStyle: SxProps = {
       md: '94vw',
       lg: '92vw',
     },
-    height: '600px',
+    height: '100%',
     mb: 20,
     position: 'relative',
     '& > .MuiButton-root': {

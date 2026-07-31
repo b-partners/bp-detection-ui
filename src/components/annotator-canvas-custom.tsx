@@ -12,7 +12,7 @@ interface AnnotatorCanvasCustomProps extends Omit<AnnotatorCanvasProps, 'buttons
 export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoading, customButtons, height, ...props }) => {
   return (
     <>
-      <Box position='relative' sx={{ minHeight: '500px' }}>
+      <Box position='relative' sx={{ minHeight: height || '700px' }}>
         {(isLoading || props.image.length === 0) && (
           <Box width='100%' height='600px' display='flex' justifyContent='center' alignItems='center' bgcolor={theme => theme.palette.grey[100]}></Box>
         )}
@@ -21,7 +21,7 @@ export const AnnotatorCanvasCustom: FC<AnnotatorCanvasCustomProps> = ({ isLoadin
             {...props}
             buttonsComponent={callbacks => <AnnotatorCustomButton customButtons={customButtons} callbacks={callbacks} />}
             width='100%'
-            height={height || '500px'}
+            height={height || '700px'}
             zoom={20}
             measurementMapper={p => {
               if (p.polygonId?.includes('roofPolygon')) return p;
