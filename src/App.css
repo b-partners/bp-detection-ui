@@ -15,6 +15,19 @@ body {
   zoom: 0.9;
 }
 
+/*
+ * Cancel the global #root zoom (0.9) for the annotator subtree so the canvas
+ * renders at an effective zoom of 1 (0.9 × 1.1111 ≈ 1.0). The annotator library
+ * derives pointer coordinates from clientX/clientY + getBoundingClientRect(),
+ * which don't stay consistent under CSS `zoom` — the mismatch is a scale factor,
+ * so the click offset grows with distance and the cursor drifts down-left.
+ * width: 90% (× 1.1111 ≈ 100%) keeps the canvas the same on-screen size.
+ */
+.annotator-canvas-wrapper {
+  zoom: 1.1111111;
+  width: 90%;
+}
+
 :root {
   --primary: #ff521b;
   --secondary: #4a644e;

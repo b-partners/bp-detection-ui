@@ -128,7 +128,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           </Button>
         </Box>
       </Stack>
-      <Box minHeight='500px'>
+      <Box minHeight='500px' className='annotator-canvas-wrapper'>
         <AnnotatorCanvasCustom
           isLoading={isPending}
           allowAnnotation={polygons.length === 0}
