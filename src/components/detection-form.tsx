@@ -51,18 +51,22 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment }) => {
   return (
     <FormProvider {...form}>
       <DialogTitle>
-        <Stack width='100%'>
-          <Stack width='100%' direction='row' justifyContent='space-between'>
-            <Typography>Veuillez saisir les informations suivantes.</Typography>
-            <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
-              <Info />
-            </Tooltip>
+        <Stack width='100%' direction='row' justifyContent='space-between' alignItems='flex-start' gap={2}>
+          <Stack>
+            <Typography className='dialog-eyebrow'>Dernière étape</Typography>
+            <Typography className='dialog-title'>Vos coordonnées</Typography>
+            <Typography className='dialog-subtitle'>Renseignez vos informations pour recevoir les résultats de l'analyse de votre toiture.</Typography>
           </Stack>
+          <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
+            <Box className='dialog-info'>
+              <Info />
+            </Box>
+          </Tooltip>
         </Stack>
       </DialogTitle>
       <DialogContent>
         {Object.values(satellites).includes(true) && <LoadingSteps />}
-        <Stack ref={scope} component='form' position='relative' minWidth='600px' minHeight='400px' p={2} onSubmit={handleSubmit}>
+        <Stack ref={scope} component='form' spacing={2} position='relative' minWidth='600px' minHeight='400px' p={2} onSubmit={handleSubmit}>
           {satellites.screnShot && (
             <Box sx={{ width: '100%', height: '400px', position: 'relative', overflow: 'hidden' }}>
               <ScreenShotAnimation />
@@ -87,6 +91,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment }) => {
           Annuler
         </Button>
         <Button
+          variant='contained'
           disabled={isQueryImagePending}
           startIcon={isQueryImagePending && <CircularProgress size={25} />}
           onClick={handleSubmit}

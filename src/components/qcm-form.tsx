@@ -3,7 +3,7 @@ import { Info } from '@mui/icons-material';
 import { Box, Button, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import { FC, useState } from 'react';
 import { DetectionForm } from './detection-form';
-import { DialogFormStyle, QcmDialogStyle } from './style';
+import { DetectionFormStyle, QcmDialogStyle } from './style';
 
 interface QcmQuestion {
   label: string;
@@ -43,7 +43,7 @@ export const QcmForm: FC<QcmFormProps> = ({ address }) => {
 
   const handleContinue = () => {
     if (!isComplete) return;
-    openDialog(<DetectionForm address={address} comment={buildComment(answers)} />, { style: DialogFormStyle });
+    openDialog(<DetectionForm address={address} comment={buildComment(answers)} />, { style: DetectionFormStyle });
   };
 
   return (
@@ -51,11 +51,11 @@ export const QcmForm: FC<QcmFormProps> = ({ address }) => {
       <DialogTitle>
         <Stack width='100%' direction='row' justifyContent='space-between' alignItems='flex-start' gap={2}>
           <Stack>
-            <Typography className='qcm-eyebrow'>Avant de commencer</Typography>
-            <Typography className='qcm-title'>Quelques infos pour mieux vous orienter</Typography>
-            <Typography className='qcm-subtitle'>2 questions rapides pour que votre couvreur prépare la meilleure réponse possible.</Typography>
+            <Typography className='dialog-eyebrow'>Avant de commencer</Typography>
+            <Typography className='dialog-title'>Quelques infos pour mieux vous orienter</Typography>
+            <Typography className='dialog-subtitle'>2 questions rapides pour que votre couvreur prépare la meilleure réponse possible.</Typography>
           </Stack>
-          <Box className='qcm-info'>
+          <Box className='dialog-info'>
             <Info />
           </Box>
         </Stack>

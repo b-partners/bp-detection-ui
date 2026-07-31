@@ -2,49 +2,42 @@ import { degradationLevels } from '@/mappers';
 import { FONT_SIZES, PALETTE_COLORS } from '@/utilities/theme';
 import { SxProps } from '@mui/material';
 
-export const DialogFormStyle: SxProps = {
-  '& .MuiDialogContent-root': {
-    minWidth: 500,
-  },
-  '& .MuiStack-root': {
-    gap: 2,
-    py: 1,
-  },
-  '& .MuiDialogTitle-root': {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-};
 export const DialogTutorialStyle: SxProps = {
   '& .MuiDialogContent-root': {},
 };
 
-export const QcmDialogStyle: SxProps = {
+/**
+ * Shared "branded" dialog chrome: rounded paper, the eyebrow/title/subtitle
+ * header block with an orange circular info badge, and consistent action
+ * spacing. Reused by both the QCM step and the contact-info step so the two
+ * modals share the same look.
+ */
+const brandedDialogChrome = {
   '& .MuiPaper-root': {
     borderRadius: 4,
   },
   '& .MuiDialogTitle-root': {
     pt: 3,
     px: 3,
-    '& .qcm-eyebrow': {
+    '& .dialog-eyebrow': {
       color: PALETTE_COLORS.neon_orange,
       fontWeight: 800,
       letterSpacing: '0.12em',
       textTransform: 'uppercase',
       fontSize: FONT_SIZES.xs,
     },
-    '& .qcm-title': {
+    '& .dialog-title': {
       fontWeight: 800,
       color: PALETTE_COLORS.black,
       fontSize: FONT_SIZES['2xl'],
       mt: 0.5,
     },
-    '& .qcm-subtitle': {
+    '& .dialog-subtitle': {
       color: '#6B7280',
       fontSize: FONT_SIZES.sm,
       mt: 0.5,
     },
-    '& .qcm-info': {
+    '& .dialog-info': {
       flexShrink: 0,
       width: 32,
       height: 32,
@@ -54,9 +47,19 @@ export const QcmDialogStyle: SxProps = {
       justifyContent: 'center',
       background: PALETTE_COLORS.neon_orange,
       color: PALETTE_COLORS.white,
+      cursor: 'help',
       '& svg': { fontSize: FONT_SIZES.lg },
     },
   },
+  '& .MuiDialogActions-root': {
+    px: 3,
+    pb: 3,
+    pt: 2,
+  },
+};
+
+export const QcmDialogStyle: SxProps = {
+  ...brandedDialogChrome,
   '& .MuiDialogContent-root': {
     minWidth: { md: 560 },
     px: 3,
@@ -112,10 +115,24 @@ export const QcmDialogStyle: SxProps = {
       color: PALETTE_COLORS.black,
     },
   },
-  '& .MuiDialogActions-root': {
+};
+
+export const DetectionFormStyle: SxProps = {
+  ...brandedDialogChrome,
+  '& .MuiDialogContent-root': {
+    minWidth: { md: 560 },
     px: 3,
-    pb: 3,
-    pt: 2,
+  },
+  '& .input-anime': {
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: PALETTE_COLORS.neon_orange,
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: PALETTE_COLORS.neon_orange,
+    },
+    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: PALETTE_COLORS.neon_orange,
+    },
   },
 };
 
