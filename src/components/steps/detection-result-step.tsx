@@ -1,6 +1,6 @@
 import { useAnnotationFrom } from '@/forms';
 import { useStep, useToggle } from '@/hooks';
-import { coveringTypeMap, degradationLevels, exportPdfMapper, saveAnnotationsMapper } from '@/mappers';
+import { coveringTypeMap, exportPdfMapper, saveAnnotationsMapper } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
   useGeojsonQueryResult,
@@ -11,7 +11,13 @@ import {
   useSaveAnnotationQuery,
 } from '@/queries';
 import { getCached } from '@/utilities';
-import { Alert, Box, Button, Grid2, Stack, Typography } from '@mui/material';
+import type { SvgIconComponent } from '@mui/icons-material';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { Alert, Box, Button, Divider, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
@@ -19,6 +25,16 @@ import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
 export const fromAnalyseResultToDomain = (covering: AnnotationCoveringFromAnalyse) => coveringTypeMap[covering] || covering || 'Autres';
+
+type RoofStateGrade = { level: string; variant: string; title: string; description: string; Icon: SvgIconComponent };
+
+const ROOF_STATE_GRADES: RoofStateGrade[] = [
+  { level: 'A', variant: 'good', title: 'Toiture en bon état', description: 'Aucune intervention visible nécessaire', Icon: GppGoodOutlinedIcon },
+  { level: 'B', variant: 'preventive', title: 'Entretien préventif', description: 'Pour garder la toiture en bonne santé', Icon: BlockOutlinedIcon },
+  { level: 'C', variant: 'maintenance', title: 'Intervention nécessaire', description: 'Pour ralentir le vieillissement', Icon: BuildOutlinedIcon },
+  { level: 'D', variant: 'repair', title: 'Réparation prioritaire', description: 'Dégradation visible, risque à traiter', Icon: TrendingUpOutlinedIcon },
+  { level: 'E', variant: 'critical', title: 'Risque critique', description: 'Intervention urgente à prévoir', Icon: WarningAmberRoundedIcon },
+];
 
 const CONVERTER_BASE_URL = process.env.REACT_APP_ANNOTATOR_GEO_CONVERTER_API_URL || '';
 export const DetectionResultStep = () => {
@@ -66,6 +82,10 @@ export const DetectionResultStep = () => {
     !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
 
   const { mutate: saveAreaPictureAnnotations } = useSaveAnnotationQuery();
+
+  const selectedLevel = data?.properties?.global_rate_type;
+  const selectedGrade = ROOF_STATE_GRADES.find(({ level }) => level === selectedLevel);
+  const SelectedIcon = selectedGrade?.Icon;
 
   useEffect(() => {
     if (!getCached.notificationAlreadySent() && canSendPdf && areaPictureDetails && llmHtmlData && data?.polygons && data?.properties) {
@@ -123,21 +143,49 @@ export const DetectionResultStep = () => {
             )}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
-          <Box className='degradation-rate-title'>
+          <Box className='degradation-switch'>
             <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
-            <Typography>Note de dégradation globale : {data?.properties?.global_rate_value}%</Typography>
           </Box>
-          <Stack className='degradation-levels' direction='row' justifyContent='center' m={1} gap={1}>
-            {degradationLevels.map(({ color, label }) => (
-              <Box
-                key={label}
-                className={`degradation-levels-box ${data?.properties?.global_rate_type === label ? 'degradation-levels-box-selected' : ''}`}
-                sx={{ bgcolor: color, border: `5px solid ${data?.properties?.global_rate_type === label ? 'black' : 'transparent'}` }}
-              >
-                {label}
+          <Box className={`roof-state roof-state-${selectedGrade?.variant || 'good'}`}>
+            <Typography className='roof-state-title' component='h3'>
+              État apparent de la toiture
+            </Typography>
+            <Divider className='roof-state-divider' />
+            <Box className='roof-state-cards'>
+              {ROOF_STATE_GRADES.map(({ level, variant, title, description, Icon }) => (
+                <Box className={`roof-state-card roof-state-card-${variant} ${level === selectedLevel ? 'roof-state-card-selected' : ''}`} key={level}>
+                  <Box className='roof-state-icon'>
+                    <Icon fontSize='inherit' />
+                  </Box>
+                  <Typography className='roof-state-card-title'>{title}</Typography>
+                  <Typography className='roof-state-card-desc'>{description}</Typography>
+                </Box>
+              ))}
+            </Box>
+            <Box className='roof-state-meter'>
+              {ROOF_STATE_GRADES.map(({ level, variant }) => (
+                <Box className='roof-state-meter-col' key={level}>
+                  <Box className={`roof-state-meter-bar roof-state-meter-bar-${variant}`} />
+                  {level === selectedLevel ? <Box className='roof-state-meter-pointer' /> : <Box className='roof-state-meter-dot' />}
+                </Box>
+              ))}
+            </Box>
+            <Box className='roof-state-summary'>
+              <Box className='roof-state-summary-level'>
+                <Box className='roof-state-summary-icon'>{SelectedIcon && <SelectedIcon fontSize='inherit' />}</Box>
+                <Box>
+                  <Typography className='roof-state-summary-label'>Niveau détecté</Typography>
+                  <Typography className='roof-state-summary-verdict'>{selectedGrade?.description || 'Analyse en cours…'}</Typography>
+                </Box>
               </Box>
-            ))}
-          </Stack>
+              <Divider orientation='vertical' flexItem className='roof-state-summary-divider' />
+              <Box className='roof-state-summary-score'>
+                <Typography className='roof-state-summary-label'>Score de dégradation visible</Typography>
+                <Typography className='roof-state-summary-value'>{data?.properties?.global_rate_value ?? 0}%</Typography>
+              </Box>
+            </Box>
+            <Typography className='roof-state-footnote'>Analyse issue d'images aériennes. Ne remplace pas une expertise terrain.</Typography>
+          </Box>
           <Box className='disclaimer-container'>
             <Alert variant='filled' color='warning'>
               Disclaimer : rapport généré par IA statistique nécessitant confirmation par votre expert toiture.
