@@ -43,51 +43,52 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
   return (
     <Box sx={HeaderStyle}>
       <Box className='hero-split'>
-        <Box className='partner-card' component='aside'>
-          <Box className='partner-card-logo'>
-            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
-          </Box>
-          <Box className='partner-body'>
-            {isAccountLoading ? (
-              <>
-                <Skeleton className='partner-name' variant='text' width='70%' />
-                <Skeleton className='partner-addr' variant='text' width='90%' />
-                <Skeleton className='partner-contact' variant='text' width='60%' />
-              </>
-            ) : (
-              <>
-                {name && <Typography className='partner-name'>{name}</Typography>}
-                {(address || cityLine) && (
-                  <Typography className='partner-addr'>
-                    {address}
-                    {address && cityLine && <br />}
-                    {cityLine}
-                  </Typography>
-                )}
-                {(phone || email || websiteLabel) && (
-                  <Box className='partner-contact'>
-                    {phone && (
-                      <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
-                        <strong>{phone}</strong>
-                      </a>
-                    )}
-                    {phone && (email || websiteLabel) && <br />}
-                    {email && (
-                      <a href={`mailto:${email}`} onClick={handleEmailClick}>
-                        {email}
-                      </a>
-                    )}
-                    {email && websiteLabel && <br />}
-                    {websiteLabel && (
-                      <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
-                        {websiteLabel}
-                      </a>
-                    )}
-                  </Box>
-                )}
-              </>
-            )}
-          </Box>
+        <Box className='partner-logo-card'>
+          {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
+        </Box>
+
+        <Box className='partner-info-card' component='aside'>
+          {isAccountLoading ? (
+            <>
+              <Skeleton className='partner-name' variant='text' width='70%' />
+              <Skeleton className='partner-addr' variant='text' width='90%' />
+              <Skeleton className='partner-addr' variant='text' width='75%' />
+              <Skeleton className='partner-contact' variant='text' width='60%' />
+              <Skeleton className='partner-contact' variant='text' width='80%' />
+            </>
+          ) : (
+            <>
+              {name && <Typography className='partner-name'>{name}</Typography>}
+              {(address || cityLine) && (
+                <Typography className='partner-addr'>
+                  {address}
+                  {address && cityLine && <br />}
+                  {cityLine}
+                </Typography>
+              )}
+              {(phone || email || websiteLabel) && (
+                <Box className='partner-contact'>
+                  {phone && (
+                    <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
+                      <strong>{phone}</strong>
+                    </a>
+                  )}
+                  {phone && (email || websiteLabel) && <br />}
+                  {email && (
+                    <a href={`mailto:${email}`} onClick={handleEmailClick}>
+                      {email}
+                    </a>
+                  )}
+                  {email && websiteLabel && <br />}
+                  {websiteLabel && (
+                    <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
+                      {websiteLabel}
+                    </a>
+                  )}
+                </Box>
+              )}
+            </>
+          )}
         </Box>
 
         <Stack className='hero-content'>

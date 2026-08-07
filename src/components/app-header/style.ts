@@ -31,50 +31,52 @@ export const HeaderStyle: SxProps<Theme> = {
 
   '& .accent': { color: REF.orange },
 
-  // ---- hero split (compact version of the landing hero, no input) ----
+  // ---- hero split: logo card + info card + headline (no input) ----
   '& .hero-split': {
     display: 'grid',
-    gridTemplateColumns: { xs: '1fr', md: '260px 1fr' },
-    gap: { xs: 2.5, md: 5 },
+    gridTemplateColumns: { xs: '1fr', sm: '200px 1fr', md: '200px 220px 1fr' },
+    gap: { xs: 2, md: 3 },
     alignItems: 'center',
   },
 
-  // Left column : partner card
-  '& .partner-card': {
+  // Left : logo card
+  '& .partner-logo-card': {
     background: REF.card,
     border: `1px solid ${REF.border}`,
     borderRadius: REF.radius,
     boxShadow: REF.shadow,
-    maxWidth: { xs: 340, md: 'none' },
-    mx: { xs: 'auto', md: 0 },
     width: '100%',
-    padding: 2,
+    height: { xs: 150, md: 160 },
+    maxWidth: { xs: 320, sm: 'none' },
+    mx: { xs: 'auto', sm: 0 },
+    p: 2.5,
     display: 'flex',
     alignItems: 'center',
-    gap: 1.75,
-    '& .partner-card-logo': {
-      flexShrink: 0,
-      width: 84,
-      height: 64,
-      borderRadius: REF.radiusSm,
-      background: '#fff',
-      border: `1px solid ${REF.border}`,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      overflow: 'hidden',
-      '& img': { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' },
-    },
-    '& .partner-body': { minWidth: 0, flex: 1 },
-    '& .partner-name': { fontSize: FONT_SIZES.sm, fontWeight: 800, color: REF.text, mb: 0.25, lineHeight: 1.2 },
-    '& .partner-addr': { fontSize: FONT_SIZES.xs, fontWeight: 600, color: REF.textSoft, lineHeight: 1.4, mb: 0.5 },
+    justifyContent: 'center',
+    overflow: 'hidden',
+    '& img': { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' },
+    '& .MuiSkeleton-root': { transform: 'none' },
+  },
+
+  // Middle : contact card
+  '& .partner-info-card': {
+    background: REF.card,
+    border: `1px solid ${REF.border}`,
+    borderRadius: REF.radius,
+    boxShadow: REF.shadow,
+    width: '100%',
+    maxWidth: { xs: 320, sm: 'none' },
+    mx: { xs: 'auto', sm: 0 },
+    p: 2.5,
+    '& .partner-name': { fontSize: FONT_SIZES.lg, fontWeight: 800, color: REF.text, mb: 0.75, lineHeight: 1.2 },
+    '& .partner-addr': { fontSize: FONT_SIZES.sm, fontWeight: 600, color: REF.textSoft, lineHeight: 1.5, mb: 1 },
     '& .partner-contact': {
-      fontSize: FONT_SIZES.xs,
+      fontSize: FONT_SIZES.sm,
       color: REF.textMuted,
-      lineHeight: 1.5,
+      lineHeight: 1.7,
       '& a': { color: 'inherit', textDecoration: 'none' },
       '& a:hover': { color: REF.orange },
-      '& strong': { color: REF.text, fontWeight: 600 },
+      '& strong': { color: REF.text, fontWeight: 700 },
     },
   },
 
@@ -88,14 +90,14 @@ export const HeaderStyle: SxProps<Theme> = {
       letterSpacing: '-0.02em',
       color: REF.text,
       maxWidth: 640,
-      mb: 1.25,
-      fontSize: { xs: '1.625rem', md: '2.25rem' },
+      mb: 1.5,
+      fontSize: { xs: '1.75rem', md: '2.625rem' },
     },
     '& .hero-lead': {
-      fontSize: FONT_SIZES.sm,
+      fontSize: FONT_SIZES.md,
       color: REF.textMuted,
       maxWidth: 620,
-      lineHeight: 1.5,
+      lineHeight: 1.55,
     },
   },
 
