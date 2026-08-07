@@ -52,7 +52,9 @@ function App() {
 
   return (
     <Box sx={style}>
-      <AppHeader activeStep={actualStep} steps={steps} />
+      {/* The first step is a self-contained landing page, so the app header
+          (branding banner + wizard steps strip) is hidden there. */}
+      {actualStep !== 0 && <AppHeader activeStep={actualStep} steps={steps} />}
       {steps[actualStep].content}
     </Box>
   );

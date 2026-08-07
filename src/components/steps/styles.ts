@@ -287,7 +287,6 @@ export const GetAddressStepStyle: SxProps = {
   // ---- shared section wrappers (centered, capped) ----
   '& .landing-hero, & .landing-howto, & .landing-carousel': {
     width: { xs: '97vw', md: '94vw', lg: '92vw' },
-    maxWidth: 1140,
     mx: 'auto',
   },
   '& .landing-howto, & .landing-carousel': {
@@ -523,23 +522,36 @@ export const GetAddressStepStyle: SxProps = {
     gap: 3,
   },
   '& .step': {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     textAlign: 'center',
+    gap: 0.75,
+    px: 1,
     '& .step-num': {
-      width: 32,
-      height: 32,
+      width: 44,
+      height: 44,
       background: REF.card,
-      border: `1px solid ${REF.border}`,
+      border: '2px solid rgba(31, 39, 55, 0.12)',
       borderRadius: '50%',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontWeight: 700,
-      fontSize: FONT_SIZES.sm,
-      color: REF.textSoft,
-      mb: 2,
+      fontWeight: 800,
+      fontSize: FONT_SIZES.md,
+      color: '#9aa2ad',
+      transition: 'all 200ms linear',
+      mb: 1,
     },
-    '& .step-title': { fontWeight: 700, fontSize: FONT_SIZES.md, mb: 0.75 },
+    '& .step-title': { fontWeight: 700, fontSize: FONT_SIZES.md, color: REF.text, mt: 0.5 },
+    '& .step-subtitle': { fontWeight: 700, fontSize: FONT_SIZES.sm, color: REF.text },
     '& .step-desc': { fontSize: FONT_SIZES.sm, color: REF.textMuted, lineHeight: 1.5 },
+  },
+  '& .step.active .step-num': {
+    background: REF.orange,
+    borderColor: REF.orange,
+    color: '#fff',
+    boxShadow: '0 8px 20px -8px rgba(233, 107, 51, 0.6)',
   },
 
   // ---- inline CTA ----
@@ -627,7 +639,6 @@ export const GetAddressStepStyle: SxProps = {
   // ---- final CTA ----
   '& .cta-final': {
     width: { xs: '97vw', md: '94vw', lg: '92vw' },
-    maxWidth: 900,
     mx: 'auto',
     mt: { xs: 4, md: 6 },
     background: 'linear-gradient(135deg, #FFF6EA 0%, #F5EFE2 100%)',
@@ -642,7 +653,7 @@ export const GetAddressStepStyle: SxProps = {
   },
 
   // ---- footer + trust ----
-  '& .landing-footer': { width: { xs: '97vw', md: '94vw', lg: '92vw' }, maxWidth: 1140, mx: 'auto', mt: { xs: 5, md: 8 } },
+  '& .landing-footer': { width: { xs: '97vw', md: '94vw', lg: '92vw' }, mx: 'auto', mt: { xs: 5, md: 8 } },
   '& .trust': {
     display: 'flex',
     justifyContent: 'center',

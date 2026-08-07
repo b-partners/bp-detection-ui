@@ -1,13 +1,21 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { AddressSearchForm } from './address-search-form';
 
-type Step = { title: string; description: string };
+type Step = { title: string; subtitle: string; description: string };
 
 const steps: Step[] = [
-  { title: "Renseignez l'adresse", description: 'Une adresse postale suffit — rien à installer.' },
-  { title: 'Visualisez votre toit', description: 'Imagerie aérienne ultra HD (5 cm/pixel) de votre département.' },
-  { title: 'Analyse par IA', description: 'Surface, pente, matériaux, usure, humidité.' },
-  { title: 'Votre couvreur vous rappelle', description: 'Suivi personnalisé sous 24 h par Toiture9.' },
+  { title: 'Renseignez votre adresse', subtitle: 'Saisissez votre adresse', description: 'Tapez simplement votre adresse postale — c’est tout ce dont nous avons besoin.' },
+  {
+    title: 'Visualisez et délimitez votre toiture',
+    subtitle: 'Haute résolution',
+    description: 'Visualisez votre maison en très haute résolution (5 cm/pixel) via imagerie satellite.',
+  },
+  {
+    title: 'Analysez l’état via BIRDIA',
+    subtitle: 'L’IA analyse votre toit',
+    description: 'Surface, pente, matériaux, fissures, mousses, humidité — détectés automatiquement.',
+  },
+  { title: 'Notre couvreur vous téléphone', subtitle: 'Suivi personnalisé', description: 'L’expert toiture vous rappelle pour parcourir votre pré-diagnostic sous 48 h.' },
 ];
 
 export const HowItWorksSection = () => {
@@ -21,12 +29,13 @@ export const HowItWorksSection = () => {
       </Box>
 
       <Box className='steps'>
-        {steps.map(({ title, description }, index) => (
-          <Box className='step' key={title}>
+        {steps.map(({ title, subtitle, description }, index) => (
+          <Box className={`step ${index === 0 ? 'active' : ''}`} key={title}>
             <Box className='step-num'>{index + 1}</Box>
             <Typography className='step-title' component='h3'>
               {title}
             </Typography>
+            <Typography className='step-subtitle'>{subtitle}</Typography>
             <Typography className='step-desc'>{description}</Typography>
           </Box>
         ))}
