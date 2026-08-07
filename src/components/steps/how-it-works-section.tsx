@@ -4,7 +4,11 @@ import { AddressSearchForm } from './address-search-form';
 type Step = { title: string; subtitle: string; description: string };
 
 const steps: Step[] = [
-  { title: 'Renseignez votre adresse', subtitle: 'Saisissez votre adresse', description: 'Tapez simplement votre adresse postale — c’est tout ce dont nous avons besoin.' },
+  {
+    title: 'Renseignez votre adresse',
+    subtitle: 'Saisissez votre adresse',
+    description: 'Tapez simplement votre adresse postale — c’est tout ce dont nous avons besoin.',
+  },
   {
     title: 'Visualisez et délimitez votre toiture',
     subtitle: 'Haute résolution',
@@ -15,7 +19,11 @@ const steps: Step[] = [
     subtitle: 'L’IA analyse votre toit',
     description: 'Surface, pente, matériaux, fissures, mousses, humidité — détectés automatiquement.',
   },
-  { title: 'Notre couvreur vous téléphone', subtitle: 'Suivi personnalisé', description: 'L’expert toiture vous rappelle pour parcourir votre pré-diagnostic sous 48 h.' },
+  {
+    title: 'Notre couvreur vous téléphone',
+    subtitle: 'Suivi personnalisé',
+    description: 'L’expert toiture vous rappelle pour parcourir votre pré-diagnostic sous 48 h.',
+  },
 ];
 
 export const HowItWorksSection = () => {

@@ -52,45 +52,45 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
 
           <Box className='partner-info'>
             {isAccountLoading ? (
-            <>
-              <Skeleton className='partner-name' variant='text' width='70%' />
-              <Skeleton className='partner-addr' variant='text' width='90%' />
-              <Skeleton className='partner-contact' variant='text' width='60%' />
-              <Skeleton className='partner-contact' variant='text' width='80%' />
-            </>
-          ) : (
-            <>
-              {name && <Typography className='partner-name'>{name}</Typography>}
-              {addressLine && (
-                <Typography className='partner-addr'>
-                  <a href={mapsUrl} target='_blank' rel='noopener noreferrer'>
-                    {addressLine}
-                  </a>
-                </Typography>
-              )}
-              {(phone || email || websiteLabel) && (
-                <Box className='partner-contact'>
-                  {phone && (
-                    <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
-                      <strong>{phone}</strong>
+              <>
+                <Skeleton className='partner-name' variant='text' width='70%' />
+                <Skeleton className='partner-addr' variant='text' width='90%' />
+                <Skeleton className='partner-contact' variant='text' width='60%' />
+                <Skeleton className='partner-contact' variant='text' width='80%' />
+              </>
+            ) : (
+              <>
+                {name && <Typography className='partner-name'>{name}</Typography>}
+                {addressLine && (
+                  <Typography className='partner-addr'>
+                    <a href={mapsUrl} target='_blank' rel='noopener noreferrer'>
+                      {addressLine}
                     </a>
-                  )}
-                  {phone && (email || websiteLabel) && <br />}
-                  {email && (
-                    <a href={`mailto:${email}`} onClick={handleEmailClick}>
-                      {email}
-                    </a>
-                  )}
-                  {email && websiteLabel && <br />}
-                  {websiteLabel && (
-                    <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
-                      {websiteLabel}
-                    </a>
-                  )}
-                </Box>
-              )}
-            </>
-          )}
+                  </Typography>
+                )}
+                {(phone || email || websiteLabel) && (
+                  <Box className='partner-contact'>
+                    {phone && (
+                      <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
+                        <strong>{phone}</strong>
+                      </a>
+                    )}
+                    {phone && (email || websiteLabel) && <br />}
+                    {email && (
+                      <a href={`mailto:${email}`} onClick={handleEmailClick}>
+                        {email}
+                      </a>
+                    )}
+                    {email && websiteLabel && <br />}
+                    {websiteLabel && (
+                      <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
+                        {websiteLabel}
+                      </a>
+                    )}
+                  </Box>
+                )}
+              </>
+            )}
           </Box>
         </Box>
 
