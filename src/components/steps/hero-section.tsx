@@ -47,8 +47,14 @@ export const HeroSection = () => {
           {isAccountLoading ? (
             <>
               <Skeleton className='partner-name' variant='text' width='55%' />
-              <Skeleton className='partner-addr' variant='text' width='80%' />
-              <Skeleton className='partner-addr' variant='text' width='65%' />
+              <Typography className='partner-addr'>
+                <Skeleton variant='text' width='80%' />
+                <Skeleton variant='text' width='60%' />
+              </Typography>
+              <Box className='partner-contact'>
+                <Skeleton variant='text' width='50%' />
+                <Skeleton variant='text' width='70%' />
+              </Box>
             </>
           ) : (
             <>
