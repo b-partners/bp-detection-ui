@@ -69,7 +69,15 @@ export const HeaderStyle: SxProps<Theme> = {
       borderLeft: `1px solid ${REF.border}`,
     },
     '& .partner-name': { fontSize: FONT_SIZES.lg, fontWeight: 800, color: REF.text, mb: 0.75, lineHeight: 1.2 },
-    '& .partner-addr': { fontSize: FONT_SIZES.sm, fontWeight: 600, color: REF.textSoft, lineHeight: 1.5, mb: 1 },
+    '& .partner-addr': {
+      fontSize: FONT_SIZES.sm,
+      fontWeight: 600,
+      color: REF.textSoft,
+      lineHeight: 1.5,
+      mb: 1,
+      '& a': { color: 'inherit', textDecoration: 'none' },
+      '& a:hover': { color: REF.orange },
+    },
     '& .partner-contact': {
       fontSize: FONT_SIZES.sm,
       color: REF.textMuted,

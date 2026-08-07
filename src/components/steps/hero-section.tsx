@@ -19,6 +19,8 @@ export const HeroSection = () => {
   const websiteLabel = website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
   const websiteUrl = website && (/^https?:\/\//.test(website) ? website : `https://${website}`);
   const cityLine = [postalCode, city].filter(Boolean).join(' ');
+  const addressLine = [address, cityLine].filter(Boolean).join(', ');
+  const mapsUrl = addressLine && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLine)}`;
 
   // Try the native mailto first; if no mail client handles it (the window never
   // loses focus), fall back to Gmail's web compose in a new tab.
@@ -50,7 +52,6 @@ export const HeroSection = () => {
               <Skeleton className='partner-name' variant='text' width='55%' />
               <Typography className='partner-addr'>
                 <Skeleton variant='text' width='80%' />
-                <Skeleton variant='text' width='60%' />
               </Typography>
               <Box className='partner-contact'>
                 <Skeleton variant='text' width='50%' />
@@ -60,11 +61,11 @@ export const HeroSection = () => {
           ) : (
             <>
               {name && <Typography className='partner-name'>{name}</Typography>}
-              {(address || cityLine) && (
+              {addressLine && (
                 <Typography className='partner-addr'>
-                  {address}
-                  {address && cityLine && <br />}
-                  {cityLine}
+                  <a href={mapsUrl} target='_blank' rel='noopener noreferrer'>
+                    {addressLine}
+                  </a>
                 </Typography>
               )}
               {(phone || email || websiteLabel) && (

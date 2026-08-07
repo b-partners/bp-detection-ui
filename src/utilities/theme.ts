@@ -43,7 +43,7 @@ const palette: PaletteOptions = {
     contrastText: '#2f2f2f',
   },
   background: {
-    default: '#F0ECE1',
+    default: '#F5EFE2',
     paper: '#fff',
   },
 };

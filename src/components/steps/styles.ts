@@ -292,6 +292,14 @@ export const GetAddressStepStyle: SxProps = {
   '& .landing-howto, & .landing-carousel': {
     py: { xs: 5, md: 8 },
   },
+  // hero nav + split use the reference index.html container width
+  // (max-width: 1140px; padding: 0 24px); the hd-banner after keeps the wide width
+  '& .landing-hero .top-nav, & .landing-hero .hero-split': {
+    width: '100%',
+    maxWidth: 1140,
+    mx: 'auto',
+    px: 3,
+  },
 
   // ---- shared accent + section heads ----
   '& .accent': { color: REF.orange },
@@ -344,11 +352,11 @@ export const GetAddressStepStyle: SxProps = {
     background: REF.card,
     border: `1px solid ${REF.border}`,
     borderRadius: REF.radius,
-    p: 3,
     boxShadow: REF.shadow,
     maxWidth: { xs: 380, md: 'none' },
     mx: { xs: 'auto', md: 0 },
     width: '100%',
+    padding: 3,
     '& .partner-card-logo': {
       width: '100%',
       aspectRatio: '4 / 3',
@@ -357,13 +365,20 @@ export const GetAddressStepStyle: SxProps = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      p: 1.5,
       mb: 2.25,
       overflow: 'hidden',
       '& img': { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' },
     },
     '& .partner-name': { fontSize: FONT_SIZES.lg, fontWeight: 800, color: REF.text, mb: 0.75 },
-    '& .partner-addr': { fontSize: FONT_SIZES.xs, fontWeight: 600, color: REF.textSoft, lineHeight: 1.5, mb: 1.25 },
+    '& .partner-addr': {
+      fontSize: FONT_SIZES.xs,
+      fontWeight: 600,
+      color: REF.textSoft,
+      lineHeight: 1.5,
+      mb: 1.25,
+      '& a': { color: 'inherit', textDecoration: 'none' },
+      '& a:hover': { color: REF.orange },
+    },
     '& .partner-contact': {
       fontSize: FONT_SIZES.xs,
       color: REF.textMuted,
