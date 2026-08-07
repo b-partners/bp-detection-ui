@@ -1,7 +1,7 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { useAccountInfoQuery, useAccountInfoStore } from '@/queries';
+import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import { AddressSearchForm } from './address-search-form';
 
-const PARTNER_LOGO = '/assets/images/landing/partner-logo.png';
 const HERO_BANNER = '/assets/images/landing/hero-banner.jpg';
 
 const FrenchFlag = () => (
@@ -13,6 +13,23 @@ const FrenchFlag = () => (
 );
 
 export const HeroSection = () => {
+  const isAccountLoading = useAccountInfoQuery();
+  const { image, name, address, city, postalCode, email, phone, website } = useAccountInfoStore();
+
+  const websiteLabel = website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const cityLine = [postalCode, city].filter(Boolean).join(' ');
+
+  // Try the native mailto first; if no mail client handles it (the window never
+  // loses focus), fall back to Gmail's web compose in a new tab.
+  const handleEmailClick = () => {
+    if (!email) return;
+    const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+    const timer = window.setTimeout(() => {
+      if (!document.hidden && document.hasFocus()) window.open(gmailHref, '_blank', 'noopener,noreferrer');
+    }, 600);
+    window.addEventListener('blur', () => window.clearTimeout(timer), { once: true });
+  };
+
   return (
     <Box className='landing-hero'>
       <Box className='top-nav'>
@@ -25,23 +42,47 @@ export const HeroSection = () => {
       <Box className='hero-split'>
         <Box className='partner-card' component='aside'>
           <Box className='partner-card-logo'>
-            <img src={PARTNER_LOGO} alt='Toiture9 — Couvreur à Toulouse' />
+            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
           </Box>
-          <Typography className='partner-name'>Toiture9</Typography>
-          <Typography className='partner-addr'>
-            28 rue Veillon
-            <br />
-            31500 Toulouse
-          </Typography>
-          <Box className='partner-contact'>
-            <a href='tel:+33643020340'>
-              <strong>06 43 02 03 40</strong>
-            </a>
-            <br />
-            <a href='https://www.toiture9.fr' target='_blank' rel='noopener'>
-              www.toiture9.fr
-            </a>
-          </Box>
+          {isAccountLoading ? (
+            <>
+              <Skeleton className='partner-name' variant='text' width='55%' />
+              <Skeleton className='partner-addr' variant='text' width='80%' />
+              <Skeleton className='partner-addr' variant='text' width='65%' />
+            </>
+          ) : (
+            <>
+              {name && <Typography className='partner-name'>{name}</Typography>}
+              {(address || cityLine) && (
+                <Typography className='partner-addr'>
+                  {address}
+                  {address && cityLine && <br />}
+                  {cityLine}
+                </Typography>
+              )}
+              {(phone || email || websiteLabel) && (
+                <Box className='partner-contact'>
+                  {phone && (
+                    <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
+                      <strong>{phone}</strong>
+                    </a>
+                  )}
+                  {phone && (email || websiteLabel) && <br />}
+                  {email && (
+                    <a href={`mailto:${email}`} onClick={handleEmailClick}>
+                      {email}
+                    </a>
+                  )}
+                  {email && websiteLabel && <br />}
+                  {websiteLabel && (
+                    <a href={website} target='_blank' rel='noopener'>
+                      {websiteLabel}
+                    </a>
+                  )}
+                </Box>
+              )}
+            </>
+          )}
         </Box>
 
         <Stack className='hero-content'>
