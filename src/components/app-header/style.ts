@@ -35,8 +35,9 @@ export const HeaderStyle: SxProps<Theme> = {
   '& .hero-split': {
     display: 'grid',
     gridTemplateColumns: { xs: '1fr', md: '420px 1fr' },
-    gap: { xs: 3, md: 6 },
+    gap: { xs: 3, md: 10 },
     alignItems: 'center',
+    mb: 5,
   },
 
   // Left : single card holding logo + contact info
@@ -50,7 +51,7 @@ export const HeaderStyle: SxProps<Theme> = {
     mx: { xs: 'auto', md: 0 },
     p: 2.5,
     display: 'grid',
-    gridTemplateColumns: { xs: '110px 1fr', sm: '150px 1fr' },
+    gridTemplateColumns: { xs: 'auto auto', sm: 'auto auto' },
     alignItems: 'center',
     gap: 2.5,
     '& .partner-logo': {
