@@ -1,6 +1,5 @@
 import { useAccountInfoQuery, useAccountInfoStore } from '@/queries';
-import { Star } from '@mui/icons-material';
-import { Box, Skeleton, Typography } from '@mui/material';
+import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import { HeaderStyle } from './style';
 
 interface StepInfo {
@@ -14,26 +13,21 @@ interface AppHeaderProps {
   steps: StepInfo[];
 }
 
-interface StatInfo {
-  value: string;
-  unit: string;
-  label: string;
-}
-
-const stats: StatInfo[] = [
-  { value: '<2', unit: 'min', label: 'Pour votre pré-diagnostic' },
-  { value: '5', unit: 'cm/px', label: 'Précision image satellite' },
-  { value: '48', unit: 'h', label: 'Recontact par votre couvreur' },
-  { value: '100', unit: '%', label: 'Sécurisé - RGPD' },
-];
+const FrenchFlag = () => (
+  <span className='fr-flag'>
+    <span className='fr-blue' />
+    <span className='fr-white' />
+    <span className='fr-red' />
+  </span>
+);
 
 export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
   const isAccountLoading = useAccountInfoQuery();
   const { image, name, address, city, postalCode, email, phone, website } = useAccountInfoStore();
 
   const websiteLabel = website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
-  const fullAddress = [address, [postalCode, city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
-  const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+  const websiteUrl = website && (/^https?:\/\//.test(website) ? website : `https://${website}`);
+  const cityLine = [postalCode, city].filter(Boolean).join(' ');
 
   // Try the native mailto first; if no mail client handles it (the window never
   // loses focus), fall back to Gmail's web compose in a new tab.
@@ -48,87 +42,69 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
 
   return (
     <Box sx={HeaderStyle}>
-      <Box className='hero-card'>
-        {/* Brand + contact */}
-        <Box className='hero-brand'>
-          <Box className='hero-logo-card'>
-            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img alt='roofer-logo' src={image} />}
+      <Box className='hero-split'>
+        <Box className='partner-card' component='aside'>
+          <Box className='partner-card-logo'>
+            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
           </Box>
-          {isAccountLoading ? (
-            <Box className='hero-contact'>
-              <Skeleton className='company-name' variant='text' width='60%' />
-              <Skeleton className='contact-line' variant='text' width='85%' />
-              <Skeleton className='contact-line' variant='text' width='70%' />
-              <Skeleton className='contact-line' variant='text' width='45%' />
-            </Box>
-          ) : (
-            <Box className='hero-contact'>
-              {name && <Typography className='company-name'>{name}</Typography>}
-              {fullAddress && (
-                <Typography component='a' href={mapsHref} target='_blank' rel='noopener noreferrer' className='contact-line strong contact-link'>
-                  {fullAddress}
-                </Typography>
-              )}
-              {(email || phone) && (
-                <Typography className='contact-line'>
-                  {email && (
-                    <Box component='a' href={`mailto:${email}`} onClick={handleEmailClick} className='contact-link'>
-                      {email}
-                    </Box>
-                  )}
-                  {email && phone && ' · '}
-                  {phone && (
-                    <Box component='a' href={`tel:${phone.replace(/[^\d+]/g, '')}`} className='contact-link'>
-                      {phone}
-                    </Box>
-                  )}
-                </Typography>
-              )}
-              {websiteLabel && <Typography className='contact-line'>{websiteLabel}</Typography>}
-            </Box>
-          )}
+          <Box className='partner-body'>
+            {isAccountLoading ? (
+              <>
+                <Skeleton className='partner-name' variant='text' width='70%' />
+                <Skeleton className='partner-addr' variant='text' width='90%' />
+                <Skeleton className='partner-contact' variant='text' width='60%' />
+              </>
+            ) : (
+              <>
+                {name && <Typography className='partner-name'>{name}</Typography>}
+                {(address || cityLine) && (
+                  <Typography className='partner-addr'>
+                    {address}
+                    {address && cityLine && <br />}
+                    {cityLine}
+                  </Typography>
+                )}
+                {(phone || email || websiteLabel) && (
+                  <Box className='partner-contact'>
+                    {phone && (
+                      <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
+                        <strong>{phone}</strong>
+                      </a>
+                    )}
+                    {phone && (email || websiteLabel) && <br />}
+                    {email && (
+                      <a href={`mailto:${email}`} onClick={handleEmailClick}>
+                        {email}
+                      </a>
+                    )}
+                    {email && websiteLabel && <br />}
+                    {websiteLabel && (
+                      <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
+                        {websiteLabel}
+                      </a>
+                    )}
+                  </Box>
+                )}
+              </>
+            )}
+          </Box>
         </Box>
 
-        {/* Headline */}
-        <Box className='hero-headline'>
-          <Box className='hero-badge'>
-            <Star />
-            <Box component='span'>Nouveau · Diagnostic IA sur image aériennes très haute résolution</Box>
+        <Stack className='hero-content'>
+          <Box className='fr-badge'>
+            <FrenchFlag />
+            <span>
+              <strong>IA 100% française</strong> · <em>issue de la recherche</em>
+            </span>
           </Box>
           <Typography className='hero-title' component='h1'>
-            Pré-diagnostiquez votre toiture sans monter dessus{' '}
-            <Box component='span' className='accent'>
-              en moins de 2 min
-            </Box>
+            Pré-diagnostiquez votre toiture <span className='accent'>sans monter dessus.</span>
           </Typography>
-        </Box>
-
-        {/* Aside */}
-        <Box className='hero-aside'>
-          <Typography className='aside-title'>Diagnostic instantané et vous êtes recontactés dans les 48 h.</Typography>
-          <Typography className='aside-text'>
-            Notre outil d'analyse par satellite et intelligence artificielle vous donne un pré-diagnostic complet sur l'état de votre toiture - accompagné des
-            conseils de votre couvreur de confiance.
+          <Typography className='hero-lead'>
+            Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Votre couvreur local vous recontacte sous 24 h.
           </Typography>
-        </Box>
+        </Stack>
       </Box>
-
-      {/* Stats bar — only on the get-address step */}
-      {activeStep === 0 && (
-        <Box className='hero-stats'>
-          {stats.map(({ value, unit, label }) => (
-            <Box key={label} className='stat'>
-              <Typography className='stat-value'>
-                {value}
-                <Box component='span' className='unit'>
-                  {unit}
-                </Box>
-              </Typography>
-              <Typography className='stat-label'>{label}</Typography>
-            </Box>
-          ))}
-        </Box>
-      )}
 
       {/* Steps strip (wired to wizard progress) */}
       <Box className='hero-steps'>
