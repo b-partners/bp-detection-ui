@@ -17,6 +17,7 @@ export const HeroSection = () => {
   const { image, name, address, city, postalCode, email, phone, website } = useAccountInfoStore();
 
   const websiteLabel = website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const websiteUrl = website && (/^https?:\/\//.test(website) ? website : `https://${website}`);
   const cityLine = [postalCode, city].filter(Boolean).join(' ');
 
   // Try the native mailto first; if no mail client handles it (the window never
@@ -81,7 +82,7 @@ export const HeroSection = () => {
                   )}
                   {email && websiteLabel && <br />}
                   {websiteLabel && (
-                    <a href={website} target='_blank' rel='noopener'>
+                    <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
                       {websiteLabel}
                     </a>
                   )}
