@@ -31,43 +31,42 @@ export const HeaderStyle: SxProps<Theme> = {
 
   '& .accent': { color: REF.orange },
 
-  // ---- hero split: logo card + info card + headline (no input) ----
+  // ---- hero split: partner card (logo + info) + headline (no input) ----
   '& .hero-split': {
     display: 'grid',
-    gridTemplateColumns: { xs: '1fr', sm: '200px 1fr', md: '200px 220px 1fr' },
-    gap: { xs: 2, md: 3 },
+    gridTemplateColumns: { xs: '1fr', md: '420px 1fr' },
+    gap: { xs: 3, md: 6 },
     alignItems: 'center',
   },
 
-  // Left : logo card
-  '& .partner-logo-card': {
+  // Left : single card holding logo + contact info
+  '& .partner-card': {
     background: REF.card,
     border: `1px solid ${REF.border}`,
     borderRadius: REF.radius,
     boxShadow: REF.shadow,
     width: '100%',
-    height: { xs: 150, md: 160 },
-    maxWidth: { xs: 320, sm: 'none' },
-    mx: { xs: 'auto', sm: 0 },
+    maxWidth: { xs: 420, md: 'none' },
+    mx: { xs: 'auto', md: 0 },
     p: 2.5,
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: { xs: '110px 1fr', sm: '150px 1fr' },
     alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    '& img': { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' },
-    '& .MuiSkeleton-root': { transform: 'none' },
-  },
-
-  // Middle : contact card
-  '& .partner-info-card': {
-    background: REF.card,
-    border: `1px solid ${REF.border}`,
-    borderRadius: REF.radius,
-    boxShadow: REF.shadow,
-    width: '100%',
-    maxWidth: { xs: 320, sm: 'none' },
-    mx: { xs: 'auto', sm: 0 },
-    p: 2.5,
+    gap: 2.5,
+    '& .partner-logo': {
+      height: { xs: 110, sm: 150 },
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      '& img': { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' },
+      '& .MuiSkeleton-root': { transform: 'none', borderRadius: REF.radiusSm },
+    },
+    '& .partner-info': {
+      minWidth: 0,
+      pl: 2.5,
+      borderLeft: `1px solid ${REF.border}`,
+    },
     '& .partner-name': { fontSize: FONT_SIZES.lg, fontWeight: 800, color: REF.text, mb: 0.75, lineHeight: 1.2 },
     '& .partner-addr': { fontSize: FONT_SIZES.sm, fontWeight: 600, color: REF.textSoft, lineHeight: 1.5, mb: 1 },
     '& .partner-contact': {

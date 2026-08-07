@@ -43,12 +43,13 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
   return (
     <Box sx={HeaderStyle}>
       <Box className='hero-split'>
-        <Box className='partner-logo-card'>
-          {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
-        </Box>
+        <Box className='partner-card' component='aside'>
+          <Box className='partner-logo'>
+            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
+          </Box>
 
-        <Box className='partner-info-card' component='aside'>
-          {isAccountLoading ? (
+          <Box className='partner-info'>
+            {isAccountLoading ? (
             <>
               <Skeleton className='partner-name' variant='text' width='70%' />
               <Skeleton className='partner-addr' variant='text' width='90%' />
@@ -89,6 +90,7 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
               )}
             </>
           )}
+          </Box>
         </Box>
 
         <Stack className='hero-content'>
