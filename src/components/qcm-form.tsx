@@ -43,8 +43,10 @@ export const QcmForm: FC<QcmFormProps> = ({ address }) => {
 
   const handleContinue = () => {
     if (!isComplete) return;
-    openDialog(<DetectionForm address={address} comment={buildComment(answers)} />, { style: DetectionFormStyle });
+    openDialog(<DetectionForm address={address} comment={buildComment(answers)} onBack={handleBack} />, { style: DetectionFormStyle });
   };
+
+  const handleBack = () => openDialog(<QcmForm address={address} />, { style: QcmDialogStyle });
 
   return (
     <Box sx={QcmDialogStyle}>

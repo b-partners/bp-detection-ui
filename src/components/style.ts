@@ -120,6 +120,23 @@ export const DetectionFormStyle: SxProps = {
     minWidth: { md: 560 },
     px: 3,
   },
+  '& .bp-field-row': {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 2,
+  },
+  '& .bp-field': {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 0.75,
+    '& .bp-field-label': {
+      fontWeight: 700,
+      color: PALETTE_COLORS.black,
+      fontSize: FONT_SIZES.xs,
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
+    },
+  },
   '& .input-anime': {
     '& .MuiInputLabel-root.Mui-focused': {
       color: PALETTE_COLORS.neon_orange,
