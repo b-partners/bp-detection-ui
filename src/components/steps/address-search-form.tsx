@@ -2,8 +2,8 @@ import { useAddressFrom } from '@/forms';
 import { useDialog, useStep } from '@/hooks';
 import { useLocationQuery } from '@/queries';
 import { ArrowForward as ArrowForwardIcon, LocationOn as LocationOnIcon } from '@mui/icons-material';
-import { Box, Button, debounce, InputBase, MenuItem, Paper } from '@mui/material';
-import { ChangeEvent, useMemo } from 'react';
+import { Autocomplete, Box, Button, CircularProgress, debounce, Paper, TextField } from '@mui/material';
+import { SyntheticEvent, useMemo, useState } from 'react';
 import { QcmForm } from '../qcm-form';
 import { QcmDialogStyle } from '../style';
 
@@ -19,13 +19,14 @@ interface AddressSearchFormProps {
 const searchAddressDebounceTimeout = 200;
 
 export const AddressSearchForm = ({ primary = false }: AddressSearchFormProps) => {
-  const { open: openDialog, isOpen } = useDialog();
+  const { open: openDialog } = useDialog();
   const {
     params: { sessionId },
   } = useStep();
 
-  const { mutate: findLocation, data } = useLocationQuery(sessionId || '');
-  const search = useMemo(() => debounce(findLocation, searchAddressDebounceTimeout), []);
+  const { mutate: findLocation, data = [], isPending } = useLocationQuery(sessionId || '');
+  const options = useMemo(() => (data || []).map(({ description }: any) => description).filter(Boolean), [data]);
+  const search = useMemo(() => debounce(findLocation, searchAddressDebounceTimeout), [findLocation]);
 
   const {
     formState: { errors },
@@ -34,51 +35,66 @@ export const AddressSearchForm = ({ primary = false }: AddressSearchFormProps) =
     register,
   } = useAddressFrom();
 
+  const { onBlur, ref } = register('address');
+  const [inputValue, setInputValue] = useState('');
+
   const onSubmit = handleSubmit(
     data => openDialog(<QcmForm address={data.address} />, { style: QcmDialogStyle }),
     error => alert(error.address)
   );
 
-  const { onChange, ...others } = register('address');
+  const handleInputChange = (_event: SyntheticEvent, newInputValue: string, reason: string) => {
+    setInputValue(newInputValue);
+    setValue('address', newInputValue);
+    if (reason === 'input') search(newInputValue);
+  };
 
-  const handleClickComplete = (text: string) => () => {
-    setValue('address', text);
+  const handleChange = (_event: SyntheticEvent, newValue: string | null) => {
+    if (!newValue) return;
+    setInputValue(newValue);
+    setValue('address', newValue);
     findLocation('');
     onSubmit();
   };
 
-  const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const text = event.target.value;
-    setValue('address', text);
-    search(text);
-  };
-
   return (
     <Box className='address-search'>
-      <Paper onSubmit={onSubmit} {...others} component='form' className='address-form' elevation={0}>
+      <Paper onSubmit={onSubmit} component='form' className='address-form' elevation={0}>
         <LocationOnIcon className='address-form-pin' />
-        <InputBase
-          onChange={handleChange}
-          {...(primary ? { 'data-cy': 'address-search-input' } : {})}
+        <Autocomplete
+          freeSolo
+          fullWidth
           className='address-form-input'
-          placeholder="Saisissez l'adresse de votre logement"
-          error={!!errors['address']}
+          inputValue={inputValue}
+          onInputChange={handleInputChange}
+          onChange={handleChange}
+          options={isPending ? [] : options}
+          filterOptions={allOptions => allOptions}
+          noOptionsText={isPending ? 'Recherche en cours' : 'Aucun résultat'}
+          renderInput={params => (
+            <TextField
+              {...params}
+              variant='standard'
+              placeholder="Saisissez l'adresse de votre logement"
+              error={!!errors['address']}
+              inputRef={ref}
+              onBlur={onBlur}
+              InputProps={{
+                ...params.InputProps,
+                disableUnderline: true,
+                endAdornment: isPending ? <CircularProgress size={18} /> : params.InputProps.endAdornment,
+              }}
+              inputProps={{
+                ...params.inputProps,
+                ...(primary ? { 'data-cy': 'address-search-input' } : {}),
+              }}
+            />
+          )}
         />
         <Button type='submit' onClick={onSubmit} className='btn-primary' endIcon={<ArrowForwardIcon />}>
           Analyser
         </Button>
       </Paper>
-      {!isOpen && data && data.length > 0 && (
-        <Box className='address-list'>
-          <Paper>
-            {data.map(({ description }: any) => (
-              <MenuItem onClick={handleClickComplete(description)} key={description}>
-                {description}
-              </MenuItem>
-            ))}
-          </Paper>
-        </Box>
-      )}
     </Box>
   );
 };
