@@ -102,7 +102,7 @@ describe('Component testing', () => {
 
     cy.dataCy('qcm-continue-button').click();
 
-    cy.contains("Renseignez vos informations pour recevoir les résultats de l'analyse de votre toiture.");
+    cy.contains('Vos coordonnées pour recevoir le rapport');
 
     cy.dataCy(process_detection_on_form_sel).click();
     cy.contains('Numéro de téléphone non valide');
