@@ -178,7 +178,7 @@ export const ReportPreviewSection = () => {
               </Box>
             </Stack>
             <Divider className='card-divider card-divider-dashed' />
-            <Typography className='degradation-verdict'>Catégorie E - Risque critique.</Typography>
+            <Typography className='degradation-verdict'>Risque critique.</Typography>
             <Typography className='degradation-detail'>
               Moisissure très étendue sur plusieurs pans et autour des cheminées. Taux d'usure et d'humidité non mesurés sur cette zone.
             </Typography>
