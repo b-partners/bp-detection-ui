@@ -1,37 +1,45 @@
 import type { SvgIconComponent } from '@mui/icons-material';
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import CleaningServicesOutlinedIcon from '@mui/icons-material/CleaningServicesOutlined';
+import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
+import EventRepeatOutlinedIcon from '@mui/icons-material/EventRepeatOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import TrackChangesOutlinedIcon from '@mui/icons-material/TrackChangesOutlined';
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { ReportPreviewStyle as style } from './styles';
 
-type IdentityRow = { label: string; value: string; highlight?: boolean };
+type IdentityRow = { label: string; value: string; highlight?: boolean; placeholder?: boolean };
 type HealthBar = { label: string; value: string; ratio: number; alert?: boolean };
 type HealthFlag = { label: string; value: string };
 type Grade = { letter: string; variant: string; title: string; description: string; Icon: SvgIconComponent };
-type Advice = { icon: string; title: string; description: string; variant: 'search' | 'broom' | 'pick' | 'calendar' };
+type Advice = { Icon: SvgIconComponent; title: string; description: string; variant: 'search' | 'broom' | 'pick' | 'calendar' };
 
 const identityRows: IdentityRow[] = [
-  { label: 'Surface totale', value: '273,70 m²' },
-  { label: 'Hauteur du bâtiment', value: '7,4 m' },
-  { label: 'Pente moyenne', value: '16,85 %' },
-  { label: 'Revêtement 1', value: 'Tuiles' },
-  { label: 'Revêtement 2', value: 'Tôle ondulée' },
+  { label: 'Surface totale', value: '201,73 m²' },
+  { label: 'Hauteur du bâtiment', value: 'Non renseigné', placeholder: true },
+  { label: 'Pente moyenne', value: 'Non renseigné', placeholder: true },
+  { label: 'Revêtement', value: 'Tuiles' },
   { label: 'Obstacle / Velux', value: 'Oui', highlight: true },
 ];
 
 const healthBars: HealthBar[] = [
   { label: "Taux d'usure", value: '0 %', ratio: 0 },
-  { label: 'Taux de moisissure', value: '28,6 %', ratio: 0.286, alert: true },
+  { label: 'Taux de moisissure', value: '68,59 %', ratio: 0.6859, alert: true },
   { label: "Taux d'humidité", value: '0 %', ratio: 0 },
 ];
 
 const healthFlags: HealthFlag[] = [
-  { label: 'Mutation', value: 'néant' },
-  { label: 'Fissure / Cassure', value: 'néant' },
-  { label: 'Risque de feu', value: 'néant' },
+  { label: 'Mutation', value: 'Néant' },
+  { label: 'Fissure / Cassure', value: 'Néant' },
+  { label: 'Risque de feu', value: 'Non' },
 ];
 
 const grades: Grade[] = [
@@ -42,31 +50,31 @@ const grades: Grade[] = [
   { letter: 'E', variant: 'critical', title: 'Risque critique', description: 'Intervention urgente à prévoir', Icon: WarningAmberRoundedIcon },
 ];
 
-const selectedGrade = 'D';
+const selectedGrade = 'E';
 
 const advices: Advice[] = [
   {
-    icon: '🔍',
+    Icon: SearchOutlinedIcon,
     title: 'Inspection ciblée',
-    description: "Vérifier les zones autour des obstacles (cheminées, fenêtres de toit), les rives et les noues pour prévenir tout risque d'infiltration.",
+    description: 'Vérifier les zones de moisissure étendue relevées sur plusieurs pans de la toiture, en particulier autour des cheminées.',
     variant: 'search',
   },
   {
-    icon: '🧹',
+    Icon: CleaningServicesOutlinedIcon,
     title: 'Entretien recommandé',
-    description: 'Procéder à un démoussage doux pour retirer les moisissures. Nettoyer les gouttières pour prévenir tout blocage.',
+    description: 'Procéder à un démoussage complet pour traiter la moisissure détectée sur une large partie de la toiture.',
     variant: 'broom',
   },
   {
-    icon: '⛏️',
+    Icon: ConstructionOutlinedIcon,
     title: 'Travaux à envisager',
-    description: "Envisager le remplacement des tuiles atteintes par la moisissure et surveiller l'étanchéité autour des obstacles.",
+    description: "Envisager le remplacement des tuiles les plus atteintes et vérifier l'étanchéité autour des cheminées et obstacles.",
     variant: 'pick',
   },
   {
-    icon: '📅',
+    Icon: EventRepeatOutlinedIcon,
     title: 'Suivi annuel',
-    description: 'Étant donnée la présence de moisissure, un suivi annuel est conseillé, particulièrement après des épisodes climatiques intenses.',
+    description: "Le niveau de dégradation détecté justifie une expertise terrain rapide pour confirmer l'étendue des travaux à prévoir.",
     variant: 'calendar',
   },
 ];
@@ -79,21 +87,25 @@ export const ReportPreviewSection = () => {
         <Typography className='section-title' component='h2'>
           Voici ce que vous recevez après l'analyse
         </Typography>
-        <Typography className='section-subtitle'>Exemple réel - toiture en tuiles, 273,70 m², analysée à Toulouse.</Typography>
+        <Typography className='section-subtitle'>Exemple réel - toiture en tuiles, 201,73 m², analysée à Toulouse.</Typography>
       </Stack>
 
       <Box className='report-cards'>
         <Box className='report-card'>
           <Stack direction='row' className='card-header'>
-            <Box className='card-icon'>🏠</Box>
+            <Box className='card-icon'>
+              <HomeOutlinedIcon fontSize='inherit' />
+            </Box>
             <Typography className='card-title'>Identité du bâtiment</Typography>
           </Stack>
           <Divider className='card-divider' />
           <Stack className='identity-rows'>
-            {identityRows.map(({ label, value, highlight }) => (
+            {identityRows.map(({ label, value, highlight, placeholder }) => (
               <Stack direction='row' className='identity-row' key={label}>
                 <Typography className='identity-label'>{label}</Typography>
-                <Typography className={`identity-value ${highlight ? 'identity-value-highlight' : ''}`}>{value}</Typography>
+                <Typography className={`identity-value ${highlight ? 'identity-value-highlight' : ''} ${placeholder ? 'identity-value-unavailable' : ''}`}>
+                  {value}
+                </Typography>
               </Stack>
             ))}
           </Stack>
@@ -101,7 +113,9 @@ export const ReportPreviewSection = () => {
 
         <Box className='report-card'>
           <Stack direction='row' className='card-header'>
-            <Box className='card-icon'>📊</Box>
+            <Box className='card-icon'>
+              <MonitorHeartOutlinedIcon fontSize='inherit' />
+            </Box>
             <Typography className='card-title'>Indicateurs santé</Typography>
           </Stack>
           <Divider className='card-divider' />
@@ -131,13 +145,15 @@ export const ReportPreviewSection = () => {
 
         <Box className='report-card'>
           <Stack direction='row' className='card-header'>
-            <Box className='card-icon'>🎯</Box>
+            <Box className='card-icon'>
+              <TrackChangesOutlinedIcon fontSize='inherit' />
+            </Box>
             <Typography className='card-title'>Note de dégradation</Typography>
           </Stack>
           <Divider className='card-divider' />
           <Stack className='degradation'>
             <Typography className='degradation-rate'>
-              22,88<span className='degradation-unit'>%</span>
+              54,87<span className='degradation-unit'>%</span>
             </Typography>
             <Typography className='degradation-caption'>Dégradation globale</Typography>
             <Stack className='grade-scale'>
@@ -162,9 +178,9 @@ export const ReportPreviewSection = () => {
               </Box>
             </Stack>
             <Divider className='card-divider card-divider-dashed' />
-            <Typography className='degradation-verdict'>Catégorie D - Réparation nécessaire.</Typography>
+            <Typography className='degradation-verdict'>Catégorie E - Risque critique.</Typography>
             <Typography className='degradation-detail'>
-              Moisissure significative, vigilance autour des cheminées et velux. Pas de fissure ni d'usure visible.
+              Moisissure très étendue sur plusieurs pans et autour des cheminées. Taux d'usure et d'humidité non mesurés sur cette zone.
             </Typography>
           </Stack>
         </Box>
@@ -172,13 +188,17 @@ export const ReportPreviewSection = () => {
 
       <Box className='advice-panel'>
         <Stack direction='row' className='advice-header'>
-          <Box className='advice-header-icon'>👷</Box>
-          <Typography className='advice-header-title'>Conseils de votre artisan couvreur</Typography>
+          <Box className='advice-header-icon'>
+            <AutoAwesomeOutlinedIcon fontSize='inherit' />
+          </Box>
+          <Typography className='advice-header-title'>Conseiller IA personnalisé</Typography>
         </Stack>
         <Box className='advice-grid'>
-          {advices.map(({ icon, title, description, variant }) => (
+          {advices.map(({ Icon, title, description, variant }) => (
             <Stack direction='row' className='advice-item' key={title}>
-              <Box className={`advice-icon advice-icon-${variant}`}>{icon}</Box>
+              <Box className={`advice-icon advice-icon-${variant}`}>
+                <Icon fontSize='inherit' />
+              </Box>
               <Box>
                 <Typography className='advice-title'>{title}</Typography>
                 <Typography className='advice-desc'>{description}</Typography>
@@ -186,7 +206,10 @@ export const ReportPreviewSection = () => {
             </Stack>
           ))}
         </Box>
-        <Box className='advice-disclaimer'>⚠️ Rapport généré par IA statistique nécessitant confirmation par votre expert toiture.</Box>
+        <Stack direction='row' className='advice-disclaimer'>
+          <WarningAmberOutlinedIcon fontSize='inherit' />
+          <span>Rapport généré par IA statistique nécessitant confirmation par votre expert toiture.</span>
+        </Stack>
       </Box>
     </Stack>
   );

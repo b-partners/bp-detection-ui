@@ -310,10 +310,3 @@ export const addressStyle: SxProps = {
     py: 0.5,
   },
 };
-
-export const annotationSlopeHeightAlertStyle: SxProps = {
-  '& .MuiAlert-action button': {
-    position: 'relative',
-    transform: 'translateX(-20%)',
-  },
-};

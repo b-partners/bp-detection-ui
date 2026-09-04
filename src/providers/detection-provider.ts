@@ -1,15 +1,7 @@
 import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
 import { bpAnnotationApi, bpProspectApi } from './api';
-import {
-  demoGetDetectionResult,
-  demoInitiateRoofProperties,
-  demoProcessDetection,
-  demoSendImageToDetect,
-  demoSendPdfToMail,
-  demoSendRooferInformationsToMail,
-  isDemoApiKey,
-} from './demo';
+import { demoProcessDetection, demoSendImageToDetect, demoSendPdfToMail, demoSendRooferInformationsToMail, isDemoApiKey } from './demo';
 import { RooferInformations } from './type';
 import { userInfoProvider } from './user-info-provider';
 
@@ -103,36 +95,6 @@ export const processDetection = async (layers: string, address: string, coordina
   if (data.status !== 200) throwRooferError();
 
   return { result, geoJson };
-};
-
-export const getDetectionResult = async (apiKey: string) => {
-  if (isDemoApiKey(apiKey)) return demoGetDetectionResult();
-
-  const detectionId = getCached.detectionId() ?? '';
-  const data = await fetch(`${baseUrl}/detections/${detectionId}`, {
-    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
-    method: 'GET',
-  });
-  const result = await data.json();
-
-  if (!result.geoJsonZone[0]?.properties?.vgg_file_url) throw new Error('Not done');
-
-  return result;
-};
-
-export const initiateRoofProperties = async (apiKey: string) => {
-  if (isDemoApiKey(apiKey)) return demoInitiateRoofProperties();
-
-  const detectionId = getCached.detectionId() ?? '';
-  const result = await fetch(`${baseUrl}/detections/${detectionId}/roofs/properties`, {
-    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
-    method: 'PUT',
-  });
-  const data = await result.json();
-
-  if (result.status !== 200) throw new Error('Not done');
-  cache.isRoofPropertiesRequestDone(true);
-  return data;
 };
 
 export const sendImageToDetect = async (image: File) => {

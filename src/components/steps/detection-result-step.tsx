@@ -6,7 +6,6 @@ import {
   useGeojsonQueryResult,
   useLlmResultQuery,
   useNotifyPdfQuery,
-  useQueryHeightAndSlope,
   useQueryImageFromUrl,
   useSaveAnnotationQuery,
 } from '@/queries';
@@ -20,7 +19,7 @@ import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import { Alert, Box, Button, Divider, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotationSlopeHeightAlert, AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
+import { AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -41,18 +40,17 @@ export const DetectionResultStep = () => {
   const { imageSrc, useGeoJson, areaPictureDetails } = useStep(({ params }) => params);
   const setStep = useStep(p => p.setStep);
   const stepResultRef = useRef<HTMLDivElement>(null);
+  const roofStateRef = useRef<HTMLDivElement>(null);
+  const hasScrolledToRoofState = useRef(false);
   const form = useAnnotationFrom();
   const { watch, setValue: setFormValue } = form;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleValue: tootleLLMResultView, value: showLLMResult } = useToggle(false);
-  const [endLoading, setEndLoading] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   const acknowledgementsRedirect = () => {
     setStep({ actualStep: 3, params: {} });
-    setEndLoading(true);
   };
-
-  const { data: heightAndSlope, isPending: isHeightAndSlopePending } = useQueryHeightAndSlope();
 
   const [annotatorCanvasState, setAnnotatorCanvasState] = useState<{ image: string; polygons: any[] }>({ image: '', polygons: [] });
 
@@ -62,13 +60,18 @@ export const DetectionResultStep = () => {
   useEffect(() => {
     if (data?.properties) {
       setFormValue('cover1', fromAnalyseResultToDomain(data.properties.revetement_1));
-      setFormValue('cover2', fromAnalyseResultToDomain(data.properties.revetement_2));
     }
   }, [data]);
 
+  // Bring the "État apparent de la toiture" section into view once, the first time
+  // its content is ready — a one-off nudge, not a persistent scroll-snap that would
+  // fight the user's own scrolling afterwards.
   useEffect(() => {
-    if (heightAndSlope?.slope) setFormValue('slope', heightAndSlope?.slope);
-  }, [heightAndSlope]);
+    if (data?.properties && !hasScrolledToRoofState.current) {
+      hasScrolledToRoofState.current = true;
+      roofStateRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [data]);
 
   useEffect(() => {
     setAnnotatorCanvasState({ image: imageSrc || '', polygons: data?.polygons || [] });
@@ -78,8 +81,30 @@ export const DetectionResultStep = () => {
 
   const { notifyRoofer, isEmailSent, isPending: isEmailSentPending } = useNotifyPdfQuery();
 
-  const canSendPdf =
-    !isEmailSent && watch().cover1 && watch().cover2 && watch().slope !== undefined && !isImageLoading && llmHtmlData && !isHeightAndSlopePending;
+  const canSendPdf = !isEmailSent && watch().cover1 && !isImageLoading && llmHtmlData;
+
+  // "Terminer" stays clickable even while the report is still being generated/sent in
+  // the background — clicking it early just shows a spinner and waits, instead of
+  // silently doing nothing (which looked like a broken button).
+  const handleTerminerClick = () => {
+    if (isEmailSent) {
+      acknowledgementsRedirect();
+      return;
+    }
+    setIsFinishing(true);
+  };
+
+  useEffect(() => {
+    if (!isFinishing) return;
+    if (isEmailSent) {
+      acknowledgementsRedirect();
+      return;
+    }
+    // Safety net: never leave the user stuck on a spinner if the background
+    // send fails or silently stalls.
+    const timeout = setTimeout(acknowledgementsRedirect, 20000);
+    return () => clearTimeout(timeout);
+  }, [isFinishing, isEmailSent]);
 
   const { mutate: saveAreaPictureAnnotations } = useSaveAnnotationQuery();
 
@@ -95,8 +120,6 @@ export const DetectionResultStep = () => {
         {
           ...data.properties,
           obstacle: data.properties.obstacle ? 'OUI' : 'NON',
-          roof_height_in_meters: heightAndSlope?.height || 0,
-          roof_slope_in_degrees: heightAndSlope?.slope || 0,
         },
         llmHtmlData
       );
@@ -104,15 +127,13 @@ export const DetectionResultStep = () => {
 
       const exportAreaPictureAnnotation = exportPdfMapper({
         areaPictureDetails,
-        height: heightAndSlope?.height || 0,
-        slope: heightAndSlope?.slope || 0,
         llm: llmHtmlData,
         polygons: data.polygons as DomainPolygonResultType[],
         properties: { ...data.properties, obstacle: data.properties.obstacle ? 'OUI' : 'NON' },
         measurements: data.measurements,
       });
 
-      notifyRoofer(exportAreaPictureAnnotation);
+      notifyRoofer(exportAreaPictureAnnotation).then(pdfFile => setStep({ actualStep: 2, params: { pdfFile } }));
     }
   }, [canSendPdf]);
 
@@ -146,7 +167,7 @@ export const DetectionResultStep = () => {
           <Box className='degradation-switch'>
             <LlmSwitchButton showLlm={showLLMResult} onClick={tootleLLMResultView} />
           </Box>
-          <Box className={`roof-state roof-state-${selectedGrade?.variant || 'good'}`}>
+          <Box ref={roofStateRef} className={`roof-state roof-state-${selectedGrade?.variant || 'good'}`}>
             <Typography className='roof-state-title' component='h3'>
               État apparent de la toiture
             </Typography>
@@ -197,43 +218,13 @@ export const DetectionResultStep = () => {
             <Typography className='title' mb={2}>
               Résultats de l'analyse :
             </Typography>
-            {heightAndSlope?.heightStatus && <AnnotationSlopeHeightAlert status={heightAndSlope.heightStatus} />}
             <DetectionResultItem label='Surface totale' source='surface' unity='m²' value={getCached.area().toFixed(2)} />
-            <DetectionResultItem label='Revêtement 1' source='revetement1' value={watch()?.cover1} unity='' />
-            <DetectionResultItem label='Revêtement 2' source='revetement2' value={watch()?.cover2} unity='' />
-            {(!heightAndSlope?.heightStatus || heightAndSlope?.heightStatus === 'AVAILABLE') && (
-              <DetectionResultItem
-                label='Hauteur du bâtiment'
-                loadingMessage='Calcule de la hauteur du bâtiment en cours...'
-                source='HAUTEUR'
-                unity='m'
-                isLoading={isHeightAndSlopePending}
-                value={heightAndSlope?.height}
-              />
-            )}
-            {(!heightAndSlope?.slopeStatus || heightAndSlope?.slopeStatus === 'AVAILABLE') && (
-              <DetectionResultItem
-                label='Pente'
-                isLoading={isHeightAndSlopePending}
-                loadingMessage='Calcule de la pente en cours...'
-                source='pente'
-                value={heightAndSlope?.slope}
-              />
-            )}
+            <DetectionResultItem label='Revêtement' source='revetement1' value={watch()?.cover1} unity='' />
             <DetectionResultItem label="Taux d'usure" source='USURE' value={data?.properties?.['usure_rate'] || 0} />
             <DetectionResultItem label='Taux de moisissure' source='MOISISSURE' value={data?.properties?.['moisissure_rate'] || 0} />
             <DetectionResultItem label="Taux d'humidité" source='HUMIDITE' value={data?.properties?.['humidite_rate'] || 0} />
-            <DetectionResultItem label='Mutation' source='mutation' value='neant' unity='' />
             <DetectionResultItem label='Obstacle / Velux' source='OBSTACLE' value={data?.properties?.obstacle ? 'OUI' : 'NON'} unity='' />
-            <DetectionResultItem label='Fissure / Cassure' source='fissure/cassure' value='neant' unity='' />
-            <DetectionResultItem label='Risque de feu' source='risqueDeFeux' value='neant' unity='' />
-            <Button
-              data-cy='send-roofer-mail-button'
-              fullWidth
-              loading={isEmailSentPending || endLoading}
-              disabled={!isEmailSent}
-              onClick={acknowledgementsRedirect}
-            >
+            <Button data-cy='send-roofer-mail-button' fullWidth loading={isEmailSentPending || isFinishing} onClick={handleTerminerClick}>
               Terminer
             </Button>
           </Stack>

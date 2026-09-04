@@ -50,7 +50,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
             geojsonBody: result?.geoJson as any,
             useGeoJson: true,
             imageSrc: result?.result?.geoJsonZone?.[0]?.properties?.original_image_url || '',
-            roofDelimiter: result?.result?.roofDelimiter,
           },
         });
       },

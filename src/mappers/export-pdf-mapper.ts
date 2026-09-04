@@ -28,8 +28,6 @@ type ExportPdfMapperParams = {
   llm: string;
   polygons: DomainPolygonResultType[];
   properties: DetectionResultInVgg['properties']['properties'] & { obstacle: string };
-  slope: number;
-  height: number;
   measurements: ExportAreaPictureAnnotationMeasurement[];
 };
 
@@ -48,10 +46,8 @@ export const exportPdfMapper = (params: ExportPdfMapperParams): ExportAreaPictur
     infos: [
       { label: 'key', value: "Résultats de l'analyse de la toiture" },
       { label: 'Surface', value: `${roofPolygonProperties.roof_area_in_m2}m²` },
-      { label: 'Hauteur', value: `${params.height}m²` },
       { label: 'Type', value: `Toit` },
       formatInfo({ label: 'Revêtement', value: roofPolygonProperties?.revetement_1, translator: coveringTypeMap }),
-      formatInfo({ label: 'Pente', value: params.slope, unit: '°' }),
       formatInfo({ label: "Taux d'usure", value: roofPolygonProperties.usure_rate, unit: '%' }),
       formatInfo({ label: 'Taux de moisissure', value: roofPolygonProperties.moisissure_rate, unit: '%' }),
       formatInfo({ label: "Taux d'humidité", value: roofPolygonProperties.humidite_rate, unit: '%' }),

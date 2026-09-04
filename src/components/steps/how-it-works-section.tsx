@@ -10,19 +10,24 @@ const steps: Step[] = [
     description: 'Tapez simplement votre adresse postale — c’est tout ce dont nous avons besoin.',
   },
   {
-    title: 'Visualisez et délimitez votre toiture',
+    title: 'Visualisez votre maison en HD',
     subtitle: 'Haute résolution',
     description: 'Visualisez votre maison en très haute résolution (5 cm/pixel) via imagerie satellite.',
   },
   {
-    title: 'Analysez l’état via BIRDIA',
+    title: 'Lancez le diagnostic',
     subtitle: 'L’IA analyse votre toit',
-    description: 'Surface, pente, matériaux, fissures, mousses, humidité — détectés automatiquement.',
+    description: 'Surface, matériaux, usure, moisissure, humidité — détectés automatiquement.',
   },
   {
-    title: 'Notre couvreur vous téléphone',
+    title: 'Comprenez votre rapport',
+    subtitle: 'Rapport détaillé',
+    description: 'Score global, catégorie A-E, conseils pédagogiques de votre artisan couvreur.',
+  },
+  {
+    title: 'Un couvreur vous contacte sous 48 h',
     subtitle: 'Suivi personnalisé',
-    description: 'L’expert toiture vous rappelle pour parcourir votre pré-diagnostic sous 48 h.',
+    description: 'L’expert toiture vous rappelle pour parcourir votre pré-diagnostic.',
   },
 ];
 

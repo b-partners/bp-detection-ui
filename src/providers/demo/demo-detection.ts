@@ -13,13 +13,6 @@ export const demoProcessDetection = async (address: string) => {
   return { result: buildDemoDetectionResult(address), geoJson: {} };
 };
 
-export const demoGetDetectionResult = async () => buildDemoDetectionResult();
-
-export const demoInitiateRoofProperties = async () => {
-  cache.isRoofPropertiesRequestDone(true);
-  return buildDemoDetectionResult();
-};
-
 export const demoSendImageToDetect = async () => ({});
 export const demoSendPdfToMail = async () => ({});
 export const demoSendRooferInformationsToMail = async () => ({});

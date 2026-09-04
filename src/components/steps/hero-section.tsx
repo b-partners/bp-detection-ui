@@ -2,8 +2,6 @@ import { useAccountInfoQuery, useAccountInfoStore } from '@/queries';
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import { AddressSearchForm } from './address-search-form';
 
-const HERO_BANNER = '/assets/images/landing/hero-banner.jpg';
-
 const FrenchFlag = () => (
   <span className='fr-flag'>
     <span className='fr-blue' />
@@ -113,12 +111,6 @@ export const HeroSection = () => {
             Gratuit · sans engagement · <strong>2 min</strong>
           </Typography>
         </Stack>
-      </Box>
-
-      <Box className='hd-banner' sx={{ backgroundImage: `url(${HERO_BANNER})` }}>
-        <Box className='hd-banner-caption'>
-          <span className='hd-tag'>Image aérienne très haute résolution · 5 cm/pixel</span>
-        </Box>
       </Box>
     </Box>
   );

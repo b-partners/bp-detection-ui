@@ -40,6 +40,7 @@ export const useNotifyPdfQuery = () => {
       file = new File([new Uint8Array(buffer)], `${exportAreaPictureAnnotation.address}-analyze.pdf`, { type: 'application/pdf' });
 
       await notifyRooferAfterAnalyze(prospect?.id || '', file);
+      return file;
     } finally {
       if (!isEmailSent) sendInfoToRoofer(file);
       cache.notificationAlreadySent();

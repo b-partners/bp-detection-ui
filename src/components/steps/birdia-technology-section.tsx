@@ -1,10 +1,14 @@
+import type { SvgIconComponent } from '@mui/icons-material';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import PublicIcon from '@mui/icons-material/Public';
+import StraightenIcon from '@mui/icons-material/Straighten';
 import { Box, Stack, Typography } from '@mui/material';
 import { BirdiaTechnologyStyle as style } from './styles';
 
 type FeatureTag = { label: string; variant?: 'blue' | 'green' | 'orange' };
 
 type Feature = {
-  icon: string;
+  Icon: SvgIconComponent;
   title: string;
   description: string;
   tags: FeatureTag[];
@@ -12,15 +16,15 @@ type Feature = {
 
 const features: Feature[] = [
   {
-    icon: '🛰️',
+    Icon: PublicIcon,
     title: 'Imagerie satellite 5 cm/pixel',
     description: 'Une résolution équivalente à une photo aérienne professionnelle, sans déplacement ni drone.',
     tags: [{ label: 'Haute définition' }, { label: 'Sans drone', variant: 'blue' }],
   },
   {
-    icon: '🧠',
+    Icon: AutoAwesomeIcon,
     title: 'Détection IA des pathologies',
-    description: 'Usure, moisissure, humidité, fissures, obstacles : chaque anomalie est localisée et quantifiée.',
+    description: 'Usure, moisissure, humidité, obstacles : chaque anomalie est localisée et quantifiée.',
     tags: [
       { label: 'Usure', variant: 'green' },
       { label: 'Moisissure', variant: 'orange' },
@@ -28,10 +32,10 @@ const features: Feature[] = [
     ],
   },
   {
-    icon: '📐',
+    Icon: StraightenIcon,
     title: 'Mesures automatiques',
-    description: 'Surface, pente, hauteur, matériaux, obstacles : votre couvreur prépare son intervention avec des données fiables.',
-    tags: [{ label: 'Surface m²' }, { label: 'Pente °' }, { label: 'Matériaux' }],
+    description: 'Surface, matériaux, obstacles : votre couvreur prépare son intervention avec des données fiables.',
+    tags: [{ label: 'Surface m²' }, { label: 'Matériaux' }, { label: 'Obstacles' }],
   },
 ];
 
@@ -51,9 +55,6 @@ export const BirdiaTechnologySection = () => {
 
       <Stack className='section-content'>
         <Box className='preview-card'>
-          <Box className='corner corner-tr' />
-          <Box className='corner corner-bl' />
-
           <Box className='preview-label preview-label-usure'>
             <Box className='dot' sx={{ bgcolor: '#2E9E52' }} />
             <span>Usure détectée</span>
@@ -66,27 +67,14 @@ export const BirdiaTechnologySection = () => {
             <Box className='dot' sx={{ bgcolor: '#3B82F6' }} />
             <span>Zone humide</span>
           </Box>
-
-          <Box className='preview-stats'>
-            <Box className='preview-stat'>
-              <Typography className='stat-value'>273,70 m²</Typography>
-              <Typography className='stat-label'>Surface</Typography>
-            </Box>
-            <Box className='preview-stat'>
-              <Typography className='stat-value'>16,85 %</Typography>
-              <Typography className='stat-label'>Pente</Typography>
-            </Box>
-            <Box className='preview-stat'>
-              <Typography className='stat-value'>Cat. D</Typography>
-              <Typography className='stat-label'>Note IA</Typography>
-            </Box>
-          </Box>
         </Box>
 
         <Stack className='feature-list'>
-          {features.map(({ icon, title, description, tags }) => (
+          {features.map(({ Icon, title, description, tags }) => (
             <Box className='feature-card' key={title}>
-              <Box className='feature-icon'>{icon}</Box>
+              <Box className='feature-icon'>
+                <Icon fontSize='inherit' />
+              </Box>
               <Box>
                 <Typography className='feature-title'>{title}</Typography>
                 <Typography className='feature-desc'>{description}</Typography>

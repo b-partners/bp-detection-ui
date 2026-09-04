@@ -1,4 +1,3 @@
-export * from './annotation-slope-height-alert';
 export * from './annotation-tutorial-dialog';
 export * from './annotator-canvas-custom';
 export * from './annotator-custom-button';
