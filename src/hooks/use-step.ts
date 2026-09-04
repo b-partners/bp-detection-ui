@@ -15,11 +15,7 @@ interface State {
     polygons?: DomainPolygonType[];
     useGeoJson?: boolean;
     detection?: any;
-    roofDelimiter?: {
-      roofSlopeInDegree?: number;
-      roofHeightInMeter?: number;
-      polygon?: any;
-    };
+    pdfFile?: File;
   };
 }
 

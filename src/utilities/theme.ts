@@ -11,6 +11,24 @@ export const PALETTE_COLORS = {
   neon_orange: '#FF521B',
 };
 
+/**
+ * Harmonic type scale - the single source of truth for every font size in the app.
+ * A minimalist 1.125–1.25 modular scale (aligned with the values already used by
+ * the detection-result step). Always reference these tokens instead of raw rem/px
+ * so the typography stays coherent across every component.
+ */
+export const FONT_SIZES = {
+  xs: '0.75rem', //   12px - captions, tags, eyebrows, uppercase labels
+  sm: '0.875rem', //  14px - secondary text, descriptions
+  md: '1rem', //      16px - body, inputs
+  lg: '1.125rem', //  18px - emphasized body, small titles
+  xl: '1.25rem', //   20px - subsection titles
+  '2xl': '1.5rem', // 24px - section titles
+  '3xl': '1.875rem', //30px - hero stat values, hero title (lg screens)
+  '4xl': '2.25rem', // 36px - large section titles
+  '5xl': '3rem', //    48px - display / empty-state icon
+} as const;
+
 const palette: PaletteOptions = {
   primary: {
     light: '#FF9575',
@@ -25,7 +43,7 @@ const palette: PaletteOptions = {
     contrastText: '#2f2f2f',
   },
   background: {
-    default: '#F0ECE1',
+    default: '#F5EFE2',
     paper: '#fff',
   },
 };

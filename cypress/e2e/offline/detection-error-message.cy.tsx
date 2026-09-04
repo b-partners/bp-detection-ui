@@ -5,7 +5,6 @@ import {
   account_mock,
   area_picture_mock,
   detection_mock,
-  detectionSync,
   llmResult_mock,
   locations_mock,
   mercator_mock,
@@ -82,12 +81,16 @@ describe('Test process detection error', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
+    cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
 
     cy.contains('24 rue mozart mock 2').click();
 
-    cy.contains('Veuillez saisir les informations suivantes.');
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
+
+    cy.contains('Vos coordonnées pour recevoir le rapport');
 
     cy.dataCy(process_detection_on_form_sel).click();
     cy.contains('Numéro de téléphone non valide');
@@ -142,6 +145,10 @@ describe('Test process detection error', () => {
 
     cy.contains('24 rue mozart mock 2').click();
 
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
+
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
@@ -170,10 +177,14 @@ describe('Test process detection error', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
+    cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
 
     cy.contains('24 rue mozart mock 2').click();
+
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
@@ -201,46 +212,5 @@ describe('Test process detection error', () => {
 
     cy.contains('La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge.');
     cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
-  });
-
-  it('Test slope & height unavailable', () => {
-    cy.intercept('POST', `/detections/**/sync`, detectionSync).as('detectionSync');
-    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock).as('setRoofProperties');
-    cy.intercept('GET', `/detections/*`, detection_mock).as('getDetection');
-
-    cy.dataCy('api-key-input').type('api-key-mock{enter}');
-
-    cy.dataCy(search_input_sel, ' > input').type('24 rue mozart');
-    cy.wait('@location-search');
-
-    cy.contains('24 rue mozart mock 2').click();
-
-    cy.dataName('phone').type('+000000000000');
-    cy.dataName('email').type('john.doe@example.com');
-    cy.dataCy(process_detection_on_form_sel).click();
-
-    cy.wait('@createProspect');
-    cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
-
-    cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
-
-    cy.dataCy('zoom-in').click();
-    cy.dataCy('zoom-in').click();
-    cy.dataCy('zoom-out').click();
-
-    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(300, 150, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(300, 300, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(150, 300, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
-    cy.dataCy(canvas_cursor_sel).click(150, 150, { force: true });
-
-    cy.dataCy('zoom-out').click();
-    cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
-
-    cy.dataCy(process_detection_sel).click();
-
-    cy.wait(['@setRoofProperties', '@detectionSync', '@getDetection', '@getDetectionResultVgg']);
-    cy.get('.MuiAlert-root').contains('La pente et la hauteur du bâtiment ne sont pas encore disponibles.');
   });
 });

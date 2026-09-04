@@ -25,11 +25,11 @@ export const MainStyle: SxProps = {
   },
   '& #annotator-section': {
     width: {
-      xs: '90vw',
-      md: '80vw',
-      lg: '70vw',
+      xs: '97vw',
+      md: '94vw',
+      lg: '92vw',
     },
-    height: '600px',
+    height: '100%',
     mb: 20,
     position: 'relative',
     '& > .MuiButton-root': {
@@ -114,9 +114,9 @@ export const MainStyle: SxProps = {
   },
   '& .progress-bar-detection': {
     width: {
-      xs: '90vw',
-      md: '80vw',
-      lg: '70vw',
+      xs: '97vw',
+      md: '94vw',
+      lg: '92vw',
     },
     py: 10,
     '& .MuiPaper-root:first-child': {

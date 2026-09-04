@@ -34,13 +34,10 @@ export const saveAnnotationsMapper = (
     metadata: {
       area: roofPolygon.surface || +getCached.area().toFixed(2),
       covering: properties.revetement_1,
-      height: properties.roof_height_in_meters,
-      slope: properties.roof_slope_in_degrees,
       wearLevel: properties.usure_rate,
       wearness: getWearness(properties.usure_rate || 0),
       moldRate: properties.moisissure_rate,
       revetement1: properties.revetement_1,
-      revetement2: properties.revetement_2,
       humidityLevel: properties.humidite_rate,
       obstacle: properties.obstacle,
       fillColor: '#00ff0000',
@@ -77,7 +74,6 @@ export const saveAnnotationsMapper = (
     properties: {
       global_rate_type: properties.global_rate_type,
       global_rate_value: properties.global_rate_value,
-      roofHeight: properties.roof_height_in_meters,
       llm,
       roofDelimiter: getCached.roofDelimiterLongLat(),
     },

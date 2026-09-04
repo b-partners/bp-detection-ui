@@ -50,7 +50,6 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
             geojsonBody: result?.geoJson as any,
             useGeoJson: true,
             imageSrc: result?.result?.geoJsonZone?.[0]?.properties?.original_image_url || '',
-            roofDelimiter: result?.result?.roofDelimiter,
           },
         });
       },
@@ -128,7 +127,7 @@ export const AnnotatorSection: FC<{ imageSrc: string; areaPictureDetails: AreaPi
           </Button>
         </Box>
       </Stack>
-      <Box minHeight='500px'>
+      <Box minHeight='500px' className='annotator-canvas-wrapper'>
         <AnnotatorCanvasCustom
           isLoading={isPending}
           allowAnnotation={polygons.length === 0}

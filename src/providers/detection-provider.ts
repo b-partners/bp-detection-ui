@@ -1,6 +1,7 @@
 import { cache, getCached, ParamsUtilities } from '@/utilities';
 import { v4 } from 'uuid';
 import { bpAnnotationApi, bpProspectApi } from './api';
+import { demoProcessDetection, demoSendImageToDetect, demoSendPdfToMail, demoSendRooferInformationsToMail, isDemoApiKey } from './demo';
 import { RooferInformations } from './type';
 import { userInfoProvider } from './user-info-provider';
 
@@ -37,8 +38,10 @@ const getGeoJsonTemlate = (layers: string, zoneName: string, emailReceiver?: str
 };
 
 export const processDetection = async (layers: string, address: string, coordinates?: Array<Array<Array<number>>>, emailReceiver?: string) => {
-  const detectionId = v4();
   const { apiKey } = ParamsUtilities.getQueryParams();
+  if (isDemoApiKey(apiKey)) return demoProcessDetection(address);
+
+  const detectionId = v4();
   cache.detectionId(detectionId);
 
   const geoJson = getGeoJsonTemlate(
@@ -94,35 +97,11 @@ export const processDetection = async (layers: string, address: string, coordina
   return { result, geoJson };
 };
 
-export const getDetectionResult = async (apiKey: string) => {
-  const detectionId = getCached.detectionId() ?? '';
-  const data = await fetch(`${baseUrl}/detections/${detectionId}`, {
-    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
-    method: 'GET',
-  });
-  const result = await data.json();
-
-  if (!result.geoJsonZone[0]?.properties?.vgg_file_url) throw new Error('Not done');
-
-  return result;
-};
-
-export const initiateRoofProperties = async (apiKey: string) => {
-  const detectionId = getCached.detectionId() ?? '';
-  const result = await fetch(`${baseUrl}/detections/${detectionId}/roofs/properties`, {
-    headers: { 'x-api-key': apiKey, 'content-type': 'application/json' },
-    method: 'PUT',
-  });
-  const data = await result.json();
-
-  if (result.status !== 200) throw new Error('Not done');
-  cache.isRoofPropertiesRequestDone(true);
-  return data;
-};
-
 export const sendImageToDetect = async (image: File) => {
-  const detectionId = getCached.detectionId();
   const { apiKey } = ParamsUtilities.getQueryParams();
+  if (isDemoApiKey(apiKey)) return demoSendImageToDetect();
+
+  const detectionId = getCached.detectionId();
   const result = await fetch(`${baseUrl}/detections/${detectionId}/image`, {
     method: 'POST',
     body: image,
@@ -136,8 +115,10 @@ export const sendImageToDetect = async (image: File) => {
 };
 
 export const sendPdfToMail = async (pdf: File) => {
-  const detectionId = getCached.detectionId();
   const { apiKey } = ParamsUtilities.getQueryParams();
+  if (isDemoApiKey(apiKey)) return demoSendPdfToMail();
+
+  const detectionId = getCached.detectionId();
   const result = await fetch(`${baseUrl}/detections/${detectionId}/pdf`, {
     method: 'POST',
     body: pdf,
@@ -151,8 +132,10 @@ export const sendPdfToMail = async (pdf: File) => {
 };
 
 export const sendRooferInformationsToMail = async (info: RooferInformations) => {
-  const detectionId = getCached.detectionId();
   const { apiKey } = ParamsUtilities.getQueryParams();
+  if (isDemoApiKey(apiKey)) return demoSendRooferInformationsToMail();
+
+  const detectionId = getCached.detectionId();
   const result = await fetch(`${baseUrl}/detections/${detectionId}/roofer/email`, {
     method: 'POST',
     body: JSON.stringify(info),
