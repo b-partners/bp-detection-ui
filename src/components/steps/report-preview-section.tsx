@@ -1,13 +1,6 @@
-import type { SvgIconComponent } from '@mui/icons-material';
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
-import CleaningServicesOutlinedIcon from '@mui/icons-material/CleaningServicesOutlined';
-import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
-import EventRepeatOutlinedIcon from '@mui/icons-material/EventRepeatOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import TrackChangesOutlinedIcon from '@mui/icons-material/TrackChangesOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { ReportPreviewStyle as style } from './styles';
 
@@ -15,7 +8,6 @@ type IdentityRow = { label: string; value: string; highlight?: boolean; placehol
 type HealthBar = { label: string; value: string; ratio: number; alert?: boolean };
 type HealthFlag = { label: string; value: string };
 type Grade = { letter: string; variant: string; label: string };
-type Advice = { Icon: SvgIconComponent; title: string; description: string; variant: 'search' | 'broom' | 'pick' | 'calendar' };
 
 const identityRows: IdentityRow[] = [
   { label: 'Surface totale', value: '201,73 m²' },
@@ -47,33 +39,6 @@ const grades: Grade[] = [
 ];
 
 const selectedGrade = 'E';
-
-const advices: Advice[] = [
-  {
-    Icon: SearchOutlinedIcon,
-    title: 'Inspection ciblée',
-    description: 'Vérifier les zones de moisissure étendue relevées sur plusieurs pans de la toiture, en particulier autour des cheminées.',
-    variant: 'search',
-  },
-  {
-    Icon: CleaningServicesOutlinedIcon,
-    title: 'Entretien recommandé',
-    description: 'Procéder à un démoussage complet pour traiter la moisissure détectée sur une large partie de la toiture.',
-    variant: 'broom',
-  },
-  {
-    Icon: ConstructionOutlinedIcon,
-    title: 'Travaux à envisager',
-    description: "Envisager le remplacement des tuiles les plus atteintes et vérifier l'étanchéité autour des cheminées et obstacles.",
-    variant: 'pick',
-  },
-  {
-    Icon: EventRepeatOutlinedIcon,
-    title: 'Suivi annuel',
-    description: "Le niveau de dégradation détecté justifie une expertise terrain rapide pour confirmer l'étendue des travaux à prévoir.",
-    variant: 'calendar',
-  },
-];
 
 export const ReportPreviewSection = () => {
   return (
@@ -167,32 +132,6 @@ export const ReportPreviewSection = () => {
             </Typography>
           </Stack>
         </Box>
-      </Box>
-
-      <Box className='advice-panel'>
-        <Stack direction='row' className='advice-header'>
-          <Box className='advice-header-icon'>
-            <AutoAwesomeOutlinedIcon fontSize='inherit' />
-          </Box>
-          <Typography className='advice-header-title'>Conseiller IA personnalisé</Typography>
-        </Stack>
-        <Box className='advice-grid'>
-          {advices.map(({ Icon, title, description, variant }) => (
-            <Stack direction='row' className='advice-item' key={title}>
-              <Box className={`advice-icon advice-icon-${variant}`}>
-                <Icon fontSize='inherit' />
-              </Box>
-              <Box>
-                <Typography className='advice-title'>{title}</Typography>
-                <Typography className='advice-desc'>{description}</Typography>
-              </Box>
-            </Stack>
-          ))}
-        </Box>
-        <Stack direction='row' className='advice-disclaimer'>
-          <WarningAmberOutlinedIcon fontSize='inherit' />
-          <span>Rapport généré par IA statistique nécessitant confirmation par votre expert toiture.</span>
-        </Stack>
       </Box>
     </Stack>
   );
