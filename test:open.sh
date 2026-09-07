@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+export NODE_OPTIONS="--max-old-space-size=4096"
 npm run dev -- --port 3000 & 
 PID1=$!
 npx cypress open --e2e & 

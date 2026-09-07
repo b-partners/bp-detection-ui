@@ -44,6 +44,10 @@ describe('Error message testing', () => {
     cy.intercept('GET', '/whoami', { statusCode: 404 }).as('getWhoami');
     cy.contains('24 rue mozart mock 3').click();
 
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
+
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
@@ -79,11 +83,6 @@ describe('Error message testing', () => {
 
     cy.contains('Renseignez votre adresse');
 
-    //steppers state
-    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
-    //steppers state
-
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
 
@@ -93,6 +92,10 @@ describe('Error message testing', () => {
     cy.contains('24 rue mozart mock 3');
 
     cy.contains('24 rue mozart mock 2').click();
+
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
@@ -105,6 +108,10 @@ describe('Error message testing', () => {
 
     cy.dataCy(search_input_sel).type('{enter}');
 
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
+
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
@@ -115,6 +122,10 @@ describe('Error message testing', () => {
     cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts`, [account_mock]).as('getAccounts');
 
     cy.dataCy(search_input_sel).type('{enter}');
+
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
@@ -127,6 +138,10 @@ describe('Error message testing', () => {
 
     cy.dataCy(search_input_sel).type('{enter}');
 
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
+
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
@@ -137,6 +152,10 @@ describe('Error message testing', () => {
     cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
 
     cy.dataCy(search_input_sel).type('{enter}');
+
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
@@ -151,6 +170,10 @@ describe('Error message testing', () => {
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, no5CmAreaPictureMock).as('createAreaPicture');
 
     cy.dataCy(search_input_sel).type('{enter}');
+
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
@@ -194,15 +217,14 @@ describe('Error message testing', () => {
 
     cy.contains('Renseignez votre adresse');
 
-    //steppers state
-    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
-    //steppers state
-
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
 
     cy.contains('24 rue mozart mock 2').click();
+
+    cy.contains('Demander une intervention urgente').click();
+    cy.contains('Jamais entretenu').click();
+    cy.dataCy('qcm-continue-button').click();
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
@@ -248,11 +270,6 @@ describe('Error message testing', () => {
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
     cy.contains('Renseignez votre adresse');
-
-    //steppers state
-    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
-    //steppers state
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');

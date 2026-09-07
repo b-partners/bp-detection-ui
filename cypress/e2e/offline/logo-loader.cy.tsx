@@ -35,7 +35,7 @@ describe('Roofer dynamic logo', () => {
     cy.visit(offlineUrlWithApiKey);
     cy.contains('Renseignez votre adresse');
     // there is no roofer logo so the app use the default image
-    cy.get('.logo').should('have.attr', 'src').and('include', defaultRooferLogo);
+    cy.get('.partner-card-logo img').should('have.attr', 'src').and('include', defaultRooferLogo);
   });
 
   it('Test if the roofer have correct logo', () => {
@@ -46,6 +46,6 @@ describe('Roofer dynamic logo', () => {
     cy.visit(offlineUrlWithApiKey);
     cy.contains('Renseignez votre adresse');
     // use the roofer logo as base64
-    cy.get('.logo').should('have.attr', 'src').and('include', base64Indicator);
+    cy.get('.partner-card-logo img').should('have.attr', 'src').and('include', base64Indicator);
   });
 });

@@ -68,7 +68,7 @@ const HaveTheCorrectImagePrecision5Cm = {
 
     cy.dataCy(process_detection_sel).click();
 
-    cy.contains('Veuillez saisir les informations suivantes.');
+    cy.contains("Renseignez vos informations pour recevoir les résultats de l'analyse de votre toiture.");
 
     cy.dataName('lastName').type('Doe');
     cy.dataName('firstName').type('John');
@@ -95,8 +95,8 @@ xdescribe('test detection on ' + addressToDetect, () => {
     });
     cy.prodRequestUtilities();
     //steppers state
-    cy.contains('Renseignez votre adresse').should('have.class', 'Mui-active');
-    cy.contains('Visualisez et délimitez votre toiture').should('not.have.class', 'Mui-active');
+    cy.contains('Renseignez votre adresse').closest('.step-item').should('have.class', 'active');
+    cy.contains('Visualisez et délimitez votre toiture').closest('.step-item').should('not.have.class', 'active');
     //steppers state
 
     cy.contains("Clé d'API invalide");
