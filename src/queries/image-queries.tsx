@@ -1,5 +1,6 @@
 import { ErrorMessageDialog, LegalFilesPdfRenderer } from '@/components';
 import { useDialog, useStep } from '@/hooks';
+import { isDemoApiKey } from '@/providers/demo';
 import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -43,16 +44,18 @@ export const useQueryImageFromAddress = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const mutationFn = async (userInfo: ProspectInfo) => {
-    const token = await (executeRecaptcha as Function)('get_image');
     const { apiKey } = ParamsUtilities.getQueryParams();
 
-    const url = new URL(`${process.env.REACT_APP_BPARTNERS_API_URL}/captcha/token`);
-    url.searchParams.set('token', token);
+    if (!isDemoApiKey(apiKey)) {
+      const token = await (executeRecaptcha as Function)('get_image');
+      const url = new URL(`${process.env.REACT_APP_BPARTNERS_API_URL}/captcha/token`);
+      url.searchParams.set('token', token);
 
-    const result = await fetch(url, { headers: { 'x-api-key': apiKey } });
-    const data = await result.json();
+      const result = await fetch(url, { headers: { 'x-api-key': apiKey } });
+      const data = await result.json();
 
-    if (!data || result.status !== 200) throw new Error();
+      if (!data || result.status !== 200) throw new Error();
+    }
 
     const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
 

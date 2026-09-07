@@ -13,7 +13,7 @@ export const useLocationQuery = (sessionId: string) => {
     return result;
   };
 
-  const { mutate, data } = useMutation({
+  const { mutate, data, isPending } = useMutation({
     mutationFn,
     mutationKey: ['findlocation'],
     onError: (e: any) => {
@@ -21,5 +21,5 @@ export const useLocationQuery = (sessionId: string) => {
     },
   });
 
-  return { mutate, data };
+  return { mutate, data, isPending };
 };

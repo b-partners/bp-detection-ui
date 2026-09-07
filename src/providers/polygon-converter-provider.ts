@@ -1,9 +1,11 @@
 import { ParamsUtilities } from '@/utilities';
 import { GeojsonReturn } from '@bpartners/annotator-component';
 import { bpAnnotationApi } from './api';
+import { demoPointsToGeoPoints, demoReferencerPointsToGeoPoints, isDemoApiKey } from './demo';
 import { userInfoProvider } from './user-info-provider';
 
 export const pointsToGeoPoints = async (body: any) => {
+  if (isDemoApiKey()) return demoPointsToGeoPoints();
   try {
     const res = await fetch(`${process.env.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL}`, {
       method: 'POST',
@@ -34,6 +36,7 @@ export const geoPointsToPoins = async (geoJson: any) => {
 };
 
 export const referencerPointsToGeoPoints = async (body: any) => {
+  if (isDemoApiKey()) return demoReferencerPointsToGeoPoints();
   try {
     const res = await fetch(process.env.REACT_APP_ANNOTATOR_GEO_REFERENCER_API_URL || '', {
       method: 'POST',

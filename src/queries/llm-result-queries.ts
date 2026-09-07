@@ -1,4 +1,5 @@
 import { fromAnalyseResultToDomain } from '@/components/steps';
+import { demoLlmResultHtml, isDemoApiKey } from '@/providers/demo';
 import { cache, getCached } from '@/utilities';
 import { useQuery } from '@tanstack/react-query';
 import { Properties } from './types';
@@ -12,6 +13,11 @@ export const useLlmResultQuery = (roofAnnotatorProperties: Properties & { obstac
   const queryFn = async () => {
     let llmResult = getCached.llmResult();
     if (llmResult) return llmResult;
+
+    if (isDemoApiKey()) {
+      cache.llmResult(demoLlmResultHtml);
+      return demoLlmResultHtml;
+    }
 
     const result = await fetch(
       `${baseUrl}?surfaceEnM2=${roof_area_in_m2}&revetement=${fromAnalyseResultToDomain(revetement_1)}&moisissure=${moisissure_rate}&usure=${usure_rate}&obstacles=${JSON.stringify(obstacle)}&risqueFeu=false&fissureCassure=false&noteDegradationGlobale=${global_rate_value}&category=${global_rate_type}&humidit%C3%A9=${humidite_rate}&x-api-key=${apiKey}`
