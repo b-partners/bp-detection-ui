@@ -7,6 +7,7 @@ import { DemoVideoSection } from './demo-video-section';
 import { HeroSection } from './hero-section';
 import { HowItWorksSection } from './how-it-works-section';
 import { LandingFooter } from './landing-footer';
+import { ReportCarouselSection } from './report-carousel-section';
 import { ReportPreviewSection } from './report-preview-section';
 import { GetAddressStepStyle as style } from './styles';
 import { TrustStripSection } from './trust-strip-section';
@@ -26,6 +27,7 @@ export const GetAddressStep = () => {
       <DemoVideoSection />
       <BirdiaTechnologySection />
       <ReportPreviewSection />
+      <ReportCarouselSection />
       <CtaFinalSection />
       <LandingFooter />
     </Stack>

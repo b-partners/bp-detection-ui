@@ -1,32 +1,28 @@
 import type { SvgIconComponent } from '@mui/icons-material';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
-import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
-import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import CleaningServicesOutlinedIcon from '@mui/icons-material/CleaningServicesOutlined';
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import EventRepeatOutlinedIcon from '@mui/icons-material/EventRepeatOutlined';
-import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import TrackChangesOutlinedIcon from '@mui/icons-material/TrackChangesOutlined';
-import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { ReportPreviewStyle as style } from './styles';
 
 type IdentityRow = { label: string; value: string; highlight?: boolean; placeholder?: boolean };
 type HealthBar = { label: string; value: string; ratio: number; alert?: boolean };
 type HealthFlag = { label: string; value: string };
-type Grade = { letter: string; variant: string; title: string; description: string; Icon: SvgIconComponent };
+type Grade = { letter: string; variant: string; label: string };
 type Advice = { Icon: SvgIconComponent; title: string; description: string; variant: 'search' | 'broom' | 'pick' | 'calendar' };
 
 const identityRows: IdentityRow[] = [
   { label: 'Surface totale', value: '201,73 m²' },
   { label: 'Hauteur du bâtiment', value: 'Non renseigné', placeholder: true },
   { label: 'Pente moyenne', value: 'Non renseigné', placeholder: true },
-  { label: 'Revêtement', value: 'Tuiles' },
+  { label: 'Revêtement 1', value: 'Tuiles' },
+  { label: 'Revêtement 2', value: 'Non renseigné', placeholder: true },
   { label: 'Obstacle / Velux', value: 'Oui', highlight: true },
 ];
 
@@ -43,11 +39,11 @@ const healthFlags: HealthFlag[] = [
 ];
 
 const grades: Grade[] = [
-  { letter: 'A', variant: 'good', title: 'Toiture en bon état', description: 'Aucune intervention visible nécessaire', Icon: GppGoodOutlinedIcon },
-  { letter: 'B', variant: 'preventive', title: 'Entretien préventif', description: 'Pour garder la toiture en bonne santé', Icon: BlockOutlinedIcon },
-  { letter: 'C', variant: 'maintenance', title: 'Intervention nécessaire', description: 'Pour ralentir le vieillissement', Icon: BuildOutlinedIcon },
-  { letter: 'D', variant: 'repair', title: 'Réparation prioritaire', description: 'Dégradation visible, risque à traiter', Icon: TrendingUpOutlinedIcon },
-  { letter: 'E', variant: 'critical', title: 'Risque critique', description: 'Intervention urgente à prévoir', Icon: WarningAmberRoundedIcon },
+  { letter: 'A', variant: 'good', label: 'Excellent' },
+  { letter: 'B', variant: 'preventive', label: 'Bon' },
+  { letter: 'C', variant: 'maintenance', label: 'Moyen' },
+  { letter: 'D', variant: 'repair', label: 'Réparation' },
+  { letter: 'E', variant: 'critical', label: 'Critique' },
 ];
 
 const selectedGrade = 'E';
@@ -156,29 +152,16 @@ export const ReportPreviewSection = () => {
               54,87<span className='degradation-unit'>%</span>
             </Typography>
             <Typography className='degradation-caption'>Dégradation globale</Typography>
-            <Stack className='grade-scale'>
-              <Box className='grade-cards'>
-                {grades.map(({ letter, variant, title, description, Icon }) => (
-                  <Box className={`grade-card grade-card-${variant} ${letter === selectedGrade ? 'grade-card-selected' : ''}`} key={letter}>
-                    <Box className='grade-icon'>
-                      <Icon fontSize='inherit' />
-                    </Box>
-                    <Typography className='grade-title'>{title}</Typography>
-                    <Typography className='grade-desc'>{description}</Typography>
-                  </Box>
-                ))}
-              </Box>
-              <Box className='grade-meter'>
-                {grades.map(({ letter, variant }) => (
-                  <Box className='grade-meter-col' key={letter}>
-                    <Box className={`grade-meter-bar grade-meter-bar-${variant}`} />
-                    {letter === selectedGrade ? <Box className='grade-meter-pointer' /> : <Box className='grade-meter-dot' />}
-                  </Box>
-                ))}
-              </Box>
-            </Stack>
+            <Box className='grade-cats'>
+              {grades.map(({ letter, variant, label }) => (
+                <Box className={`grade-cat grade-cat-${variant} ${letter === selectedGrade ? 'grade-cat-active' : ''}`} key={letter}>
+                  <span>{letter}</span>
+                  <small>{label}</small>
+                </Box>
+              ))}
+            </Box>
             <Divider className='card-divider card-divider-dashed' />
-            <Typography className='degradation-verdict'>Risque critique.</Typography>
+            <Typography className='degradation-verdict'>Catégorie E — Risque critique.</Typography>
             <Typography className='degradation-detail'>
               Moisissure très étendue sur plusieurs pans et autour des cheminées. Taux d'usure et d'humidité non mesurés sur cette zone.
             </Typography>
