@@ -10,8 +10,8 @@ import { LandingFooter } from './landing-footer';
 import { ReportCarouselSection } from './report-carousel-section';
 import { ReportPreviewSection } from './report-preview-section';
 import { GetAddressStepStyle as style } from './styles';
-import { TestimonialsSection } from './testimonials-section';
 
+// TestimonialsSection is held back for now at Daniel's request — component kept, just unwired.
 export const GetAddressStep = () => {
   useEffect(() => {
     clearCached.all();
@@ -25,7 +25,6 @@ export const GetAddressStep = () => {
       <BirdiaTechnologySection />
       <ReportPreviewSection />
       <ReportCarouselSection />
-      <TestimonialsSection />
       <CtaFinalSection />
       <LandingFooter />
     </Stack>
