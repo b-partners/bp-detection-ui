@@ -791,6 +791,7 @@ export const BirdiaTechnologyStyle: SxProps = {
   gap: 4,
   '& .section-header': {
     textAlign: 'center',
+    alignItems: 'center',
     gap: 1.5,
     '& .section-title': {
       fontWeight: 800,
