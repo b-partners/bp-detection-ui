@@ -1,33 +1,24 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { AddressSearchForm } from './address-search-form';
 
-type Step = { title: string; subtitle: string; description: string };
+type Step = { title: string; description: string };
 
 const steps: Step[] = [
   {
-    title: 'Renseignez votre adresse',
-    subtitle: 'Saisissez votre adresse',
-    description: 'Tapez simplement votre adresse postale — c’est tout ce dont nous avons besoin.',
+    title: "Renseignez l'adresse",
+    description: 'Une adresse postale suffit — rien à installer.',
   },
   {
-    title: 'Visualisez votre maison en HD',
-    subtitle: 'Haute résolution',
-    description: 'Visualisez votre maison en très haute résolution (5 cm/pixel) via imagerie satellite.',
+    title: 'Visualisez votre toit',
+    description: 'Imagerie aérienne ultra HD (5 cm/pixel) de votre département.',
   },
   {
-    title: 'Lancez le diagnostic',
-    subtitle: 'L’IA analyse votre toit',
-    description: 'Surface, matériaux, usure, moisissure, humidité — détectés automatiquement.',
+    title: 'Analyse par IA',
+    description: 'Surface, pente, matériaux, usure, humidité.',
   },
   {
-    title: 'Comprenez votre rapport',
-    subtitle: 'Rapport détaillé',
-    description: 'Score global, catégorie A-E, conseils pédagogiques de votre artisan couvreur.',
-  },
-  {
-    title: 'Un couvreur vous contacte sous 48 h',
-    subtitle: 'Suivi personnalisé',
-    description: 'L’expert toiture vous rappelle pour parcourir votre pré-diagnostic.',
+    title: 'Votre couvreur vous rappelle',
+    description: 'Suivi personnalisé sous 24 h par votre couvreur.',
   },
 ];
 
@@ -42,13 +33,12 @@ export const HowItWorksSection = () => {
       </Box>
 
       <Box className='steps'>
-        {steps.map(({ title, subtitle, description }, index) => (
+        {steps.map(({ title, description }, index) => (
           <Box className={`step ${index === 0 ? 'active' : ''}`} key={title}>
             <Box className='step-num'>{index + 1}</Box>
             <Typography className='step-title' component='h3'>
               {title}
             </Typography>
-            <Typography className='step-subtitle'>{subtitle}</Typography>
             <Typography className='step-desc'>{description}</Typography>
           </Box>
         ))}

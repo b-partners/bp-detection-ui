@@ -112,6 +112,11 @@ export const HeroSection = () => {
           </Typography>
         </Stack>
       </Box>
+
+      <Box className='hero-banner'>
+        <img src='/assets/images/landing/hero-banner.jpg' alt='Analyse BIRDIA de toitures par imagerie aérienne' />
+      </Box>
+      <Typography className='hero-banner-caption'>Image aérienne très haute résolution · 5 cm/pixel</Typography>
     </Box>
   );
 };
