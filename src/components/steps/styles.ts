@@ -288,56 +288,13 @@ export const GetAddressStepStyle: SxProps = {
   color: REF.text,
 
   // ---- shared section wrappers (centered, capped) ----
-  '& .landing-hero, & .landing-trust, & .landing-howto, & .landing-carousel': {
+  '& .landing-hero, & .landing-howto, & .landing-carousel': {
     width: { xs: '97vw', md: '94vw', lg: '92vw' },
     maxWidth: 1380,
     mx: 'auto',
   },
   '& .landing-howto, & .landing-carousel': {
     py: { xs: 5, md: 8 },
-  },
-  '& .landing-trust': {
-    pt: { xs: 3, md: 4 },
-  },
-
-  // ---- trust strip (key stats) ----
-  '& .trust-strip': {
-    maxWidth: 1180,
-    mx: 'auto',
-    display: 'grid',
-    gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-    borderRadius: REF.radius,
-    overflow: 'hidden',
-    background: `radial-gradient(circle at 20% 20%, #1b2a3a 0%, ${PALETTE_COLORS.forest} 55%, #0a1410 100%)`,
-    boxShadow: '0 12px 40px -12px rgba(0,0,0,0.35)',
-  },
-  '& .trust-cell': {
-    textAlign: 'center',
-    color: REF.card,
-    py: { xs: 2, md: 2.75 },
-    px: 2,
-    borderRight: { md: '1px solid rgba(255,255,255,0.08)' },
-    '&:last-of-type': { borderRight: 0 },
-  },
-  '& .trust-val': {
-    color: REF.card,
-    fontWeight: 900,
-    fontSize: { xs: FONT_SIZES.xl, md: FONT_SIZES['2xl'] },
-    letterSpacing: '-0.02em',
-    lineHeight: 1,
-    display: 'flex',
-    alignItems: 'baseline',
-    justifyContent: 'center',
-    gap: 0.5,
-    '& span': { color: REF.orange, fontSize: '0.75em' },
-  },
-  '& .trust-label': {
-    fontSize: FONT_SIZES.xs,
-    color: 'rgba(255,255,255,0.7)',
-    fontWeight: 600,
-    textTransform: 'uppercase',
-    letterSpacing: '0.06em',
-    mt: 1,
   },
   // hero nav + split use the reference index.html container width (max-width: 1140px; padding: 0 24px)
   '& .landing-hero .top-nav, & .landing-hero .hero-split': {
@@ -452,6 +409,23 @@ export const GetAddressStepStyle: SxProps = {
     '& .hero-note': { mt: 2.5, fontSize: FONT_SIZES.sm, color: REF.textMuted, '& strong': { color: REF.text, fontWeight: 600 } },
   },
 
+  // ---- hero aerial banner ----
+  '& .hero-banner': {
+    width: '100%',
+    mt: { xs: 3, md: 4 },
+    borderRadius: REF.radius,
+    overflow: 'hidden',
+    boxShadow: REF.shadow,
+    '& img': { width: '100%', display: 'block', aspectRatio: '2.75 / 1', objectFit: 'cover' },
+  },
+  '& .hero-banner-caption': {
+    textAlign: 'center',
+    mt: 1.5,
+    fontSize: FONT_SIZES.xs,
+    color: REF.textMuted,
+    fontWeight: 600,
+  },
+
   // ---- FR badge ----
   '& .fr-badge': {
     display: 'inline-flex',
@@ -544,7 +518,7 @@ export const GetAddressStepStyle: SxProps = {
   '& .steps': {
     position: 'relative',
     display: 'grid',
-    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' },
+    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
     gap: { xs: 2, sm: 2.5, md: 2 },
     maxWidth: 1280,
     mx: 'auto',
@@ -585,7 +559,6 @@ export const GetAddressStepStyle: SxProps = {
       mb: 1,
     },
     '& .step-title': { fontWeight: 700, fontSize: FONT_SIZES.sm, color: REF.text, mt: 0.5, lineHeight: 1.3 },
-    '& .step-subtitle': { fontWeight: 700, fontSize: FONT_SIZES.xs, color: REF.text },
     '& .step-desc': { fontSize: FONT_SIZES.xs, color: REF.textMuted, lineHeight: 1.4 },
   },
   '& .step.active .step-num': {
@@ -1167,6 +1140,21 @@ export const ReportPreviewStyle: SxProps = {
       fontSize: FONT_SIZES.md,
     },
   },
+  '& .report-disclaimer': {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1,
+    mt: 1,
+    p: 2,
+    borderRadius: 3,
+    fontWeight: 700,
+    fontSize: FONT_SIZES.sm,
+    textAlign: 'center',
+    color: '#8A6D1B',
+    background: '#FDF3D0',
+    border: '1px solid #F6E4A8',
+    '& svg': { color: '#8A6D1B', fontSize: FONT_SIZES.md, flexShrink: 0 },
+  },
 };
 
 export const TestimonialsStyle: SxProps = {
@@ -1192,13 +1180,6 @@ export const TestimonialsStyle: SxProps = {
     gap: 2,
     '& .section-heading': {
       gap: 1,
-      '& .section-eyebrow': {
-        color: t => (t as Theme).palette.primary.main,
-        fontWeight: 800,
-        letterSpacing: '0.12em',
-        textTransform: 'uppercase',
-        fontSize: FONT_SIZES.xs,
-      },
       '& .section-title': {
         fontWeight: 800,
         lineHeight: 1.1,
@@ -1264,14 +1245,20 @@ export const TestimonialsStyle: SxProps = {
     borderRadius: 4,
     p: 3,
     boxShadow: '0 10px 30px -18px rgba(0,0,0,0.25)',
-    '& .review-mark': {
-      color: t => (t as Theme).palette.primary.light,
+    '& .review-tag': {
+      alignSelf: 'flex-start',
+      px: 1.25,
+      py: 0.4,
+      mb: 1,
+      borderRadius: 999,
+      background: PALETTE_COLORS.peach,
+      color: PALETTE_COLORS.neon_orange,
       fontWeight: 800,
-      lineHeight: 0.6,
-      fontSize: FONT_SIZES['4xl'],
+      letterSpacing: '0.04em',
+      textTransform: 'uppercase',
+      fontSize: '0.65rem',
     },
     '& .review-stars': {
-      mt: 1,
       '& .star': {
         color: '#F5A623',
         fontSize: FONT_SIZES.md,
@@ -1315,54 +1302,6 @@ export const TestimonialsStyle: SxProps = {
         fontSize: FONT_SIZES.xs,
       },
     },
-  },
-  '& .trust-divider': {
-    borderColor: '#EFEAE0',
-    width: '100%',
-  },
-  '& .trust-badges': {
-    display: 'grid',
-    gridTemplateColumns: {
-      xs: '1fr',
-      sm: 'repeat(2, minmax(0, 1fr))',
-      md: 'repeat(4, minmax(0, 1fr))',
-    },
-    gap: { xs: 2, md: 3 },
-    width: '100%',
-  },
-  '& .trust-badge': {
-    alignItems: 'center',
-    gap: 1.5,
-    justifyContent: { xs: 'flex-start', md: 'center' },
-    '& .trust-icon': {
-      flexShrink: 0,
-      width: 44,
-      height: 44,
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: FONT_SIZES.md,
-    },
-    '& .trust-icon-rgpd': { background: '#E4F7E9' },
-    '& .trust-icon-ssl': { background: '#E4EEFF' },
-    '& .trust-icon-rge': { background: '#FDF3D8' },
-    '& .trust-icon-ia': { background: PALETTE_COLORS.peach },
-    '& .trust-title': {
-      fontWeight: 800,
-      color: PALETTE_COLORS.black,
-      fontSize: FONT_SIZES.sm,
-    },
-    '& .trust-subtitle': {
-      color: '#6B7280',
-      fontSize: FONT_SIZES.xs,
-    },
-  },
-  '& .trust-footer': {
-    textAlign: 'center',
-    color: '#6B7280',
-    fontWeight: 600,
-    fontSize: FONT_SIZES.sm,
   },
 };
 

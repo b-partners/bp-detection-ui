@@ -17,14 +17,14 @@ type Feature = {
 const features: Feature[] = [
   {
     Icon: PublicIcon,
-    title: 'Imagerie satellite 5 cm/pixel',
-    description: 'Une résolution équivalente à une photo aérienne professionnelle, sans déplacement ni drone.',
-    tags: [{ label: 'Haute définition' }, { label: 'Sans drone', variant: 'blue' }],
+    title: 'Imagerie aérienne 5 cm/pixel',
+    description: 'Une résolution ultra HD couvrant tout votre département, sans déplacement ni drone à mobiliser.',
+    tags: [{ label: 'Ultra HD' }, { label: 'Sans drone', variant: 'blue' }],
   },
   {
     Icon: AutoAwesomeIcon,
     title: 'Détection IA des pathologies',
-    description: 'Usure, moisissure, humidité, obstacles : chaque anomalie est localisée et quantifiée.',
+    description: 'Usure, moisissure, humidité, fissures, obstacles : chaque anomalie est localisée et quantifiée.',
     tags: [
       { label: 'Usure', variant: 'green' },
       { label: 'Moisissure', variant: 'orange' },
@@ -34,21 +34,35 @@ const features: Feature[] = [
   {
     Icon: StraightenIcon,
     title: 'Mesures automatiques',
-    description: 'Surface, matériaux, obstacles : votre couvreur prépare son intervention avec des données fiables.',
-    tags: [{ label: 'Surface m²' }, { label: 'Matériaux' }, { label: 'Obstacles' }],
+    description: 'Surface, pente, hauteur, matériaux, obstacles : votre couvreur prépare son intervention avec des données fiables.',
+    tags: [{ label: 'Surface m²' }, { label: 'Pente °' }, { label: 'Matériaux' }],
   },
 ];
+
+const FrenchFlag = () => (
+  <span className='fr-flag'>
+    <span className='fr-blue' />
+    <span className='fr-white' />
+    <span className='fr-red' />
+  </span>
+);
 
 export const BirdiaTechnologySection = () => {
   return (
     <Stack sx={style}>
       <Stack className='section-header'>
         <Typography className='section-title' component='h2'>
-          Votre toiture, vue par notre <span className='accent'>IA satellite</span>
+          Votre toiture, pour votre <span className='accent'>entretien, assurance, vente immobilière</span>
         </Typography>
+        <Box className='fr-badge'>
+          <FrenchFlag />
+          <span>
+            <strong>Innovation française</strong> · <em>IA issue de la recherche</em>
+          </span>
+        </Box>
         <Typography className='section-subtitle'>
-          Imagerie haute résolution + intelligence artificielle : nous détectons en quelques secondes les pathologies de votre toit, sans qu'un humain ne monte
-          sur l'échelle.
+          Un rapport simple, avec les détails de votre toiture et ses plans, pour obtenir un devis rapide et argumenter face à votre assureur, un futur
+          acquéreur ou votre couvreur.
         </Typography>
       </Stack>
 

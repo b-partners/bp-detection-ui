@@ -1,6 +1,8 @@
+import { useAccountInfoStore } from '@/queries';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined';
 import TrackChangesOutlinedIcon from '@mui/icons-material/TrackChangesOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { ReportPreviewStyle as style } from './styles';
 
@@ -41,13 +43,16 @@ const grades: Grade[] = [
 const selectedGrade = 'E';
 
 export const ReportPreviewSection = () => {
+  const { name } = useAccountInfoStore();
+  const partnerName = name || 'votre couvreur';
+
   return (
     <Stack sx={style}>
       <Stack className='section-header'>
         <Typography className='section-title' component='h2'>
           Voici ce que vous recevez après l'analyse
         </Typography>
-        <Typography className='section-subtitle'>Exemple réel - toiture en tuiles, 252,51 m², analysée à Toulouse.</Typography>
+        <Typography className='section-subtitle'>Exemple réel — toiture en tuiles, 252,51 m², analysée à Toulouse.</Typography>
       </Stack>
 
       <Box className='report-cards'>
@@ -131,6 +136,14 @@ export const ReportPreviewSection = () => {
           </Stack>
         </Box>
       </Box>
+
+      <Stack direction='row' className='report-disclaimer'>
+        <WarningAmberOutlinedIcon fontSize='inherit' />
+        <span>
+          Disclaimer : rapport généré par IA statistique nécessitant confirmation par votre expert toiture. Votre couvreur {partnerName} valide toujours les
+          données avant devis.
+        </span>
+      </Stack>
     </Stack>
   );
 };

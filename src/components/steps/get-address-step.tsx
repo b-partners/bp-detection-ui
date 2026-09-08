@@ -10,10 +10,8 @@ import { LandingFooter } from './landing-footer';
 import { ReportCarouselSection } from './report-carousel-section';
 import { ReportPreviewSection } from './report-preview-section';
 import { GetAddressStepStyle as style } from './styles';
-import { TrustStripSection } from './trust-strip-section';
+import { TestimonialsSection } from './testimonials-section';
 
-// The testimonials section is held back pending a call on whether to ship
-// fabricated reviews/ratings, or real ones sourced later.
 export const GetAddressStep = () => {
   useEffect(() => {
     clearCached.all();
@@ -22,12 +20,12 @@ export const GetAddressStep = () => {
   return (
     <Stack sx={style} alignItems='center'>
       <HeroSection />
-      <TrustStripSection />
       <HowItWorksSection />
       <DemoVideoSection />
       <BirdiaTechnologySection />
       <ReportPreviewSection />
       <ReportCarouselSection />
+      <TestimonialsSection />
       <CtaFinalSection />
       <LandingFooter />
     </Stack>
