@@ -819,13 +819,6 @@ export const BirdiaTechnologyStyle: SxProps = {
   '& .section-header': {
     textAlign: 'center',
     gap: 1.5,
-    '& .section-eyebrow': {
-      color: t => (t as Theme).palette.primary.main,
-      fontWeight: 800,
-      letterSpacing: '0.12em',
-      textTransform: 'uppercase',
-      fontSize: FONT_SIZES.xs,
-    },
     '& .section-title': {
       fontWeight: 800,
       lineHeight: 1.1,
@@ -966,13 +959,6 @@ export const ReportPreviewStyle: SxProps = {
   '& .section-header': {
     textAlign: 'center',
     gap: 1.5,
-    '& .section-eyebrow': {
-      color: t => (t as Theme).palette.primary.main,
-      fontWeight: 800,
-      letterSpacing: '0.12em',
-      textTransform: 'uppercase',
-      fontSize: FONT_SIZES.xs,
-    },
     '& .section-title': {
       fontWeight: 800,
       lineHeight: 1.1,

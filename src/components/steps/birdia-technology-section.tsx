@@ -43,7 +43,6 @@ export const BirdiaTechnologySection = () => {
   return (
     <Stack sx={style}>
       <Stack className='section-header'>
-        <Typography className='section-eyebrow'>Technologie Birdia</Typography>
         <Typography className='section-title' component='h2'>
           Votre toiture, vue par notre <span className='accent'>IA satellite</span>
         </Typography>

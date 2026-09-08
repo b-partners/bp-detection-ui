@@ -20,7 +20,7 @@ const identityRows: IdentityRow[] = [
 
 const healthBars: HealthBar[] = [
   { label: "Taux d'usure", value: '0 %', ratio: 0 },
-  { label: 'Taux de moisissure', value: '68,59 %', ratio: 0.6859, alert: true },
+  { label: 'Taux de moisissure', value: '28,6 %', ratio: 0.286, alert: true },
   { label: "Taux d'humidité", value: '0 %', ratio: 0 },
 ];
 
@@ -38,13 +38,12 @@ const grades: Grade[] = [
   { letter: 'E', variant: 'critical', label: 'Critique' },
 ];
 
-const selectedGrade = 'E';
+const selectedGrade = 'D';
 
 export const ReportPreviewSection = () => {
   return (
     <Stack sx={style}>
       <Stack className='section-header'>
-        <Typography className='section-eyebrow'>Aperçu d'un rapport Birdia</Typography>
         <Typography className='section-title' component='h2'>
           Voici ce que vous recevez après l'analyse
         </Typography>
@@ -114,7 +113,7 @@ export const ReportPreviewSection = () => {
           <Divider className='card-divider' />
           <Stack className='degradation'>
             <Typography className='degradation-rate'>
-              54,87<span className='degradation-unit'>%</span>
+              22,88<span className='degradation-unit'>%</span>
             </Typography>
             <Typography className='degradation-caption'>Dégradation globale</Typography>
             <Box className='grade-cats'>
@@ -126,9 +125,9 @@ export const ReportPreviewSection = () => {
               ))}
             </Box>
             <Divider className='card-divider card-divider-dashed' />
-            <Typography className='degradation-verdict'>Catégorie E — Risque critique.</Typography>
+            <Typography className='degradation-verdict'>Réparation nécessaire.</Typography>
             <Typography className='degradation-detail'>
-              Moisissure très étendue sur plusieurs pans et autour des cheminées. Taux d'usure et d'humidité non mesurés sur cette zone.
+              Moisissure significative, vigilance autour des cheminées et velux. Pas de fissure ni d'usure visible.
             </Typography>
           </Stack>
         </Box>

@@ -1,5 +1,6 @@
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import { Box, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
 import ReactPlayer from 'react-player';
 import { DemoVideoStyle as style } from './styles';
 
@@ -7,6 +8,8 @@ const DEMO_VIDEO_URL = 'https://www.youtube.com/watch?v=B2qkOKyKkp0';
 const DEMO_VIDEO_POSTER = '/assets/images/landing/video-poster.jpg';
 
 export const DemoVideoSection = () => {
+  const [playing, setPlaying] = useState(false);
+
   return (
     <Stack sx={style}>
       <Stack className='section-header'>
@@ -23,8 +26,9 @@ export const DemoVideoSection = () => {
             width='100%'
             height='100%'
             controls
-            playing={false}
+            playing={playing}
             light={DEMO_VIDEO_POSTER}
+            onClickPreview={() => setPlaying(true)}
             playIcon={
               <Box className='demo-play-icon'>
                 <PlayArrowRoundedIcon fontSize='inherit' />
