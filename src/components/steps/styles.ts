@@ -1042,11 +1042,6 @@ export const ReportPreviewStyle: SxProps = {
     '& .identity-value-highlight': {
       color: t => (t as Theme).palette.primary.main,
     },
-    '& .identity-value-unavailable': {
-      fontWeight: 600,
-      fontStyle: 'italic',
-      color: '#9AA1AC',
-    },
   },
   '& .health-bars': {
     gap: 2,
@@ -1061,11 +1056,8 @@ export const ReportPreviewStyle: SxProps = {
     },
     '& .health-value': {
       fontWeight: 800,
-      color: PALETTE_COLORS.black,
-      fontSize: FONT_SIZES.sm,
-    },
-    '& .health-value-alert': {
       color: t => (t as Theme).palette.primary.main,
+      fontSize: FONT_SIZES.sm,
     },
     '& .health-track': {
       width: '100%',
@@ -1076,10 +1068,7 @@ export const ReportPreviewStyle: SxProps = {
       '& .health-fill': {
         height: '100%',
         borderRadius: 999,
-        background: '#2E9E52',
-      },
-      '& .health-fill-alert': {
-        background: t => (t as Theme).palette.primary.main,
+        background: t => `linear-gradient(90deg, ${(t as Theme).palette.primary.light}, ${(t as Theme).palette.primary.main})`,
       },
     },
   },
@@ -1095,8 +1084,13 @@ export const ReportPreviewStyle: SxProps = {
     },
     '& .flag-value': {
       fontWeight: 800,
-      color: '#9AA1AC',
       fontSize: FONT_SIZES.sm,
+    },
+    '& .flag-value-alert': {
+      color: t => (t as Theme).palette.primary.main,
+    },
+    '& .flag-value-good': {
+      color: '#2E9E52',
     },
   },
   '& .degradation': {
@@ -1126,52 +1120,51 @@ export const ReportPreviewStyle: SxProps = {
       gap: 0.75,
       width: '100%',
       mt: 2,
-      mb: 1.75,
       '& .grade-cat': {
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 0.25,
         py: 1,
         px: 0.5,
         borderRadius: 2,
-        background: '#F1F5F9',
-        color: '#94A3B8',
-        opacity: 0.5,
-        transition: 'all 0.2s',
-        '& span': {
-          fontWeight: 800,
-          fontSize: FONT_SIZES.md,
-        },
+        border: '1.5px solid transparent',
+        background: PALETTE_COLORS.cream,
+        color: '#9AA1AC',
         '& small': {
           fontWeight: 700,
           fontSize: '0.55rem',
           textTransform: 'uppercase',
           letterSpacing: '0.02em',
+          lineHeight: 1.2,
         },
       },
-      '& .grade-cat-good': { background: '#DCFCE7', color: '#15803D' },
-      '& .grade-cat-preventive': { background: '#D1FAE5', color: '#047857' },
-      '& .grade-cat-maintenance': { background: '#FEF9C3', color: '#A16207' },
-      '& .grade-cat-repair': { background: '#FED7AA', color: '#9A3412' },
-      '& .grade-cat-critical': { background: '#FECACA', color: '#991B1B' },
       '& .grade-cat-active': {
-        opacity: 1,
-        transform: 'scale(1.1)',
-        border: t => `2px solid ${(t as Theme).palette.primary.main}`,
+        borderColor: t => (t as Theme).palette.primary.main,
+        color: t => (t as Theme).palette.primary.main,
         boxShadow: '0 6px 16px -6px rgba(255,82,27,0.4)',
       },
+    },
+    '& .grade-meter': {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+      gap: 0.75,
+      width: '100%',
+      mt: 1,
+      mb: 1.75,
+      '& .grade-meter-bar': {
+        height: 6,
+        borderRadius: 999,
+      },
+      '& .grade-meter-bar-good': { background: '#47BE62' },
+      '& .grade-meter-bar-preventive': { background: '#8CC63F' },
+      '& .grade-meter-bar-maintenance': { background: '#F5CE3E' },
+      '& .grade-meter-bar-repair': { background: '#F0883E' },
+      '& .grade-meter-bar-critical': { background: '#EF4444' },
     },
     '& .degradation-verdict': {
       color: t => (t as Theme).palette.primary.main,
       fontWeight: 800,
       fontSize: FONT_SIZES.md,
-    },
-    '& .degradation-detail': {
-      color: '#6B7280',
-      fontSize: FONT_SIZES.sm,
-      mt: 1,
     },
   },
 };

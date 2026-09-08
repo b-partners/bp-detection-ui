@@ -4,41 +4,41 @@ import TrackChangesOutlinedIcon from '@mui/icons-material/TrackChangesOutlined';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { ReportPreviewStyle as style } from './styles';
 
-type IdentityRow = { label: string; value: string; highlight?: boolean; placeholder?: boolean };
-type HealthBar = { label: string; value: string; ratio: number; alert?: boolean };
-type HealthFlag = { label: string; value: string };
+type IdentityRow = { label: string; value: string; highlight?: boolean };
+type HealthBar = { label: string; value: string; ratio: number };
+type HealthFlag = { label: string; value: string; tone: 'alert' | 'good' };
 type Grade = { letter: string; variant: string; label: string };
 
 const identityRows: IdentityRow[] = [
-  { label: 'Surface totale', value: '201,73 m²' },
-  { label: 'Hauteur du bâtiment', value: 'Non renseigné', placeholder: true },
-  { label: 'Pente moyenne', value: 'Non renseigné', placeholder: true },
-  { label: 'Revêtement 1', value: 'Tuiles' },
-  { label: 'Revêtement 2', value: 'Non renseigné', placeholder: true },
+  { label: 'Surface totale', value: '252,51 m²' },
+  { label: 'Surface rampante', value: '247,16 m²' },
+  { label: 'Pente dominante', value: '23 °' },
+  { label: 'Nombre de pans', value: '4' },
+  { label: 'Revêtement principal', value: 'Tuiles' },
   { label: 'Obstacle / Velux', value: 'Oui', highlight: true },
 ];
 
 const healthBars: HealthBar[] = [
-  { label: "Taux d'usure", value: '0 %', ratio: 0 },
-  { label: 'Taux de moisissure', value: '28,6 %', ratio: 0.286, alert: true },
-  { label: "Taux d'humidité", value: '0 %', ratio: 0 },
+  { label: "Taux d'usure", value: '20 %', ratio: 0.2 },
+  { label: 'Taux de moisissure', value: '60 %', ratio: 0.6 },
+  { label: "Taux d'humidité", value: '10 %', ratio: 0.1 },
 ];
 
 const healthFlags: HealthFlag[] = [
-  { label: 'Mutation', value: 'Néant' },
-  { label: 'Fissure / Cassure', value: 'Néant' },
-  { label: 'Risque de feu', value: 'Non' },
+  { label: 'Mutation', value: 'Dégradation', tone: 'alert' },
+  { label: 'Fissure / Cassure', value: 'Non', tone: 'good' },
+  { label: 'Risque végétation / feu', value: 'Oui', tone: 'alert' },
 ];
 
 const grades: Grade[] = [
-  { letter: 'A', variant: 'good', label: 'Excellent' },
-  { letter: 'B', variant: 'preventive', label: 'Bon' },
-  { letter: 'C', variant: 'maintenance', label: 'Moyen' },
-  { letter: 'D', variant: 'repair', label: 'Réparation' },
-  { letter: 'E', variant: 'critical', label: 'Critique' },
+  { letter: 'A', variant: 'good', label: 'Bon état' },
+  { letter: 'B', variant: 'preventive', label: 'Entretien préventif' },
+  { letter: 'C', variant: 'maintenance', label: 'Intervention nécessaire' },
+  { letter: 'D', variant: 'repair', label: 'Réparation prioritaire' },
+  { letter: 'E', variant: 'critical', label: 'Risque critique' },
 ];
 
-const selectedGrade = 'D';
+const selectedGrade = 'E';
 
 export const ReportPreviewSection = () => {
   return (
@@ -47,7 +47,7 @@ export const ReportPreviewSection = () => {
         <Typography className='section-title' component='h2'>
           Voici ce que vous recevez après l'analyse
         </Typography>
-        <Typography className='section-subtitle'>Exemple réel - toiture en tuiles, 201,73 m², analysée à Toulouse.</Typography>
+        <Typography className='section-subtitle'>Exemple réel - toiture en tuiles, 252,51 m², analysée à Toulouse.</Typography>
       </Stack>
 
       <Box className='report-cards'>
@@ -60,12 +60,10 @@ export const ReportPreviewSection = () => {
           </Stack>
           <Divider className='card-divider' />
           <Stack className='identity-rows'>
-            {identityRows.map(({ label, value, highlight, placeholder }) => (
+            {identityRows.map(({ label, value, highlight }) => (
               <Stack direction='row' className='identity-row' key={label}>
                 <Typography className='identity-label'>{label}</Typography>
-                <Typography className={`identity-value ${highlight ? 'identity-value-highlight' : ''} ${placeholder ? 'identity-value-unavailable' : ''}`}>
-                  {value}
-                </Typography>
+                <Typography className={`identity-value ${highlight ? 'identity-value-highlight' : ''}`}>{value}</Typography>
               </Stack>
             ))}
           </Stack>
@@ -80,24 +78,24 @@ export const ReportPreviewSection = () => {
           </Stack>
           <Divider className='card-divider' />
           <Stack className='health-bars'>
-            {healthBars.map(({ label, value, ratio, alert }) => (
+            {healthBars.map(({ label, value, ratio }) => (
               <Box className='health-bar' key={label}>
                 <Stack direction='row' className='health-bar-head'>
                   <Typography className='health-label'>{label}</Typography>
-                  <Typography className={`health-value ${alert ? 'health-value-alert' : ''}`}>{value}</Typography>
+                  <Typography className='health-value'>{value}</Typography>
                 </Stack>
                 <Box className='health-track'>
-                  <Box className={`health-fill ${alert ? 'health-fill-alert' : ''}`} sx={{ width: `${Math.max(ratio * 100, 3)}%` }} />
+                  <Box className='health-fill' sx={{ width: `${ratio * 100}%` }} />
                 </Box>
               </Box>
             ))}
           </Stack>
           <Divider className='card-divider card-divider-dashed' />
           <Stack className='health-flags'>
-            {healthFlags.map(({ label, value }) => (
+            {healthFlags.map(({ label, value, tone }) => (
               <Stack direction='row' className='health-flag' key={label}>
                 <Typography className='flag-label'>{label}</Typography>
-                <Typography className='flag-value'>{value}</Typography>
+                <Typography className={`flag-value flag-value-${tone}`}>{value}</Typography>
               </Stack>
             ))}
           </Stack>
@@ -113,22 +111,23 @@ export const ReportPreviewSection = () => {
           <Divider className='card-divider' />
           <Stack className='degradation'>
             <Typography className='degradation-rate'>
-              22,88<span className='degradation-unit'>%</span>
+              66,0<span className='degradation-unit'>%</span>
             </Typography>
             <Typography className='degradation-caption'>Dégradation globale</Typography>
             <Box className='grade-cats'>
-              {grades.map(({ letter, variant, label }) => (
-                <Box className={`grade-cat grade-cat-${variant} ${letter === selectedGrade ? 'grade-cat-active' : ''}`} key={letter}>
-                  <span>{letter}</span>
+              {grades.map(({ letter, label }) => (
+                <Box className={`grade-cat ${letter === selectedGrade ? 'grade-cat-active' : ''}`} key={letter}>
                   <small>{label}</small>
                 </Box>
               ))}
             </Box>
+            <Box className='grade-meter'>
+              {grades.map(({ letter, variant }) => (
+                <Box className={`grade-meter-bar grade-meter-bar-${variant}`} key={letter} />
+              ))}
+            </Box>
             <Divider className='card-divider card-divider-dashed' />
-            <Typography className='degradation-verdict'>Réparation nécessaire.</Typography>
-            <Typography className='degradation-detail'>
-              Moisissure significative, vigilance autour des cheminées et velux. Pas de fissure ni d'usure visible.
-            </Typography>
+            <Typography className='degradation-verdict'>Risque critique — intervention urgente à prévoir</Typography>
           </Stack>
         </Box>
       </Box>
