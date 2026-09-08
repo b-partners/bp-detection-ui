@@ -34,10 +34,10 @@ const healthFlags: HealthFlag[] = [
 
 const grades: Grade[] = [
   { letter: 'A', variant: 'good', label: 'Bon état' },
-  { letter: 'B', variant: 'preventive', label: 'Entretien préventif' },
-  { letter: 'C', variant: 'maintenance', label: 'Intervention nécessaire' },
-  { letter: 'D', variant: 'repair', label: 'Réparation prioritaire' },
-  { letter: 'E', variant: 'critical', label: 'Risque critique' },
+  { letter: 'B', variant: 'preventive', label: 'Préventif' },
+  { letter: 'C', variant: 'maintenance', label: 'Nécessaire' },
+  { letter: 'D', variant: 'repair', label: 'Prioritaire' },
+  { letter: 'E', variant: 'critical', label: 'Critique' },
 ];
 
 const selectedGrade = 'E';
