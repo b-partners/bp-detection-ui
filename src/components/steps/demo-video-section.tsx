@@ -1,32 +1,42 @@
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import { Box, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
 import ReactPlayer from 'react-player';
 import { DemoVideoStyle as style } from './styles';
 
 const DEMO_VIDEO_URL = 'https://www.youtube.com/watch?v=B2qkOKyKkp0';
+const DEMO_VIDEO_POSTER = '/assets/images/landing/video-poster.jpg';
 
 export const DemoVideoSection = () => {
+  const [playing, setPlaying] = useState(false);
+
   return (
     <Stack sx={style}>
       <Stack className='section-header'>
-        <Typography className='section-eyebrow'>Démonstration</Typography>
         <Typography className='section-title' component='h2'>
-          Voyez BIRDIA <span className='accent'>en action</span>
+          Voir la démo en <span className='accent'>30 secondes</span>
         </Typography>
-        <Typography className='section-subtitle'>Une adresse, une image satellite, un diagnostic complet — découvrez le parcours en vidéo.</Typography>
+        <Typography className='section-subtitle'>Découvrez le rapport type que reçoivent nos utilisateurs.</Typography>
       </Stack>
 
       <Box className='demo-card'>
-        <Stack direction='row' className='demo-topbar'>
-          <Box className='demo-badge'>
-            <Box className='dot' />
-            <span>Démo</span>
-          </Box>
-          <Typography className='demo-topbar-title'>Comment ça marche · Analyse de votre toiture en 4 étapes</Typography>
-        </Stack>
-
         <Box className='demo-player'>
-          <ReactPlayer src={DEMO_VIDEO_URL} width='100%' height='100%' controls playing={false} light />
+          <ReactPlayer
+            src={DEMO_VIDEO_URL}
+            width='100%'
+            height='100%'
+            controls
+            playing={playing}
+            light={DEMO_VIDEO_POSTER}
+            onClickPreview={() => setPlaying(true)}
+            playIcon={
+              <Box className='demo-play-icon'>
+                <PlayArrowRoundedIcon fontSize='inherit' />
+              </Box>
+            }
+          />
         </Box>
+        <Box className='demo-duration-badge'>Démo · 30 s</Box>
       </Box>
     </Stack>
   );
