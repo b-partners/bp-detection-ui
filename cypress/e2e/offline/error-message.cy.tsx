@@ -168,6 +168,10 @@ describe('Error message testing', () => {
     no5CmAreaPictureMock.actualLayer = { ...area_picture_mock.actualLayer, precisionLevelInCm: 20 };
 
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, no5CmAreaPictureMock).as('createAreaPicture');
+    cy.intercept('GET', `/accounts/${account_mock.id}/files/${area_picture_mock.fileId}/raw**`, {
+      fixture: 'bp-detection-image.png',
+      headers: { 'content-type': 'image/png' },
+    }).as('getImage');
 
     cy.dataCy(search_input_sel).type('{enter}');
 
@@ -179,8 +183,8 @@ describe('Error message testing', () => {
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.contains('Adresse momentanément indisponible.');
-    cy.get('.MuiDialogActions-root > .MuiButtonBase-root').click();
+    // a lower-precision image is now accepted instead of being rejected
+    cy.dataCy('zoom-in');
   });
 
   it('Test get image prospect already exist', () => {

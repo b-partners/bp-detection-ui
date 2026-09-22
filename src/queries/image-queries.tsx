@@ -59,10 +59,6 @@ export const useQueryImageFromAddress = () => {
 
     const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
 
-    if (areaPictureDetails.actualLayer?.precisionLevelInCm !== 5) {
-      throw new Error('areaPicturePrecision');
-    }
-
     const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
 
     return {
