@@ -90,6 +90,19 @@ export const DetectionResultStepStyle: SxProps = {
     justifyContent: { xs: 'center', md: 'flex-start' },
     width: '100%',
   },
+  '& .roof-3d-container': {
+    width: '100%',
+    '& .roof-3d-title': {
+      fontWeight: 800,
+      textTransform: 'uppercase',
+      letterSpacing: '0.02em',
+      color: PALETTE_COLORS.forest,
+      fontSize: {
+        xs: FONT_SIZES.md,
+        md: FONT_SIZES.xl,
+      },
+    },
+  },
   '& .roof-state': {
     width: '100%',
     scrollMarginTop: { xs: 24, md: 48 },

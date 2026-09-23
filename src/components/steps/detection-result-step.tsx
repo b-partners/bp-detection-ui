@@ -3,6 +3,7 @@ import { useStep, useToggle } from '@/hooks';
 import { coveringTypeMap, exportPdfMapper, saveAnnotationsMapper } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
+  useCityJsonQuery,
   useGeojsonQueryResult,
   useLlmResultQuery,
   useNotifyPdfQuery,
@@ -19,7 +20,7 @@ import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import { Alert, Box, Button, Divider, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
+import { AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton, Roof3DViewer } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -78,6 +79,12 @@ export const DetectionResultStep = () => {
   }, [useGeoJson, imageSrc]);
 
   const { data: llmHtmlData, isPending: isLlmHtmlDataPending, isLoading: isLlmHtmlDataLoading } = useLlmResultQuery(data?.properties as any);
+
+  const {
+    data: cityJson,
+    isLoading: isCityJsonLoading,
+    isError: isCityJsonError,
+  } = useCityJsonQuery(image, !isImageLoading && !isGeoJsonResultLoading && !!image);
 
   const { notifyRoofer, isEmailSent, isPending: isEmailSentPending } = useNotifyPdfQuery();
 
@@ -141,6 +148,14 @@ export const DetectionResultStep = () => {
     <FormProvider {...form}>
       <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
         <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
+          {(isCityJsonLoading || isCityJsonError || cityJson) && (
+            <Box className='roof-3d-container' mb={2}>
+              <Typography className='roof-3d-title' component='h3' mb={1}>
+                Modélisation 3D de la toiture
+              </Typography>
+              <Roof3DViewer cityJson={cityJson} isLoading={isCityJsonLoading} isError={isCityJsonError} height='400px' />
+            </Box>
+          )}
           <Box position='relative'>
             {!showLLMResult && (
               <AnnotatorCanvasCustom
