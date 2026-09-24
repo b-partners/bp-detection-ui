@@ -112,7 +112,11 @@ const parseCityJson = (cityJson: CityJsonData) => {
 
     obj.geometry?.forEach((geom: any) => {
       const surfaces: Array<{ type: string }> = geom.semantics?.surfaces ?? [];
-      const texValues: Array<number[][] | null> = geom.appearance?.texture?.default?.values ?? [];
+      // Theme name isn't always literally "default" — use whichever theme is present.
+      const textureThemeName = Object.keys(geom.appearance?.texture ?? {})[0];
+      // Unlike semantics.values, the texture values come back already flat (one entry per
+      // face), so they are indexed directly rather than unwrapped per shell.
+      const texValues: Array<number[][] | null> = geom.appearance?.texture?.[textureThemeName]?.values ?? [];
 
       let normalizedBoundaries: any[];
       let normalizedValues: any[];

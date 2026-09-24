@@ -80,11 +80,14 @@ export const DetectionResultStep = () => {
 
   const { data: llmHtmlData, isPending: isLlmHtmlDataPending, isLoading: isLlmHtmlDataLoading } = useLlmResultQuery(data?.properties as any);
 
+  // Texture from the same image/polygon pair the 2D result draws, so the roof's footprint in
+  // the texture is known rather than assumed — the raw area picture is a different size.
+  const roofPolygonInResultImage = (data?.polygons as DomainPolygonResultType[] | undefined)?.find(({ label }) => label === 'TOIT');
   const {
     data: cityJson,
     isLoading: isCityJsonLoading,
     isError: isCityJsonError,
-  } = useCityJsonQuery(image, !isImageLoading && !isGeoJsonResultLoading && !!image);
+  } = useCityJsonQuery(data?.createdImage, image, roofPolygonInResultImage?.points, !isImageLoading && !isGeoJsonResultLoading);
 
   const { notifyRoofer, isEmailSent, isPending: isEmailSentPending } = useNotifyPdfQuery();
 
@@ -148,14 +151,6 @@ export const DetectionResultStep = () => {
     <FormProvider {...form}>
       <Grid2 ref={stepResultRef} id='result-step-container' sx={style} container spacing={2}>
         <Grid2 size={{ xs: 12, md: 8 }} sx={{ mt: 1 }}>
-          {(isCityJsonLoading || isCityJsonError || cityJson) && (
-            <Box className='roof-3d-container' mb={2}>
-              <Typography className='roof-3d-title' component='h3' mb={1}>
-                Modélisation 3D de la toiture
-              </Typography>
-              <Roof3DViewer cityJson={cityJson} isLoading={isCityJsonLoading} isError={isCityJsonError} height='400px' />
-            </Box>
-          )}
           <Box position='relative'>
             {!showLLMResult && (
               <AnnotatorCanvasCustom
@@ -176,6 +171,11 @@ export const DetectionResultStep = () => {
             )}
             {data?.properties && showLLMResult && (
               <LlmResult width='90%' height='513px' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
+            )}
+            {!showLLMResult && (isCityJsonLoading || isCityJsonError || cityJson) && (
+              <Box className='roof-3d-inset'>
+                <Roof3DViewer cityJson={cityJson} isLoading={isCityJsonLoading} isError={isCityJsonError} height='100%' />
+              </Box>
             )}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
