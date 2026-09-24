@@ -248,6 +248,31 @@ export const llmResultStyle: SxProps = {
   },
 };
 
+export const roof3DViewerStyle: SxProps = {
+  position: 'relative',
+  width: '100%',
+  borderRadius: '12px',
+  overflow: 'hidden',
+  background: '#dfe7ec',
+  '& canvas': {
+    display: 'block',
+  },
+  '& .loading-container, & .error-container': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    '& .MuiStack-root': {
+      alignItems: 'center',
+      gap: 1,
+    },
+  },
+  '& .error-container svg': {
+    fontSize: FONT_SIZES['5xl'],
+  },
+};
+
 export const llmButtonStyle: SxProps = {
   color: 'white',
   '& svg': {

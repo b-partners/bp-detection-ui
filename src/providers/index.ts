@@ -1,5 +1,6 @@
 export * from './annotation-provider';
 export * from './api';
+export * from './city-json-provider';
 export * from './detection-provider';
 export * from './image-provider';
 export * from './location-provider';

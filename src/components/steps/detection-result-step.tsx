@@ -3,6 +3,7 @@ import { useStep, useToggle } from '@/hooks';
 import { coveringTypeMap, exportPdfMapper, saveAnnotationsMapper } from '@/mappers';
 import {
   AnnotationCoveringFromAnalyse,
+  useCityJsonQuery,
   useGeojsonQueryResult,
   useLlmResultQuery,
   useNotifyPdfQuery,
@@ -19,7 +20,7 @@ import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import { Alert, Box, Button, Divider, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton } from '..';
+import { AnnotatorCanvasCustom, DomainPolygonResultType, LlmResult, LlmSwitchButton, Roof3DViewer } from '..';
 import { DetectionResultItem } from './detection-result-item';
 import { DetectionResultStepStyle as style } from './styles';
 
@@ -78,6 +79,15 @@ export const DetectionResultStep = () => {
   }, [useGeoJson, imageSrc]);
 
   const { data: llmHtmlData, isPending: isLlmHtmlDataPending, isLoading: isLlmHtmlDataLoading } = useLlmResultQuery(data?.properties as any);
+
+  // Texture from the same image/polygon pair the 2D result draws, so the roof's footprint in
+  // the texture is known rather than assumed — the raw area picture is a different size.
+  const roofPolygonInResultImage = (data?.polygons as DomainPolygonResultType[] | undefined)?.find(({ label }) => label === 'TOIT');
+  const {
+    data: cityJson,
+    isLoading: isCityJsonLoading,
+    isError: isCityJsonError,
+  } = useCityJsonQuery(data?.createdImage, image, roofPolygonInResultImage?.points, !isImageLoading && !isGeoJsonResultLoading);
 
   const { notifyRoofer, isEmailSent, isPending: isEmailSentPending } = useNotifyPdfQuery();
 
@@ -161,6 +171,11 @@ export const DetectionResultStep = () => {
             )}
             {data?.properties && showLLMResult && (
               <LlmResult width='90%' height='513px' htmlData={llmHtmlData || ''} isLoading={isLlmHtmlDataPending || isLlmHtmlDataLoading} />
+            )}
+            {!showLLMResult && (isCityJsonLoading || isCityJsonError || cityJson) && (
+              <Box className='roof-3d-inset'>
+                <Roof3DViewer cityJson={cityJson} isLoading={isCityJsonLoading} isError={isCityJsonError} height='100%' />
+              </Box>
             )}
           </Box>
           <Box ref={canvasRef} component='canvas' display='none'></Box>
