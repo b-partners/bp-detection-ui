@@ -45,6 +45,17 @@ async function getBigCache<T = any>(key: string): Promise<T | undefined> {
   });
 }
 
+async function clearBigCache(): Promise<boolean> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const request = tx.objectStore(STORE_NAME).clear();
+
+    request.onsuccess = () => resolve(true);
+    request.onerror = () => reject(request.error);
+  });
+}
+
 const getImageName = (shiftNb: ShiftNbDomainType) => `${IMAGE_SRC}-${shiftNb.x}-${shiftNb.y}`;
 
 const setImageSrc = async (imgSrc: string, shiftNb: ShiftNbDomainType) => {
@@ -66,4 +77,5 @@ const getImageSrc = async (shiftNb: ShiftNbDomainType) => {
 export const localDb = {
   setImageSrc,
   getImageSrc,
+  clear: clearBigCache,
 };
