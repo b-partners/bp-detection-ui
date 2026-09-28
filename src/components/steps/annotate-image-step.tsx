@@ -1,7 +1,7 @@
 import { useStep } from '@/hooks';
 import { resolveActiveWmsLayer, resolveWmsLayers } from '@/providers';
 import { useRoofReportQuery } from '@/queries';
-import { ParamsUtilities } from '@/utilities';
+import { getCached, ParamsUtilities } from '@/utilities';
 import { RoofAnnotator } from '@bpartners/roof-analyser';
 import { Box } from '@mui/material';
 import { ROOF_ANALYSER_CONFIG } from './roof-analyser-config';
@@ -11,6 +11,7 @@ export const AnnotateImageStep = () => {
   const { geoSession } = useStep(({ params }) => params);
   const { onPdfExport } = useRoofReportQuery();
   const { apiKey } = ParamsUtilities.getQueryParams();
+  const { accountId, accountHolderId, userId } = getCached.userInfo();
 
   if (!geoSession) return <div></div>;
 
@@ -21,6 +22,9 @@ export const AnnotateImageStep = () => {
       <RoofAnnotator
         {...ROOF_ANALYSER_CONFIG}
         apiKey={apiKey}
+        accountId={accountId ?? undefined}
+        accountHolderId={accountHolderId ?? undefined}
+        userId={userId ?? undefined}
         sessionId={sessionId}
         latitude={position.latitude}
         longitude={position.longitude}
