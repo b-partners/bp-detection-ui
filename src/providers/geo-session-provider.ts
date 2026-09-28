@@ -24,9 +24,8 @@ export interface GeoSession {
 }
 
 /**
- * The records the roof-analyser lon/lat flow expects its host to create before mounting it: the prospect,
- * its area picture under the ids `geoRecordIds` derives from the session, and a draft annotation on it.
- * The area picture's own geo position is the position the map locks onto.
+ * The records the roof analyser expects its host to create before it mounts: the prospect, then an area
+ * picture linked to it and a draft annotation, both under the ids the library derives from the session id.
  */
 export const createGeoSession = async (apiKey: string, userInfo: ProspectInfo): Promise<GeoSession> => {
   try {
@@ -39,35 +38,39 @@ export const createGeoSession = async (apiKey: string, userInfo: ProspectInfo): 
 const createGeoSessionRecords = async (apiKey: string, userInfo: ProspectInfo): Promise<GeoSession> => {
   const { accountId = '', accountHolderId = '' } = await userInfoProvider(apiKey);
   const { address, email, firstName, lastName, phone, comment } = userInfo;
-  const sessionId = v4();
-  const { areaPictureId, annotationId, fileId } = geoRecordIds(sessionId);
 
   const { data: prospects } = await bpProspectApi(apiKey).createProspects(accountHolderId ?? '', [
     { address, id: v4(), status: 'TO_CONTACT', firstName, email, phone, name: lastName, comment } as any,
   ]);
   const prospect: Prospect | undefined = prospects?.[0];
-  cache.prospectId(prospect?.id || '');
+  const prospectId = prospect?.id ?? '';
+  cache.prospectId(prospectId);
 
+  const sessionId = v4();
+  const { areaPictureId, annotationId, fileId } = geoRecordIds(sessionId);
   const annotationApi = bpAnnotationApi(apiKey);
+
   const { data: areaPictureDetails } = await annotationApi.crupdateAreaPictureDetails(accountId ?? '', areaPictureId, {
+    shiftNb: 0,
     address,
     fileId,
     filename: `Layer ${address}`,
+    prospectId,
     zoomLevel: ZoomLevel.BUILDING,
-    prospectId: prospect?.id,
     isExtended: true,
-    zoom: { level: ZoomLevel.BUILDING, number: 20 },
-    isOpaque: true,
-  });
+    downloadImage: false,
+    isOpaque: false,
+  } as any);
 
-  await annotationApi.annotateAreaPicture(accountId ?? '', areaPictureId, annotationId, {
+  const draftAnnotation: AreaPictureAnnotation = {
     id: annotationId,
     idAreaPicture: areaPictureId,
     creationDatetime: new Date(),
     annotations: [],
     properties: { geoSessionId: sessionId },
     isDraft: true,
-  } as any);
+  };
+  await annotationApi.annotateAreaPicture(accountId ?? '', areaPictureId, annotationId, draftAnnotation);
 
   // The library's own geocoder, through the Dashboard API; set before it mounts, so the call carries the apiKey.
   setConfig({ apiKey, apiUrl: API_URL });

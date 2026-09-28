@@ -1,6 +1,6 @@
 import { useStep } from '@/hooks';
 import { useRoofReportQuery } from '@/queries';
-import { ParamsUtilities } from '@/utilities';
+import { getCached, ParamsUtilities } from '@/utilities';
 import { RoofAnnotator } from '@bpartners/roof-analyser';
 import { Box } from '@mui/material';
 import { useMemo } from 'react';
@@ -25,6 +25,9 @@ export const AnnotateImageStep = () => {
       <RoofAnnotator
         {...ROOF_ANALYSER_CONFIG}
         apiKey={apiKey}
+        accountId={accountId ?? undefined}
+        accountHolderId={accountHolderId ?? undefined}
+        userId={userId ?? undefined}
         sessionId={sessionId}
         latitude={position.latitude}
         longitude={position.longitude}
