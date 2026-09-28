@@ -6,7 +6,7 @@ import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { v4 } from 'uuid';
-import { getImageFromAddress, ProspectInfo, sendImageToDetect, updateAreaPicture } from '../providers';
+import { createGeoSession, getImageFromAddress, ProspectInfo, sendImageToDetect, updateAreaPicture } from '../providers';
 import { googleRecaptchaFn } from './google-recaptcha-fn';
 
 const getImageFile = async (areaPictureDetails: AreaPictureDetails) => {
@@ -57,16 +57,7 @@ export const useQueryImageFromAddress = () => {
       if (!data || result.status !== 200) throw new Error();
     }
 
-    const { areaPictureDetails, prospect } = await getImageFromAddress(apiKey, userInfo);
-
-    const { imageAsBase64, imageUrl } = await getImageFile(areaPictureDetails);
-
-    return {
-      areaPictureDetails,
-      fileUrl: imageUrl,
-      fileArrayBuffer: imageAsBase64,
-      prospect,
-    };
+    return createGeoSession(apiKey, userInfo);
   };
 
   const { isPending, data, mutate } = useMutation({
@@ -98,9 +89,7 @@ export const useQueryImageFromAddress = () => {
 
   return {
     isQueryImagePending: isPending,
-    imageSrc: data?.fileArrayBuffer ?? '',
-    areaPictureDetails: data?.areaPictureDetails,
-    prospect: data?.prospect,
+    geoSession: data,
     queryImage: mutate,
   };
 };

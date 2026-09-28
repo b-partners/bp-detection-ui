@@ -24,6 +24,15 @@ const REF = {
   radiusSm: '12px',
 };
 
+export const AnnotateImageStepStyle: SxProps = {
+  width: { xs: '97vw', md: '94vw', lg: '92vw' },
+  height: 'calc(100vh - 160px)',
+  minHeight: '600px',
+  mb: 4,
+  overflow: 'hidden',
+  borderRadius: 2,
+};
+
 export const DetectionResultStepStyle: SxProps = {
   position: 'relative',
   mb: 10,
