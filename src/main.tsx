@@ -23,14 +23,16 @@ const queryClient = new QueryClient({
 });
 
 const Main = () => {
-  const app = (
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <RouterProvider router={routes} />
-        </ThemeProvider>
-      </QueryClientProvider>
-    </StrictMode>
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={process.env.RECAPTCHA_SITE_KEY || ''}>
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>
+            <RouterProvider router={routes} />
+          </ThemeProvider>
+        </QueryClientProvider>
+      </StrictMode>
+    </GoogleReCaptchaProvider>
   );
 
   // Off the Birdia domains the captcha is not checked, so Google's script is not loaded at all.
