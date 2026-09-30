@@ -8,23 +8,25 @@ import { createRoot } from 'react-dom/client';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { RouterProvider } from 'react-router-dom';
 import { clearCached } from './utilities/cache';
+import { isCaptchaEnabled } from './utilities/captcha';
 import { routes } from './utilities/routes';
 import { theme } from './utilities/theme';
 
 const queryClient = new QueryClient();
 
 const Main = () => {
-  return (
-    <GoogleReCaptchaProvider reCaptchaKey={process.env.RECAPTCHA_SITE_KEY || ''}>
-      <StrictMode>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={theme}>
-            <RouterProvider router={routes} />
-          </ThemeProvider>
-        </QueryClientProvider>
-      </StrictMode>
-    </GoogleReCaptchaProvider>
+  const app = (
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <RouterProvider router={routes} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </StrictMode>
   );
+
+  // Off the Birdia domains the captcha is not checked, so Google's script is not loaded at all.
+  return isCaptchaEnabled() ? <GoogleReCaptchaProvider reCaptchaKey={process.env.RECAPTCHA_SITE_KEY || ''}>{app}</GoogleReCaptchaProvider> : app;
 };
 
 // One session per user: erase every cached data before anything renders, so no component can read a previous session's values.

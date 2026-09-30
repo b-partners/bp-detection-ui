@@ -1,7 +1,7 @@
 import { ErrorMessageDialog, LegalFilesPdfRenderer } from '@/components';
 import { useDialog, useStep } from '@/hooks';
 import { isDemoApiKey } from '@/providers/demo';
-import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, localDb, ParamsUtilities } from '@/utilities';
+import { arrayBufferToBase64, arrayBuffeToFile, getFileUrl, isCaptchaEnabled, localDb, ParamsUtilities } from '@/utilities';
 import { AreaPictureDetails, FileType } from '@bpartners/typescript-client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +46,7 @@ export const useQueryImageFromAddress = () => {
   const mutationFn = async (userInfo: ProspectInfo) => {
     const { apiKey } = ParamsUtilities.getQueryParams();
 
-    if (!isDemoApiKey(apiKey)) {
+    if (!isDemoApiKey(apiKey) && isCaptchaEnabled()) {
       const token = await (executeRecaptcha as Function)('get_image');
       const url = new URL(`${process.env.REACT_APP_BPARTNERS_API_URL}/captcha/token`);
       url.searchParams.set('token', token);
