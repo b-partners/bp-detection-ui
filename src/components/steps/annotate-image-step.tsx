@@ -9,7 +9,7 @@ import { AnnotateImageStepStyle as style } from './styles';
 
 export const AnnotateImageStep = () => {
   const { geoSession } = useStep(({ params }) => params);
-  const { onPdfExport } = useRoofReportQuery();
+  const { onPdfExport, onFinish } = useRoofReportQuery();
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountId, accountHolderId, userId } = getCached.userInfo();
   // Ties the analysis project the library opens for the visit to the prospect `createGeoSession` created.
@@ -35,6 +35,7 @@ export const AnnotateImageStep = () => {
         analysisProject={analysisProject}
         rooferButtonMode
         onPdfExport={onPdfExport}
+        onFinish={onFinish}
       />
     </Box>
   );
