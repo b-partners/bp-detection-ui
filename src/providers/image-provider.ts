@@ -39,30 +39,35 @@ export const getImageFromAddress = async (apiKey: string, userInfo: ProspectInfo
 
     return { areaPictureDetails, prospect: prospect?.[0] };
   } catch (error: any) {
-    const notSupportedPattern = /Address or zone [\s\S]* not yet supported/i;
-    const temporarilyUnavailablePattern = /Address or zone [\s\S]* temporarily unavailable/i;
-    const mailProspectAlreadyExist = /Prospect with mail [\s\S]* already exists/i;
+    throw toAddressError(error);
+  }
+};
 
-    if (mailProspectAlreadyExist.test(error?.response?.data?.message)) throw new Error('prospectMailAlreadyExist');
-    if (temporarilyUnavailablePattern.test(error.message)) throw new Error('areaPicturePrecision');
-    if (notSupportedPattern.test(error.message)) throw new Error('zoneNotSupported');
+/** Maps a failed prospect/area picture creation to the coded errors the UI knows how to explain. */
+export const toAddressError = (error: any): Error => {
+  const notSupportedPattern = /Address or zone [\s\S]* not yet supported/i;
+  const temporarilyUnavailablePattern = /Address or zone [\s\S]* temporarily unavailable/i;
+  const mailProspectAlreadyExist = /Prospect with mail [\s\S]* already exists/i;
 
-    if (error?.response?.data?.message?.includes('Provided geojson polygon is too large to be processed synchronously')) {
-      throw new Error('polygonTooBig');
-    }
-    if (
-      error.status === 400 &&
-      error?.response?.data?.message?.includes('Roof analysis consumption ') &&
-      error?.response?.data?.message?.includes(' limit exceeded for free trial period for User.id=')
-    ) {
-      throw new Error('detectionLimitExceeded');
-    } else if (error?.message?.includes('legalFileNotApproved')) {
-      throw new Error('legalFileNotApproved');
-    } else if (error.status === 404) {
-      throw error;
-    } else {
-      throw new Error('getImageError');
-    }
+  if (mailProspectAlreadyExist.test(error?.response?.data?.message)) return new Error('prospectMailAlreadyExist');
+  if (temporarilyUnavailablePattern.test(error.message)) return new Error('areaPicturePrecision');
+  if (notSupportedPattern.test(error.message)) return new Error('zoneNotSupported');
+
+  if (error?.response?.data?.message?.includes('Provided geojson polygon is too large to be processed synchronously')) {
+    return new Error('polygonTooBig');
+  }
+  if (
+    error.status === 400 &&
+    error?.response?.data?.message?.includes('Roof analysis consumption ') &&
+    error?.response?.data?.message?.includes(' limit exceeded for free trial period for User.id=')
+  ) {
+    return new Error('detectionLimitExceeded');
+  } else if (error?.message?.includes('legalFileNotApproved')) {
+    return new Error('legalFileNotApproved');
+  } else if (error.status === 404) {
+    return error;
+  } else {
+    return new Error('getImageError');
   }
 };
 
