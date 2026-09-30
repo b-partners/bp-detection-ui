@@ -9,7 +9,7 @@ import { AnnotateImageStepStyle as style } from './styles';
 
 export const AnnotateImageStep = () => {
   const { geoSession } = useStep(({ params }) => params);
-  const { onPdfExport } = useRoofReportQuery();
+  const { onPdfExport, onFinish } = useRoofReportQuery();
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountId, accountHolderId, userId } = getCached.userInfo();
 
@@ -31,8 +31,9 @@ export const AnnotateImageStep = () => {
         address={areaPictureDetails.address}
         resolveWmsLayers={resolveWmsLayers}
         resolveActiveWmsLayer={resolveActiveWmsLayer}
-        show3D={false}
+        rooferButtonMode
         onPdfExport={onPdfExport}
+        onFinish={onFinish}
       />
     </Box>
   );
