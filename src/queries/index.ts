@@ -9,6 +9,7 @@ export * from './llm-result-queries';
 export * from './location-query';
 export * from './notify-pdf-query';
 export * from './post-detection-queries';
+export * from './roof-report-query';
 export * from './roofer-logo-query';
 export * from './save-annotations-query';
 export * from './types';

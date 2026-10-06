@@ -1,4 +1,5 @@
 import { DomainPolygonType } from '@/components';
+import { localDb } from './local-db';
 
 const USER_ID_ITEM = 'USER_ID_ITEM';
 const ACCOUNT_ID_ITEM = 'ACCOUNT_ID_ITEM';
@@ -142,7 +143,10 @@ export const clearCached = {
   annotationId() {
     localStorage.removeItem(ANNOTATION_ID_ITEM);
   },
-  all() {
+  /** Erases every client-side cache (localStorage, sessionStorage, IndexedDB): one session per user. */
+  async all() {
     localStorage.clear();
+    sessionStorage.clear();
+    await localDb.clear().catch(() => false);
   },
 };

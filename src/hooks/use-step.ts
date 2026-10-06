@@ -1,5 +1,5 @@
 import { DomainPolygonType } from '@/components';
-import { ReferencerGeoJSON } from '@/providers';
+import { GeoSession, ReferencerGeoJSON } from '@/providers';
 import { AreaPictureDetails, Prospect } from '@bpartners/typescript-client';
 import { create } from 'zustand';
 
@@ -16,6 +16,7 @@ interface State {
     useGeoJson?: boolean;
     detection?: any;
     pdfFile?: File;
+    geoSession?: GeoSession;
   };
 }
 
