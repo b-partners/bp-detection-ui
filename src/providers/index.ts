@@ -2,6 +2,7 @@ export * from './annotation-provider';
 export * from './api';
 export * from './city-json-provider';
 export * from './detection-provider';
+export * from './geo-session-provider';
 export * from './image-provider';
 export * from './location-provider';
 export * from './polygon-converter-provider';
