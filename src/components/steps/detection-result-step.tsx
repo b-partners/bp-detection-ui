@@ -224,7 +224,7 @@ export const DetectionResultStep = () => {
           </Box>
           <Box className='disclaimer-container'>
             <Alert variant='filled' color='warning'>
-              Disclaimer : rapport généré par IA statistique nécessitant confirmation par votre expert toiture.
+              Disclaimer : rapport généré par IA statistique nécessitant une confirmation sur site.
             </Alert>
           </Box>
         </Grid2>

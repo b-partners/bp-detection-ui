@@ -55,7 +55,7 @@ export const QcmForm: FC<QcmFormProps> = ({ address }) => {
           <Stack>
             <Typography className='dialog-eyebrow'>Avant de commencer</Typography>
             <Typography className='dialog-title'>Quelques infos pour mieux vous orienter</Typography>
-            <Typography className='dialog-subtitle'>2 questions rapides pour que votre couvreur prépare la meilleure réponse possible.</Typography>
+            <Typography className='dialog-subtitle'>2 questions rapides pour préparer la meilleure analyse possible de votre toiture.</Typography>
           </Stack>
           <Box className='dialog-info'>
             <Info />

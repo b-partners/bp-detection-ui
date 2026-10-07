@@ -47,7 +47,7 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
       <Box className='hero-split'>
         <Box className='partner-card' component='aside'>
           <Box className='partner-logo'>
-            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
+            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo'} />}
           </Box>
 
           <Box className='partner-info'>
@@ -105,7 +105,7 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
             Pré-diagnostiquez votre toiture <span className='accent'>sans monter dessus.</span>
           </Typography>
           <Typography className='hero-lead'>
-            Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Votre couvreur local vous recontacte sous 24 h.
+            Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
           </Typography>
         </Stack>
       </Box>
