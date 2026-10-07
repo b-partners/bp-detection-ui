@@ -11,26 +11,6 @@ const FrenchFlag = () => (
 );
 
 export const HeroSection = () => {
-  const isAccountLoading = useAccountInfoQuery();
-  const { image, name, address, city, postalCode, email, phone, website } = useAccountInfoStore();
-
-  const websiteLabel = website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
-  const websiteUrl = website && (/^https?:\/\//.test(website) ? website : `https://${website}`);
-  const cityLine = [postalCode, city].filter(Boolean).join(' ');
-  const addressLine = [address, cityLine].filter(Boolean).join(', ');
-  const mapsUrl = addressLine && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLine)}`;
-
-  // Try the native mailto first; if no mail client handles it (the window never
-  // loses focus), fall back to Gmail's web compose in a new tab.
-  const handleEmailClick = () => {
-    if (!email) return;
-    const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
-    const timer = window.setTimeout(() => {
-      if (!document.hidden && document.hasFocus()) window.open(gmailHref, '_blank', 'noopener,noreferrer');
-    }, 600);
-    window.addEventListener('blur', () => window.clearTimeout(timer), { once: true });
-  };
-
   return (
     <Box className='landing-hero'>
       <Box className='hero-split'>
@@ -87,6 +67,12 @@ export const HeroSection = () => {
             </>
           )}
         </Box>
+        <Typography className='hero-title' component='h1'>
+          Pré-diagnostiquez votre toiture <span className='accent'>sans monter dessus.</span>
+        </Typography>
+        <Typography className='hero-lead'>
+          Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
+        </Typography>
 
         <Stack className='hero-content'>
           <Box className='fr-badge'>
@@ -102,18 +88,15 @@ export const HeroSection = () => {
             Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
           </Typography>
 
-          <AddressSearchForm primary />
-
-          <Typography className='hero-note'>
-            Gratuit · sans engagement · <strong>2 min</strong>
-          </Typography>
-        </Stack>
-      </Box>
+        <Typography className='hero-note'>
+          Gratuit · sans engagement · <strong>2 min</strong>
+        </Typography>
+      </Stack>
 
       <Box className='hero-banner'>
         <img src='/assets/images/landing/hero-banner.jpg' alt='Analyse BIRDIA de toitures par imagerie aérienne' />
+        <span className='hero-banner-caption'>🛰️ Imagerie aérienne très haute résolution · 5 cm/pixel</span>
       </Box>
-      <Typography className='hero-banner-caption'>Image aérienne très haute résolution · 5 cm/pixel</Typography>
     </Box>
   );
 };
