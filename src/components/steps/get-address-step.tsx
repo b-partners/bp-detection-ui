@@ -1,7 +1,6 @@
 import { clearCached } from '@/utilities';
 import { Stack } from '@mui/material';
 import { useEffect } from 'react';
-import { CtaFinalSection } from './cta-final-section';
 import { HeroSection } from './hero-section';
 import { HowItWorksSection } from './how-it-works-section';
 import { LandingFooter } from './landing-footer';
