@@ -12,20 +12,6 @@ const FrenchFlag = () => (
 export const HeroSection = () => {
   return (
     <Box className='landing-hero'>
-      <Box className='topbar'>
-        <Box className='brand'>
-          <Box className='brand-logo'>B</Box>
-          <Box>
-            <Box className='brand-txt'>BIRDIA</Box>
-            <Box className='brand-sub'>Pré-diagnostic toiture par IA</Box>
-          </Box>
-        </Box>
-        <Box className='status'>
-          <span className='dot' />
-          Service en ligne
-        </Box>
-      </Box>
-
       <Stack className='hero-content'>
         <Box className='fr-badge'>
           <FrenchFlag />
