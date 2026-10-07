@@ -105,6 +105,21 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
               <BpInput title='Le numéro de téléphone est obligatoire' type='tel' name='phone' placeholder='06 12 34 56 78' fullWidth required />
             )}
           </Box>
+          <Box className='input-anime'>
+            <label className='consent'>
+              <input type='checkbox' data-cy='consent-checkbox' {...form.register('consent')} />
+              <Typography component='span' className='consent-text'>
+                <b>Je consens au traitement de mes données personnelles</b> par BIRDIA dans le cadre de la réalisation de mon pré-diagnostic de toiture,
+                conformément au <b>RGPD</b>. Mes données sont utilisées uniquement pour générer et m'envoyer mon rapport, et ne sont ni revendues ni cédées à
+                des tiers. Je peux à tout moment demander leur suppression — plus d'infos dans la{' '}
+                <a href='https://www.birdia.fr/confidentialite' target='_blank' rel='noopener noreferrer'>
+                  politique de confidentialité
+                </a>
+                .
+              </Typography>
+            </label>
+            {form.formState.errors.consent && <Typography className='consent-error'>{form.formState.errors.consent.message as string}</Typography>}
+          </Box>
         </Stack>
       </DialogContent>
       <DialogActions>

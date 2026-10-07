@@ -50,6 +50,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Veuillez specifier votre clé d'api");
@@ -99,6 +100,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.intercept('GET', '/whoami', whoami_mock).as('getWhoami');
@@ -114,6 +116,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Erreur lors de la récupération de l'image.");
@@ -129,6 +132,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Erreur lors de la récupération de l'image.");
@@ -144,6 +148,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Erreur lors de la récupération de l'image.");
@@ -159,6 +164,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains("Erreur lors de la récupération de l'image.");
@@ -181,6 +187,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     // a lower-precision image is now accepted instead of being rejected
@@ -232,6 +239,7 @@ describe('Error message testing', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('Cette adresse email a déjà été utilisée pour faire une analyse.');

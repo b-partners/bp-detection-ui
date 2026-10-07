@@ -113,6 +113,9 @@ describe('Component testing', () => {
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
+    cy.contains('Votre consentement est requis pour lancer l’analyse.');
+    cy.dataCy('consent-checkbox').check();
+    cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
 
