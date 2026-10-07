@@ -319,8 +319,8 @@ export const GetAddressStepStyle: SxProps = {
   '& .landing-howto, & .landing-carousel': {
     py: { xs: 5, md: 8 },
   },
-  // topbar + hero use the reference index.html container width (max-width: 1180px; padding: 0 24px)
-  '& .landing-hero .topbar, & .landing-hero .hero-content': {
+  // hero uses the reference index.html container width (max-width: 1180px; padding: 0 24px)
+  '& .landing-hero .hero-content': {
     width: '100%',
     maxWidth: 1180,
     mx: 'auto',
@@ -346,31 +346,6 @@ export const GetAddressStepStyle: SxProps = {
       maxWidth: 520,
       mx: 'auto',
     },
-  },
-
-  // ---- topbar ----
-  '& .topbar': {
-    py: 2.25,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    '& .brand': { display: 'flex', alignItems: 'center', gap: 1.25 },
-    '& .brand-logo': {
-      width: 36,
-      height: 36,
-      background: REF.dark,
-      color: REF.orange,
-      borderRadius: '9px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontWeight: 900,
-      fontSize: 17,
-    },
-    '& .brand-txt': { fontWeight: 800, fontSize: 14, letterSpacing: '0.3px', lineHeight: 1.3 },
-    '& .brand-sub': { fontSize: 11, color: REF.textMuted, mt: '1px' },
-    '& .status': { display: 'flex', alignItems: 'center', gap: 1, fontSize: 11, color: REF.textMuted },
-    '& .status .dot': { width: 8, height: 8, borderRadius: '50%', background: '#22c55e' },
   },
 
   // ---- hero ----
