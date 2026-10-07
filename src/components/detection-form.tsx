@@ -75,7 +75,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
       </DialogTitle>
       <DialogContent>
         {Object.values(satellites).includes(true) && <LoadingSteps />}
-        <Stack ref={scope} component='form' spacing={2.5} position='relative' minWidth='600px' minHeight='400px' p={2} onSubmit={handleSubmit}>
+        <Stack ref={scope} component='form' spacing={1.5} position='relative' minWidth='600px' minHeight='416px' px={2} py={1} onSubmit={handleSubmit}>
           {satellites.screnShot && (
             <Box sx={{ width: '100%', height: '400px', position: 'relative', overflow: 'hidden' }}>
               <ScreenShotAnimation />
@@ -106,7 +106,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
             )}
           </Box>
           <Box className='input-anime'>
-            <label className='consent'>
+            <label className={`consent${form.formState.errors.consent ? ' consent-invalid' : ''}`} title={form.formState.errors.consent?.message as string}>
               <input type='checkbox' data-cy='consent-checkbox' {...form.register('consent')} />
               <Typography component='span' className='consent-text'>
                 <b>Je consens au traitement de mes données personnelles</b> par BIRDIA dans le cadre de la réalisation de mon pré-diagnostic de toiture,
@@ -118,7 +118,6 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
                 .
               </Typography>
             </label>
-            {form.formState.errors.consent && <Typography className='consent-error'>{form.formState.errors.consent.message as string}</Typography>}
           </Box>
         </Stack>
       </DialogContent>

@@ -159,7 +159,7 @@ export const DetectionFormStyle: SxProps = {
     '& .consent-text b': { color: '#17181B', fontWeight: 700 },
     '& .consent-text a': { color: '#C8552A' },
   },
-  '& .consent-error': { mt: 0.75, fontSize: FONT_SIZES.xs, color: '#d32f2f' },
+  '& .consent-invalid': { borderColor: '#d32f2f', background: '#FFF4F4' },
   '& .input-anime': {
     '& .MuiInputLabel-root.Mui-focused': {
       color: PALETTE_COLORS.neon_orange,
