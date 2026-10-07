@@ -128,7 +128,7 @@ export const DetectionFormStyle: SxProps = {
   '& .bp-field': {
     display: 'flex',
     flexDirection: 'column',
-    gap: 0.75,
+    gap: 0.5,
     '& .bp-field-label': {
       fontWeight: 700,
       color: PALETTE_COLORS.black,
@@ -138,10 +138,14 @@ export const DetectionFormStyle: SxProps = {
     },
   },
   '& .consent': {
+    // width: 0 + minWidth: 100% keeps the long text out of the dialog's intrinsic width, so the card stays as wide as before.
+    width: 0,
+    minWidth: '100%',
+    boxSizing: 'border-box',
     display: 'flex',
     alignItems: 'flex-start',
     gap: '10px',
-    p: '14px 16px',
+    p: '12px 16px',
     background: '#FFF7F1',
     border: '1.5px solid #FFE1CC',
     borderRadius: '10px',
