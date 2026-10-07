@@ -88,7 +88,7 @@ describe('Component testing', () => {
 
     cy.contains('Avant de commencer');
     cy.contains('Quelques infos pour mieux vous orienter');
-    cy.contains('2 questions rapides pour que votre couvreur prépare la meilleure réponse possible.');
+    cy.contains('2 questions rapides pour préparer la meilleure analyse possible de votre toiture.');
     cy.contains('Quel est l’objectif de votre demande ?');
     cy.contains('Demander une intervention urgente').click();
     cy.contains('Entretien / réparation préventive');
@@ -181,6 +181,6 @@ describe('Component testing', () => {
     cy.contains('COMPRENDRE VOTRE RAPPORT');
     cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
 
-    cy.contains('Disclaimer : rapport généré par IA statistique nécessitant confirmation par votre expert toiture.');
+    cy.contains('Disclaimer : rapport généré par IA statistique nécessitant une confirmation sur site.');
   });
 });

@@ -59,7 +59,7 @@ export const AcknowledgementsStep = () => {
   return (
     <Stack sx={endPagePaperStyle}>
       <Typography variant='h5' sx={titleStyle}>
-        Merci d’avoir analysé votre toiture, notre expert toiture va vous contacter dans les plus bref délais.
+        Merci d’avoir analysé votre toiture, votre pré-diagnostic BIRDIA est prêt.
       </Typography>
       {SHOW_PDF_DOWNLOAD && pdfUrl && (
         <Button

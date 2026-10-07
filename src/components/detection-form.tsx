@@ -1,6 +1,6 @@
 import { useDetectionForm } from '@/forms';
 import { useDialog, useStep } from '@/hooks';
-import { useAccountInfoStore, useQueryImageFromAddress } from '@/queries';
+import { useQueryImageFromAddress } from '@/queries';
 import { wait } from '@/utilities';
 import { ArrowBack, Info } from '@mui/icons-material';
 import { Box, Button, CircularProgress, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from '@mui/material';
@@ -27,10 +27,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
   const { isQueryImagePending, queryImage, geoSession } = useQueryImageFromAddress();
   const { close: closeDialog } = useDialog();
   const { setStep } = useStep();
-  const { name } = useAccountInfoStore();
   const form = useDetectionForm();
-
-  const partnerName = name || 'votre couvreur';
 
   const [scope, animate] = useAnimate();
   const [satellites, setSatellites] = useState({ show: false, end: false, screnShot: false });
@@ -67,7 +64,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
           <Stack>
             <Typography className='dialog-eyebrow'>Presque terminé</Typography>
             <Typography className='dialog-title'>Vos coordonnées pour recevoir le rapport</Typography>
-            <Typography className='dialog-subtitle'>{partnerName} vous rappelle sous 24 h avec votre pré-diagnostic complet.</Typography>
+            <Typography className='dialog-subtitle'>Vous recevez votre pré-diagnostic complet par email après analyse.</Typography>
           </Stack>
           <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
             <Box className='dialog-info'>

@@ -31,9 +31,9 @@ const steps = [
     content: <AnnotateImageStep />,
   },
   {
-    label: 'Notre couvreur vous téléphone',
-    subtitle: 'Suivi personnalisé',
-    description: 'L’expert toiture vous rappelle pour parcourir votre pré-diagnostic sous 48 h.',
+    label: 'Recevez votre rapport',
+    subtitle: 'Votre pré-diagnostic',
+    description: 'Votre pré-diagnostic complet, généré dès la fin de l’analyse.',
     content: <AcknowledgementsStep />,
   },
 ];
