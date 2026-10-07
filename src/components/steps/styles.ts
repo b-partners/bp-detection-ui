@@ -404,7 +404,13 @@ export const GetAddressStepStyle: SxProps = {
     overflow: 'hidden',
     border: `1px solid ${REF.border}`,
     '& img': { width: '100%', display: 'block', height: { xs: 220, md: 360 }, objectFit: 'cover' },
-    '&::after': { content: '""', position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.3))', pointerEvents: 'none' },
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      inset: 0,
+      background: 'linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.3))',
+      pointerEvents: 'none',
+    },
   },
   '& .hero-banner-caption': {
     position: 'absolute',
