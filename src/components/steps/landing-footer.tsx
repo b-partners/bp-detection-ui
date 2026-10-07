@@ -40,7 +40,11 @@ export const LandingFooter = () => {
 
       <Box className='foot' component='footer'>
         <Typography className='legal'>
-          Service fourni par <a href='https://www.birdia.fr'>BIRDIA</a> · <a href='#'>Mentions légales</a> · <a href='#'>Politique de confidentialité</a>
+          Service fourni par <a href='https://www.birdia.fr'>BIRDIA</a> ·{' '}
+          <a href='https://birdia.fr/mentions-legales' target='_blank' rel='noopener noreferrer'>
+            Mentions légales
+          </a>{' '}
+          · <a href='#'>Politique de confidentialité</a>
         </Typography>
       </Box>
     </Box>
