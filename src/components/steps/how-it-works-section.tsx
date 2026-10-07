@@ -1,5 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
-import { AddressSearchForm } from './address-search-form';
+import { Box, Typography } from '@mui/material';
 
 type Step = { title: string; description: string };
 
@@ -14,11 +13,11 @@ const steps: Step[] = [
   },
   {
     title: 'Analyse par IA',
-    description: 'Surface, pente, matériaux, usure, humidité.',
+    description: 'Surface, pente, matériaux, usure, humidité détectés automatiquement.',
   },
   {
-    title: 'Votre couvreur vous rappelle',
-    description: 'Suivi personnalisé sous 24 h par votre couvreur.',
+    title: 'Recevez votre rapport',
+    description: 'Votre pré-diagnostic complet, généré dès la fin de l’analyse.',
   },
 ];
 
@@ -34,7 +33,7 @@ export const HowItWorksSection = () => {
 
       <Box className='steps'>
         {steps.map(({ title, description }, index) => (
-          <Box className={`step ${index === 0 ? 'active' : ''}`} key={title}>
+          <Box className='step' key={title}>
             <Box className='step-num'>{index + 1}</Box>
             <Typography className='step-title' component='h3'>
               {title}
@@ -43,14 +42,6 @@ export const HowItWorksSection = () => {
           </Box>
         ))}
       </Box>
-
-      <Stack className='cta-inline'>
-        <Typography className='cta-inline-title' component='h3'>
-          Prêt à essayer ? <span className='accent'>Il suffit d'une adresse.</span>
-        </Typography>
-        <Typography className='cta-inline-sub'>Vous obtenez votre pré-diagnostic en 2 minutes, sans engagement.</Typography>
-        <AddressSearchForm />
-      </Stack>
     </Box>
   );
 };

@@ -2,6 +2,7 @@ import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
 import { Box, Stack, Typography } from '@mui/material';
+import { CtaFinalSection } from './cta-final-section';
 
 const FrenchFlag = () => (
   <span className='fr-flag'>
@@ -34,6 +35,8 @@ export const LandingFooter = () => {
           </span>
         </Box>
       </Stack>
+
+      <CtaFinalSection />
 
       <Box className='foot' component='footer'>
         <Typography className='legal'>
