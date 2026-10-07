@@ -75,7 +75,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
       </DialogTitle>
       <DialogContent>
         {Object.values(satellites).includes(true) && <LoadingSteps />}
-        <Stack ref={scope} component='form' spacing={1.5} position='relative' minWidth='600px' minHeight='416px' px={2} py={1} onSubmit={handleSubmit}>
+        <Stack ref={scope} component='form' spacing={0.75} position='relative' minWidth='600px' minHeight='432px' px={2} py={0} onSubmit={handleSubmit}>
           {satellites.screnShot && (
             <Box sx={{ width: '100%', height: '400px', position: 'relative', overflow: 'hidden' }}>
               <ScreenShotAnimation />
