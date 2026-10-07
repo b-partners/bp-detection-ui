@@ -44,7 +44,10 @@ export const LandingFooter = () => {
           <a href='https://birdia.fr/mentions-legales' target='_blank' rel='noopener noreferrer'>
             Mentions légales
           </a>{' '}
-          · <a href='#'>Politique de confidentialité</a>
+          ·{' '}
+          <a href='https://www.birdia.fr/confidentialite' target='_blank' rel='noopener noreferrer'>
+            Politique de confidentialité
+          </a>
         </Typography>
       </Box>
     </Box>
