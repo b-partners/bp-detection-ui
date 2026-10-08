@@ -3,7 +3,7 @@ import { useDialog, useStep } from '@/hooks';
 import { useLocationQuery } from '@/queries';
 import { ArrowForward as ArrowForwardIcon, LocationOn as LocationOnIcon } from '@mui/icons-material';
 import { Autocomplete, Box, Button, CircularProgress, debounce, Paper, TextField } from '@mui/material';
-import { SyntheticEvent, useMemo, useState } from 'react';
+import { BaseSyntheticEvent, SyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { QcmForm } from '../qcm-form';
 import { QcmDialogStyle } from '../style';
 
@@ -17,6 +17,9 @@ interface AddressSearchFormProps {
 }
 
 const searchAddressDebounceTimeout = 200;
+
+// Secondary forms (e.g. the final CTA) hand their address over to the primary hero form, so both buttons run the exact same flow.
+const HERO_SUBMIT_EVENT = 'hero-address-submit';
 
 export const AddressSearchForm = ({ primary = false }: AddressSearchFormProps) => {
   const { open: openDialog } = useDialog();
@@ -38,10 +41,30 @@ export const AddressSearchForm = ({ primary = false }: AddressSearchFormProps) =
   const { onBlur, ref } = register('address');
   const [inputValue, setInputValue] = useState('');
 
-  const onSubmit = handleSubmit(
+  const submitAddress = handleSubmit(
     data => openDialog(<QcmForm address={data.address} />, { style: QcmDialogStyle }),
     error => alert(error.address)
   );
+
+  const onSubmit = primary
+    ? submitAddress
+    : (event?: BaseSyntheticEvent) => {
+        event?.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.dispatchEvent(new CustomEvent(HERO_SUBMIT_EVENT, { detail: inputValue }));
+      };
+
+  useEffect(() => {
+    if (!primary) return;
+    const onHeroSubmit = (event: Event) => {
+      const address = (event as CustomEvent<string>).detail ?? '';
+      setInputValue(address);
+      setValue('address', address);
+      submitAddress();
+    };
+    window.addEventListener(HERO_SUBMIT_EVENT, onHeroSubmit);
+    return () => window.removeEventListener(HERO_SUBMIT_EVENT, onHeroSubmit);
+  });
 
   const handleInputChange = (_event: SyntheticEvent, newInputValue: string, reason: string) => {
     setInputValue(newInputValue);
