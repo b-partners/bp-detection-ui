@@ -43,7 +43,7 @@ export const AddressSearchForm = ({ primary = false }: AddressSearchFormProps) =
 
   const submitAddress = handleSubmit(
     data => openDialog(<QcmForm address={data.address} />, { style: QcmDialogStyle }),
-    error => alert(error.address)
+    error => alert(error.address?.message)
   );
 
   const onSubmit = primary
@@ -114,7 +114,7 @@ export const AddressSearchForm = ({ primary = false }: AddressSearchFormProps) =
             />
           )}
         />
-        <Button type='submit' onClick={onSubmit} className='btn-primary' endIcon={<ArrowForwardIcon />}>
+        <Button type='submit' className='btn-primary' endIcon={<ArrowForwardIcon />}>
           Analyser
         </Button>
       </Paper>
