@@ -377,7 +377,6 @@ export const GetAddressStepStyle: SxProps = {
   '& .hero-content': {
     alignItems: 'flex-start',
     textAlign: 'left',
-    pt: { xs: 3, md: 4 },
     pb: { xs: 2, md: 4.5 },
     '& .hero-title': {
       fontWeight: 900,
@@ -386,7 +385,7 @@ export const GetAddressStepStyle: SxProps = {
       color: REF.text,
       maxWidth: 900,
       mb: 3,
-      fontSize: { xs: '2.25rem', sm: '3rem', md: '4.25rem' },
+      fontSize: { xs: '2.25rem', sm: '3rem', md: '3.5rem' },
     },
     '& .hero-lead': { fontSize: FONT_SIZES.lg, color: '#334155', maxWidth: 720, mb: 4.5, lineHeight: 1.55 },
     '& .address-search': { mx: 0 },
