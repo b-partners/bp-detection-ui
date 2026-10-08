@@ -34,9 +34,9 @@ export const HeaderStyle: SxProps<Theme> = {
   // ---- hero split: partner card (logo + info) + headline (no input) ----
   '& .hero-split': {
     display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: { xs: 3, md: 4 },
-    justifyItems: 'start',
+    gridTemplateColumns: { xs: '1fr', md: '420px 1fr' },
+    gap: { xs: 3, md: 10 },
+    alignItems: 'center',
     mb: 5,
   },
 
@@ -47,7 +47,8 @@ export const HeaderStyle: SxProps<Theme> = {
     borderRadius: REF.radius,
     boxShadow: REF.shadow,
     width: '100%',
-    maxWidth: 520,
+    maxWidth: { xs: 420, md: 'none' },
+    mx: { xs: 'auto', md: 0 },
     p: 2.5,
     display: 'grid',
     gridTemplateColumns: { xs: 'auto auto', sm: 'auto auto' },
@@ -89,8 +90,8 @@ export const HeaderStyle: SxProps<Theme> = {
 
   // Right column : badge + title + lead (no address input)
   '& .hero-content': {
-    textAlign: 'left',
-    alignItems: 'flex-start',
+    textAlign: { xs: 'center', md: 'left' },
+    alignItems: { xs: 'center', md: 'flex-start' },
     '& .hero-title': {
       fontWeight: 800,
       lineHeight: 1.08,
