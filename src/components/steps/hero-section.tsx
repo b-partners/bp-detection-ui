@@ -33,77 +33,79 @@ export const HeroSection = () => {
 
   return (
     <Box className='landing-hero'>
-      <Box className='hero-partner'>
-        <Box className='partner-card' component='aside'>
-          <Box className='partner-logo'>
-            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
-          </Box>
+      <Box className='hero-split'>
+        <Box className='hero-partner'>
+          <Box className='partner-card' component='aside'>
+            <Box className='partner-logo'>
+              {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
+            </Box>
 
-          <Box className='partner-info'>
-            {isAccountLoading ? (
-              <>
-                <Skeleton className='partner-name' variant='text' width='70%' />
-                <Skeleton className='partner-addr' variant='text' width='90%' />
-                <Skeleton className='partner-contact' variant='text' width='60%' />
-                <Skeleton className='partner-contact' variant='text' width='80%' />
-              </>
-            ) : (
-              <>
-                {name && <Typography className='partner-name'>{name}</Typography>}
-                {addressLine && (
-                  <Typography className='partner-addr'>
-                    <a href={mapsUrl} target='_blank' rel='noopener noreferrer'>
-                      {addressLine}
-                    </a>
-                  </Typography>
-                )}
-                {(phone || email || websiteLabel) && (
-                  <Box className='partner-contact'>
-                    {phone && (
-                      <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
-                        <strong>{phone}</strong>
+            <Box className='partner-info'>
+              {isAccountLoading ? (
+                <>
+                  <Skeleton className='partner-name' variant='text' width='70%' />
+                  <Skeleton className='partner-addr' variant='text' width='90%' />
+                  <Skeleton className='partner-contact' variant='text' width='60%' />
+                  <Skeleton className='partner-contact' variant='text' width='80%' />
+                </>
+              ) : (
+                <>
+                  {name && <Typography className='partner-name'>{name}</Typography>}
+                  {addressLine && (
+                    <Typography className='partner-addr'>
+                      <a href={mapsUrl} target='_blank' rel='noopener noreferrer'>
+                        {addressLine}
                       </a>
-                    )}
-                    {phone && (email || websiteLabel) && <br />}
-                    {email && (
-                      <a href={`mailto:${email}`} onClick={handleEmailClick}>
-                        {email}
-                      </a>
-                    )}
-                    {email && websiteLabel && <br />}
-                    {websiteLabel && (
-                      <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
-                        {websiteLabel}
-                      </a>
-                    )}
-                  </Box>
-                )}
-              </>
-            )}
+                    </Typography>
+                  )}
+                  {(phone || email || websiteLabel) && (
+                    <Box className='partner-contact'>
+                      {phone && (
+                        <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
+                          <strong>{phone}</strong>
+                        </a>
+                      )}
+                      {phone && (email || websiteLabel) && <br />}
+                      {email && (
+                        <a href={`mailto:${email}`} onClick={handleEmailClick}>
+                          {email}
+                        </a>
+                      )}
+                      {email && websiteLabel && <br />}
+                      {websiteLabel && (
+                        <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
+                          {websiteLabel}
+                        </a>
+                      )}
+                    </Box>
+                  )}
+                </>
+              )}
+            </Box>
           </Box>
         </Box>
+
+        <Stack className='hero-content'>
+          <Box className='fr-badge'>
+            <FrenchFlag />
+            <span>
+              <strong>IA 100% française</strong> · <em>issue de la recherche</em>
+            </span>
+          </Box>
+          <Typography className='hero-title' component='h1'>
+            Pré-diagnostiquez votre toiture <span className='accent'>sans monter dessus.</span>
+          </Typography>
+          <Typography className='hero-lead'>
+            Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
+          </Typography>
+
+          <AddressSearchForm primary />
+
+          <Typography className='hero-note'>
+            Gratuit · sans engagement · <strong>2 min</strong>
+          </Typography>
+        </Stack>
       </Box>
-
-      <Stack className='hero-content'>
-        <Box className='fr-badge'>
-          <FrenchFlag />
-          <span>
-            <strong>IA 100% française</strong> · <em>issue de la recherche</em>
-          </span>
-        </Box>
-        <Typography className='hero-title' component='h1'>
-          Pré-diagnostiquez votre toiture <span className='accent'>sans monter dessus.</span>
-        </Typography>
-        <Typography className='hero-lead'>
-          Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
-        </Typography>
-
-        <AddressSearchForm primary />
-
-        <Typography className='hero-note'>
-          Gratuit · sans engagement · <strong>2 min</strong>
-        </Typography>
-      </Stack>
 
       <Box className='hero-banner'>
         <img src='/assets/images/landing/hero-banner.jpg' alt='Analyse BIRDIA de toitures par imagerie aérienne' />
