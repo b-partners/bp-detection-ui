@@ -46,52 +46,54 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
     <Box sx={HeaderStyle}>
       <Box className='hero-split'>
         <Box className='partner-card' component='aside'>
-          <Box className='partner-logo'>
-            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo'} />}
+          <Box className='partner-card-logo'>
+            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
           </Box>
 
-          <Box className='partner-info'>
-            {isAccountLoading ? (
-              <>
-                <Skeleton className='partner-name' variant='text' width='70%' />
-                <Skeleton className='partner-addr' variant='text' width='90%' />
-                <Skeleton className='partner-contact' variant='text' width='60%' />
-                <Skeleton className='partner-contact' variant='text' width='80%' />
-              </>
-            ) : (
-              <>
-                {name && <Typography className='partner-name'>{name}</Typography>}
-                {addressLine && (
-                  <Typography className='partner-addr'>
-                    <a href={mapsUrl} target='_blank' rel='noopener noreferrer'>
-                      {addressLine}
+          {isAccountLoading ? (
+            <>
+              <Skeleton className='partner-name' variant='text' width='70%' />
+              <Typography className='partner-addr'>
+                <Skeleton variant='text' width='80%' />
+              </Typography>
+              <Box className='partner-contact'>
+                <Skeleton variant='text' width='50%' />
+                <Skeleton variant='text' width='70%' />
+              </Box>
+            </>
+          ) : (
+            <>
+              {name && <Typography className='partner-name'>{name}</Typography>}
+              {addressLine && (
+                <Typography className='partner-addr'>
+                  <a href={mapsUrl} target='_blank' rel='noopener noreferrer'>
+                    {addressLine}
+                  </a>
+                </Typography>
+              )}
+              {(phone || email || websiteLabel) && (
+                <Box className='partner-contact'>
+                  {phone && (
+                    <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
+                      <strong>{phone}</strong>
                     </a>
-                  </Typography>
-                )}
-                {(phone || email || websiteLabel) && (
-                  <Box className='partner-contact'>
-                    {phone && (
-                      <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
-                        <strong>{phone}</strong>
-                      </a>
-                    )}
-                    {phone && (email || websiteLabel) && <br />}
-                    {email && (
-                      <a href={`mailto:${email}`} onClick={handleEmailClick}>
-                        {email}
-                      </a>
-                    )}
-                    {email && websiteLabel && <br />}
-                    {websiteLabel && (
-                      <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
-                        {websiteLabel}
-                      </a>
-                    )}
-                  </Box>
-                )}
-              </>
-            )}
-          </Box>
+                  )}
+                  {phone && (email || websiteLabel) && <br />}
+                  {email && (
+                    <a href={`mailto:${email}`} onClick={handleEmailClick}>
+                      {email}
+                    </a>
+                  )}
+                  {email && websiteLabel && <br />}
+                  {websiteLabel && (
+                    <a href={websiteUrl} target='_blank' rel='noopener noreferrer'>
+                      {websiteLabel}
+                    </a>
+                  )}
+                </Box>
+              )}
+            </>
+          )}
         </Box>
 
         <Stack className='hero-content'>
