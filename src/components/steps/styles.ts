@@ -320,7 +320,7 @@ export const GetAddressStepStyle: SxProps = {
     py: { xs: 5, md: 8 },
   },
   // hero uses the reference index.html container width (max-width: 1180px; padding: 0 24px)
-  '& .landing-hero .hero-content': {
+  '& .landing-hero .hero-content, & .landing-hero .hero-partner': {
     width: '100%',
     maxWidth: 1180,
     mx: 'auto',
@@ -348,11 +348,58 @@ export const GetAddressStepStyle: SxProps = {
     },
   },
 
+  // ---- hero: partner card (logo + name + contact) ----
+  '& .hero-partner': {
+    pt: { xs: 3, md: 4 },
+    '& .partner-card': {
+      background: REF.card,
+      border: `1px solid ${REF.border}`,
+      borderRadius: REF.radius,
+      boxShadow: REF.shadow,
+      width: '100%',
+      maxWidth: 520,
+      p: 2.5,
+      display: 'grid',
+      gridTemplateColumns: 'auto 1fr',
+      alignItems: 'center',
+      gap: 2.5,
+    },
+    '& .partner-logo': {
+      width: { xs: 96, sm: 130 },
+      height: { xs: 96, sm: 130 },
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      '& img': { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' },
+      '& .MuiSkeleton-root': { transform: 'none', borderRadius: REF.radiusSm },
+    },
+    '& .partner-info': { minWidth: 0, pl: 2.5, borderLeft: `1px solid ${REF.border}` },
+    '& .partner-name': { fontSize: FONT_SIZES.lg, fontWeight: 800, color: REF.text, mb: 0.75, lineHeight: 1.2 },
+    '& .partner-addr': {
+      fontSize: FONT_SIZES.sm,
+      fontWeight: 600,
+      color: REF.textSoft,
+      lineHeight: 1.5,
+      mb: 1,
+      '& a': { color: 'inherit', textDecoration: 'none' },
+      '& a:hover': { color: REF.orange },
+    },
+    '& .partner-contact': {
+      fontSize: FONT_SIZES.sm,
+      color: REF.textMuted,
+      lineHeight: 1.7,
+      '& a': { color: 'inherit', textDecoration: 'none' },
+      '& a:hover': { color: REF.orange },
+      '& strong': { color: REF.text, fontWeight: 700 },
+    },
+  },
+
   // ---- hero ----
   '& .hero-content': {
     alignItems: 'flex-start',
     textAlign: 'left',
-    pt: { xs: 3.5, md: 6 },
+    pt: { xs: 3, md: 4 },
     pb: { xs: 2, md: 4.5 },
     '& .hero-title': {
       fontWeight: 900,
