@@ -11,6 +11,26 @@ const FrenchFlag = () => (
 );
 
 export const HeroSection = () => {
+  const isAccountLoading = useAccountInfoQuery();
+  const { image, name, address, city, postalCode, email, phone, website } = useAccountInfoStore();
+
+  const websiteLabel = website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const websiteUrl = website && (/^https?:\/\//.test(website) ? website : `https://${website}`);
+  const cityLine = [postalCode, city].filter(Boolean).join(' ');
+  const addressLine = [address, cityLine].filter(Boolean).join(', ');
+  const mapsUrl = addressLine && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLine)}`;
+
+  // Try the native mailto first; if no mail client handles it (the window never
+  // loses focus), fall back to Gmail's web compose in a new tab.
+  const handleEmailClick = () => {
+    if (!email) return;
+    const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+    const timer = window.setTimeout(() => {
+      if (!document.hidden && document.hasFocus()) window.open(gmailHref, '_blank', 'noopener,noreferrer');
+    }, 600);
+    window.addEventListener('blur', () => window.clearTimeout(timer), { once: true });
+  };
+
   return (
     <Box className='landing-hero'>
       <Box className='hero-split'>

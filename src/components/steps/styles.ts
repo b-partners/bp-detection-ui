@@ -377,7 +377,7 @@ export const GetAddressStepStyle: SxProps = {
   '& .hero-content': {
     alignItems: 'flex-start',
     textAlign: 'left',
-    pt: { xs: 3.5, md: 6 },
+    pt: { xs: 3, md: 4 },
     pb: { xs: 2, md: 4.5 },
     '& .hero-title': {
       fontWeight: 900,
