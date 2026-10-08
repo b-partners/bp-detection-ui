@@ -320,7 +320,7 @@ export const GetAddressStepStyle: SxProps = {
     py: { xs: 5, md: 8 },
   },
   // hero uses the reference index.html container width (max-width: 1180px; padding: 0 24px)
-  '& .landing-hero .hero-content, & .landing-hero .hero-partner': {
+  '& .landing-hero .hero-split': {
     width: '100%',
     maxWidth: 1180,
     mx: 'auto',
@@ -349,15 +349,20 @@ export const GetAddressStepStyle: SxProps = {
   },
 
   // ---- hero: partner card (logo + name + contact) ----
-  '& .hero-partner': {
+  '& .hero-split': {
+    display: 'grid',
+    gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 440px) minmax(0, 1fr)' },
+    gap: { xs: 3, md: 6 },
+    alignItems: 'center',
     pt: { xs: 3, md: 4 },
+  },
+  '& .hero-partner': {
     '& .partner-card': {
       background: REF.card,
       border: `1px solid ${REF.border}`,
       borderRadius: REF.radius,
       boxShadow: REF.shadow,
       width: '100%',
-      maxWidth: 520,
       p: 2.5,
       display: 'grid',
       gridTemplateColumns: 'auto 1fr',
@@ -399,7 +404,6 @@ export const GetAddressStepStyle: SxProps = {
   '& .hero-content': {
     alignItems: 'flex-start',
     textAlign: 'left',
-    pt: { xs: 3, md: 4 },
     pb: { xs: 2, md: 4.5 },
     '& .hero-title': {
       fontWeight: 900,
@@ -408,7 +412,7 @@ export const GetAddressStepStyle: SxProps = {
       color: REF.text,
       maxWidth: 900,
       mb: 3,
-      fontSize: { xs: '2.25rem', sm: '3rem', md: '4.25rem' },
+      fontSize: { xs: '2.25rem', sm: '3rem', md: '3.5rem' },
     },
     '& .hero-lead': { fontSize: FONT_SIZES.lg, color: '#334155', maxWidth: 720, mb: 4.5, lineHeight: 1.55 },
     '& .address-search': { mx: 0 },
