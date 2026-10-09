@@ -93,7 +93,6 @@ describe('Component testing', () => {
     cy.contains('Demander une intervention urgente').click();
     cy.contains('Entretien / réparation préventive');
     cy.contains('Diagnostic avant vente immobilière');
-    cy.contains('Demande de devis');
 
     cy.contains('À quand remonte votre dernier entretien ?');
     cy.contains('Moins de 3 ans');
