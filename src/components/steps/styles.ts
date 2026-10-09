@@ -24,6 +24,15 @@ const REF = {
   radiusSm: '12px',
 };
 
+export const AnnotateImageStepStyle: SxProps = {
+  width: { xs: '97vw', md: '94vw', lg: '92vw' },
+  height: 'calc(100vh - 160px)',
+  minHeight: '600px',
+  mb: 4,
+  overflow: 'hidden',
+  borderRadius: 2,
+};
+
 export const DetectionResultStepStyle: SxProps = {
   position: 'relative',
   mb: 10,
@@ -297,6 +306,8 @@ export const DetectionResultStepStyle: SxProps = {
 
 export const GetAddressStepStyle: SxProps = {
   width: '100%',
+  fontFamily: "'Kumbh Sans', -apple-system, 'Segoe UI', sans-serif",
+  '& .MuiTypography-root, & .MuiButton-root, & input': { fontFamily: 'inherit' },
   color: REF.text,
 
   // ---- shared section wrappers (centered, capped) ----
@@ -308,8 +319,8 @@ export const GetAddressStepStyle: SxProps = {
   '& .landing-howto, & .landing-carousel': {
     py: { xs: 5, md: 8 },
   },
-  // hero nav + split use the reference index.html container width (max-width: 1140px; padding: 0 24px)
-  '& .landing-hero .top-nav, & .landing-hero .hero-split': {
+  // hero uses the reference index.html container width (max-width: 1180px; padding: 0 24px)
+  '& .landing-hero .hero-split': {
     width: '100%',
     maxWidth: 1140,
     mx: 'auto',
@@ -322,11 +333,11 @@ export const GetAddressStepStyle: SxProps = {
     textAlign: 'center',
     mb: 4,
     '& .section-head-title': {
-      fontWeight: 700,
-      letterSpacing: '-0.015em',
+      fontWeight: 800,
+      letterSpacing: '-0.5px',
       lineHeight: 1.2,
       color: REF.text,
-      fontSize: { xs: FONT_SIZES['2xl'], md: FONT_SIZES['3xl'] },
+      fontSize: { xs: '1.75rem', md: '2.375rem' },
     },
     '& .section-head-sub': {
       mt: 1.5,
@@ -334,24 +345,6 @@ export const GetAddressStepStyle: SxProps = {
       fontSize: FONT_SIZES.sm,
       maxWidth: 520,
       mx: 'auto',
-    },
-  },
-
-  // ---- top nav ----
-  '& .top-nav': {
-    pt: 3,
-    pb: 1,
-    display: 'flex',
-    justifyContent: 'flex-end',
-    '& .header-birdia': {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 1,
-      fontSize: FONT_SIZES.xs,
-      color: REF.textMuted,
-      letterSpacing: '0.05em',
-      '& strong': { color: REF.textSoft, fontWeight: 600, ml: '2px' },
-      '& .dot': { width: 6, height: 6, borderRadius: '50%', background: REF.orange },
     },
   },
 
@@ -527,73 +520,40 @@ export const GetAddressStepStyle: SxProps = {
   },
 
   // ---- how it works steps ----
+  '& .landing-howto .section-head': { mb: 5 },
   '& .steps': {
-    position: 'relative',
     display: 'grid',
     gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-    gap: { xs: 2, sm: 2.5, md: 2 },
-    maxWidth: 1280,
+    gap: 2,
+    maxWidth: 1180,
     mx: 'auto',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      display: { xs: 'none', md: 'block' },
-      top: 22,
-      left: 80,
-      right: 80,
-      height: 2,
-      background: REF.border,
-      zIndex: 0,
-    },
+    textAlign: 'left',
   },
   '& .step': {
-    position: 'relative',
-    zIndex: 1,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    textAlign: 'center',
-    gap: 0.5,
-    px: 1,
+    alignItems: 'flex-start',
+    background: REF.card,
+    border: `1px solid ${REF.border}`,
+    borderRadius: '14px',
+    p: '22px 20px',
+    transition: 'transform 0.15s, box-shadow 0.15s',
+    '&:hover': { transform: 'translateY(-3px)', boxShadow: '0 8px 22px rgba(0, 0, 0, 0.06)' },
     '& .step-num': {
-      width: 44,
-      height: 44,
-      background: REF.card,
-      border: '2px solid rgba(31, 39, 55, 0.12)',
+      width: 36,
+      height: 36,
+      background: REF.orange,
       borderRadius: '50%',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontWeight: 800,
-      fontSize: FONT_SIZES.md,
-      color: '#9aa2ad',
-      transition: 'all 200ms linear',
-      mb: 1,
+      fontWeight: 900,
+      fontSize: FONT_SIZES.sm,
+      color: '#fff',
+      mb: 1.75,
     },
-    '& .step-title': { fontWeight: 700, fontSize: FONT_SIZES.sm, color: REF.text, mt: 0.5, lineHeight: 1.3 },
-    '& .step-desc': { fontSize: FONT_SIZES.xs, color: REF.textMuted, lineHeight: 1.4 },
-  },
-  '& .step.active .step-num': {
-    background: REF.orange,
-    borderColor: REF.orange,
-    color: '#fff',
-    boxShadow: '0 8px 20px -8px rgba(233, 107, 51, 0.6)',
-  },
-
-  // ---- inline CTA ----
-  '& .cta-inline': {
-    maxWidth: 780,
-    mx: 'auto',
-    mt: 4,
-    background: REF.card,
-    border: `1px solid ${REF.border}`,
-    borderRadius: REF.radius,
-    p: { xs: 3, md: '24px 28px' },
-    textAlign: 'center',
-    alignItems: 'center',
-    boxShadow: REF.shadowSm,
-    '& .cta-inline-title': { fontSize: FONT_SIZES.xl, fontWeight: 700, mb: 0.75 },
-    '& .cta-inline-sub': { fontSize: FONT_SIZES.sm, color: REF.textMuted, mb: 2.5 },
+    '& .step-title': { fontWeight: 800, fontSize: FONT_SIZES.sm, color: REF.text, mb: 1, lineHeight: 1.3 },
+    '& .step-desc': { fontSize: FONT_SIZES.xs, color: REF.textMuted, lineHeight: 1.5 },
   },
 
   // ---- PDF carousel ----
@@ -665,18 +625,13 @@ export const GetAddressStepStyle: SxProps = {
   // ---- final CTA ----
   '& .cta-final': {
     width: { xs: '97vw', md: '94vw', lg: '92vw' },
-    maxWidth: 920,
+    maxWidth: 1180,
     mx: 'auto',
-    mt: { xs: 4, md: 6 },
-    background: 'linear-gradient(135deg, #FFF6EA 0%, #F5EFE2 100%)',
-    border: `1.5px solid ${REF.orangeSoft}`,
-    borderRadius: REF.radius,
-    p: { xs: 3.5, md: '36px 32px' },
+    py: { xs: 6, md: 9 },
     textAlign: 'center',
     alignItems: 'center',
-    '& .cta-final-title': { fontWeight: 700, fontSize: { xs: FONT_SIZES['2xl'], md: FONT_SIZES['3xl'] }, mb: 1.25 },
-    '& .cta-final-sub': { fontSize: FONT_SIZES.md, color: REF.textMuted, mb: 3.5, maxWidth: 520 },
-    '& .cta-final-note': { mt: 2, fontSize: FONT_SIZES.xs, color: REF.textMuted, '& strong': { color: REF.text, fontWeight: 600 } },
+    '& .cta-final-title': { fontWeight: 900, letterSpacing: '-0.5px', fontSize: { xs: FONT_SIZES['2xl'], md: '2.25rem' }, mb: 1.5 },
+    '& .cta-final-sub': { fontSize: FONT_SIZES.md, color: '#334155', mb: 3.5, maxWidth: 620 },
   },
 
   // ---- footer + trust ----
@@ -685,23 +640,24 @@ export const GetAddressStepStyle: SxProps = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: { xs: 3, md: 6 },
+    gap: { xs: 2, md: 4.5 },
     flexWrap: 'wrap',
-    py: 5,
+    py: 3.5,
     borderTop: `1px solid ${REF.border}`,
     borderBottom: `1px solid ${REF.border}`,
     '& .trust-item': {
       display: 'flex',
       alignItems: 'center',
       gap: 1.25,
-      fontSize: FONT_SIZES.sm,
-      color: REF.textSoft,
-      '& .MuiSvgIcon-root': { color: REF.textMuted, fontSize: FONT_SIZES.lg },
+      fontSize: FONT_SIZES.xs,
+      fontWeight: 600,
+      color: REF.textMuted,
+      '& .MuiSvgIcon-root': { color: '#22c55e', fontSize: FONT_SIZES.md },
       '& strong': { fontWeight: 700 },
     },
   },
   '& .foot': {
-    py: 4,
+    py: 4.5,
     textAlign: 'center',
     color: REF.textMuted,
     fontSize: FONT_SIZES.sm,

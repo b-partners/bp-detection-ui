@@ -70,6 +70,7 @@ const HaveTheCorrectImagePrecision5Cm = {
     cy.dataName('firstName').type('John');
     cy.dataName('phone').type(process.env.REACT_IT_TEST_PHONE || '');
     cy.dataName('email').type(process.env.REACT_IT_TEST_EMAIL || '');
+    cy.dataCy('consent-checkbox').check();
 
     cy.dataCy(process_detection_on_form_sel).click();
 

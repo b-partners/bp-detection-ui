@@ -100,6 +100,7 @@ describe('Test process detection error', () => {
     cy.dataName('firstName').type('John');
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe+229@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('Adresse email non valide');
@@ -108,6 +109,7 @@ describe('Test process detection error', () => {
     cy.dataName('firstName').clear().type('John');
     cy.dataName('phone').clear().type('+000000000000');
     cy.dataName('email').clear().type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait('@createProspect');
@@ -151,6 +153,7 @@ describe('Test process detection error', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.dataCy('zoom-in').click();
@@ -188,6 +191,7 @@ describe('Test process detection error', () => {
 
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait('@createProspect');

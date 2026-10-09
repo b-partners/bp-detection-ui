@@ -88,12 +88,11 @@ describe('Component testing', () => {
 
     cy.contains('Avant de commencer');
     cy.contains('Quelques infos pour mieux vous orienter');
-    cy.contains('2 questions rapides pour que votre couvreur prépare la meilleure réponse possible.');
+    cy.contains('2 questions rapides pour préparer la meilleure analyse possible de votre toiture.');
     cy.contains('Quel est l’objectif de votre demande ?');
     cy.contains('Demander une intervention urgente').click();
     cy.contains('Entretien / réparation préventive');
     cy.contains('Diagnostic avant vente immobilière');
-    cy.contains('Demande de devis');
 
     cy.contains('À quand remonte votre dernier entretien ?');
     cy.contains('Moins de 3 ans');
@@ -112,6 +111,9 @@ describe('Component testing', () => {
     cy.dataName('firstName').type('John');
     cy.dataName('phone').type('+000000000000');
     cy.dataName('email').type('john.doe@example.com');
+    cy.dataCy(process_detection_on_form_sel).click();
+    cy.get('.consent-invalid');
+    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
@@ -181,6 +183,6 @@ describe('Component testing', () => {
     cy.contains('COMPRENDRE VOTRE RAPPORT');
     cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
 
-    cy.contains('Disclaimer : rapport généré par IA statistique nécessitant confirmation par votre expert toiture.');
+    cy.contains('Disclaimer : rapport généré par IA statistique nécessitant une confirmation sur site.');
   });
 });
