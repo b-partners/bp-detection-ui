@@ -13,7 +13,7 @@ interface QcmQuestion {
 const QCM_QUESTIONS: QcmQuestion[] = [
   {
     label: 'Quel est l’objectif de votre demande ?',
-    options: ['Demander une intervention urgente', 'Entretien / réparation préventive', 'Diagnostic avant vente immobilière', 'Demande de devis'],
+    options: ['Demander une intervention urgente', 'Entretien / réparation préventive', 'Diagnostic avant vente immobilière'],
   },
   {
     label: 'À quand remonte votre dernier entretien ?',
