@@ -1,8 +1,9 @@
 import '@/App.css';
 import { AppHeader } from '@/components';
-import { AcknowledgementsStep, AnnotateImageStep, DetectionResultStep, GetAddressStep } from '@/components/steps';
+import { AcknowledgementsStep, AnnotateImageStep, GetAddressStep } from '@/components/steps';
 import { useStep } from '@/hooks';
 import { MainStyle as style } from '@/style';
+import { useGeoAnnotatorStore } from '@bpartners/roof-analyser';
 import { Box } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +27,8 @@ const steps = [
     label: 'Analysez l’état via BIRDIA',
     subtitle: 'L’IA analyse votre toit',
     description: 'Surface, pente, matériaux, fissures, mousses, humidité - détectés automatiquement.',
-    content: <DetectionResultStep />,
+    // The roof analyser runs the analysis inside the previous step: this one is only shown as reached.
+    content: <AnnotateImageStep />,
   },
   {
     label: 'Notre couvreur vous téléphone',
@@ -38,6 +40,9 @@ const steps = [
 
 function App() {
   const { actualStep, setSession } = useStep();
+  const geoScreen = useGeoAnnotatorStore(({ screen }) => screen);
+  const isAnalysing = actualStep === 1 && (geoScreen === 'analyse' || geoScreen === 'report');
+  const headerStep = isAnalysing ? 2 : actualStep;
 
   const navigate = useNavigate();
 
@@ -54,7 +59,7 @@ function App() {
     <Box sx={style}>
       {/* The first step is a self-contained landing page, so the app header
           (branding banner + wizard steps strip) is hidden there. */}
-      {actualStep !== 0 && <AppHeader activeStep={actualStep} steps={steps} />}
+      {actualStep !== 0 && <AppHeader activeStep={headerStep} steps={steps} />}
       {steps[actualStep].content}
     </Box>
   );

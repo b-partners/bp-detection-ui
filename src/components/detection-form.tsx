@@ -24,7 +24,7 @@ interface DetectionFormProps {
 }
 
 export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack }) => {
-  const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails, prospect } = useQueryImageFromAddress();
+  const { isQueryImagePending, queryImage, geoSession } = useQueryImageFromAddress();
   const { close: closeDialog } = useDialog();
   const { setStep } = useStep();
   const { name } = useAccountInfoStore();
@@ -36,10 +36,11 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
   const [satellites, setSatellites] = useState({ show: false, end: false, screnShot: false });
 
   useEffect(() => {
-    if (imageSrc && areaPictureDetails && prospect) {
-      setStep({ actualStep: 1, params: { imageSrc, areaPictureDetails, prospect } });
+    if (geoSession) {
+      const { areaPictureDetails, prospect } = geoSession;
+      setStep({ actualStep: 1, params: { geoSession, areaPictureDetails, prospect } });
     }
-  }, [imageSrc, areaPictureDetails, setStep, prospect]);
+  }, [geoSession, setStep]);
 
   const handleSubmit = form.handleSubmit(async data => {
     const { email, phone, firstName, lastName } = data;
