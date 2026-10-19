@@ -21,7 +21,9 @@ const canvas_cursor_sel = 'annotator-canvas-cursor';
 const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
-describe('Test process detection error', () => {
+// Skipped: these drove the old canvas annotator and the app's own detection button. The analysis, and the error
+// messages asserted here, now live inside @bpartners/roof-analyser — revisit once the spec can drive the lib's map.
+describe.skip('Test process detection error', () => {
   beforeEach(() => {
     cy.stub(ParamsUtilities, 'getQueryParams').returns('mock-api-key');
     cy.stub(googleRecaptchaFn, 'useGoogleReCaptcha').returns({ executeRecaptcha: () => Promise.resolve('mock-recaptcha-token'), valide: false });
