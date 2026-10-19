@@ -28,17 +28,11 @@ const backButtonStyle = {
   '&:hover': { backgroundColor: PALETTE_COLORS.forest },
 };
 
-const cta = {
-  ...backButtonStyle,
-  backgroundColor: PALETTE_COLORS.neon_orange,
-  '&:hover': { backgroundColor: PALETTE_COLORS.neon_orange + '80' },
-};
-
 // Parked while the underlying notify/export pipeline is debugged — flip back on once fixed.
 const SHOW_PDF_DOWNLOAD = false;
 
 export const AcknowledgementsStep = () => {
-  const { website, feedbackLink } = useAccountInfoStore();
+  const { feedbackLink } = useAccountInfoStore();
   const pdfFile = useStep(({ params }) => params.pdfFile);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -59,7 +53,7 @@ export const AcknowledgementsStep = () => {
   return (
     <Stack sx={endPagePaperStyle}>
       <Typography variant='h5' sx={titleStyle}>
-        Merci d’avoir analysé votre toiture, notre expert toiture va vous contacter dans les plus bref délais.
+        Merci d’avoir analysé votre toiture, votre pré-diagnostic BIRDIA est prêt.
       </Typography>
       {SHOW_PDF_DOWNLOAD && pdfUrl && (
         <Button
@@ -77,9 +71,6 @@ export const AcknowledgementsStep = () => {
         </Button>
       )}
       <Stack direction='row' spacing={2} mt={2}>
-        <Button variant='contained' size='large' onClick={() => window.location.replace(website)} sx={cta}>
-          Laisser un commentaire
-        </Button>
         <Button variant='contained' size='large' onClick={() => window.location.replace(feedbackLink)} sx={backButtonStyle}>
           Retourner à l'accueil
         </Button>
