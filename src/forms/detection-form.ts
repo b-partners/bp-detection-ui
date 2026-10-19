@@ -17,8 +17,9 @@ const schema = z.object({
     .string({ required_error: "L'adresse email est requise.", message: "L'adresse email est requise." })
     .email({ message: 'Adresse email non valide.' })
     .refine(email => !email.split('@')[0].includes('+'), { message: 'Adresse email non valide.' }),
+  consent: z.boolean().refine(value => value, { message: 'Votre consentement est requis pour lancer l’analyse.' }),
 });
 
 const resolver = zodResolver(schema);
 
-export const useDetectionForm = () => useForm({ mode: 'all', resolver });
+export const useDetectionForm = () => useForm({ mode: 'all', resolver, defaultValues: { consent: false } });

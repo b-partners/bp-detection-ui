@@ -1,6 +1,6 @@
 import { useDetectionForm } from '@/forms';
 import { useDialog, useStep } from '@/hooks';
-import { useAccountInfoStore, useQueryImageFromAddress } from '@/queries';
+import { useQueryImageFromAddress } from '@/queries';
 import { wait } from '@/utilities';
 import { ArrowBack, Info } from '@mui/icons-material';
 import { Box, Button, CircularProgress, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from '@mui/material';
@@ -24,22 +24,20 @@ interface DetectionFormProps {
 }
 
 export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack }) => {
-  const { isQueryImagePending, queryImage, imageSrc, areaPictureDetails, prospect } = useQueryImageFromAddress();
+  const { isQueryImagePending, queryImage, geoSession } = useQueryImageFromAddress();
   const { close: closeDialog } = useDialog();
   const { setStep } = useStep();
-  const { name } = useAccountInfoStore();
   const form = useDetectionForm();
-
-  const partnerName = name || 'votre couvreur';
 
   const [scope, animate] = useAnimate();
   const [satellites, setSatellites] = useState({ show: false, end: false, screnShot: false });
 
   useEffect(() => {
-    if (imageSrc && areaPictureDetails && prospect) {
-      setStep({ actualStep: 1, params: { imageSrc, areaPictureDetails, prospect } });
+    if (geoSession) {
+      const { areaPictureDetails, prospect } = geoSession;
+      setStep({ actualStep: 1, params: { geoSession, areaPictureDetails, prospect } });
     }
-  }, [imageSrc, areaPictureDetails, setStep, prospect]);
+  }, [geoSession, setStep]);
 
   const handleSubmit = form.handleSubmit(async data => {
     const { email, phone, firstName, lastName } = data;
@@ -66,7 +64,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
           <Stack>
             <Typography className='dialog-eyebrow'>Presque terminé</Typography>
             <Typography className='dialog-title'>Vos coordonnées pour recevoir le rapport</Typography>
-            <Typography className='dialog-subtitle'>{partnerName} vous rappelle sous 24 h avec votre pré-diagnostic complet.</Typography>
+            <Typography className='dialog-subtitle'>Vous recevez votre pré-diagnostic complet par email après analyse.</Typography>
           </Stack>
           <Tooltip title="Seuls le numéro de téléphone et l'adresse email sont obligatoires afin que vous puissiez recevoir les résultats de l'analyse de votre toiture.">
             <Box className='dialog-info'>
@@ -77,7 +75,7 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
       </DialogTitle>
       <DialogContent>
         {Object.values(satellites).includes(true) && <LoadingSteps />}
-        <Stack ref={scope} component='form' spacing={2.5} position='relative' minWidth='600px' minHeight='400px' p={2} onSubmit={handleSubmit}>
+        <Stack ref={scope} component='form' spacing={0.75} position='relative' minWidth='600px' minHeight='432px' px={2} py={0} onSubmit={handleSubmit}>
           {satellites.screnShot && (
             <Box sx={{ width: '100%', height: '400px', position: 'relative', overflow: 'hidden' }}>
               <ScreenShotAnimation />
@@ -106,6 +104,20 @@ export const DetectionForm: FC<DetectionFormProps> = ({ address, comment, onBack
               'Téléphone',
               <BpInput title='Le numéro de téléphone est obligatoire' type='tel' name='phone' placeholder='06 12 34 56 78' fullWidth required />
             )}
+          </Box>
+          <Box className='input-anime'>
+            <label className={`consent${form.formState.errors.consent ? ' consent-invalid' : ''}`} title={form.formState.errors.consent?.message as string}>
+              <input type='checkbox' data-cy='consent-checkbox' {...form.register('consent')} />
+              <Typography component='span' className='consent-text'>
+                <b>Je consens au traitement de mes données personnelles</b> par BIRDIA dans le cadre de la réalisation de mon pré-diagnostic de toiture,
+                conformément au <b>RGPD</b>. Mes données sont utilisées uniquement pour générer et m'envoyer mon rapport, et ne sont ni revendues ni cédées à
+                des tiers. Je peux à tout moment demander leur suppression — plus d'infos dans la{' '}
+                <a href='https://www.birdia.fr/confidentialite' target='_blank' rel='noopener noreferrer'>
+                  politique de confidentialité
+                </a>
+                .
+              </Typography>
+            </label>
           </Box>
         </Stack>
       </DialogContent>
