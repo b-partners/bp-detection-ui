@@ -1,5 +1,6 @@
 import { googleRecaptchaFn } from '@/queries/google-recaptcha-fn';
-import { cache, ParamsUtilities } from '@/utilities';
+import { cache } from '@/utilities/cache';
+import { ParamsUtilities } from '@/utilities/get-query-params';
 import {
   account_holder_mock,
   account_mock,

@@ -82,7 +82,7 @@ describe('Error message testing', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.contains('Renseignez votre adresse');
+    cy.contains('Pré-diagnostiquez votre toiture');
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
@@ -226,7 +226,7 @@ describe('Error message testing', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.contains('Renseignez votre adresse');
+    cy.contains('Pré-diagnostiquez votre toiture');
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
@@ -281,7 +281,7 @@ describe('Error message testing', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.contains('Renseignez votre adresse');
+    cy.contains('Pré-diagnostiquez votre toiture');
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
