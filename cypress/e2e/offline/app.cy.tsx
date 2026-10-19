@@ -2,14 +2,13 @@ import {
   account_holder_mock,
   account_mock,
   area_picture_mock,
-  detection_mock,
   detectionSync,
+  llmResult_mock,
   locations_mock,
-  mercator_mock,
   prospect_mock,
   whoami_mock,
 } from '../../../src/__tests__/mocks';
-import { geoSessionInterceptions, offlineUrl } from './utilities';
+import { geoSessionInterceptions, offlineUrl, roofAnalysisInterceptions } from './utilities';
 
 const search_input_sel = 'address-search-input';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
@@ -37,26 +36,13 @@ const requestsInterceptions = () => {
   // prospect & areaPictures & get image
 
   // detection
-  cy.intercept('GET', `**/detections/**`, detection_mock).as('getDetection');
-  cy.intercept('POST', `**/detections/**/image`, detection_mock).as('createDetectionImage');
-  cy.intercept('GET', `http://mock.url.com/`, { fixture: 'mock.geojson', headers: { 'content-type': 'application/geojson' } }).as('getDetectionResultGeojson');
-  cy.intercept('GET', `/vgg`, { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
   cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
-  cy.intercept('GET', `/image-result`, { fixture: 'sync-result-image.jpg', headers: { 'content-type': 'image/jpg' } }).as('detectionSync');
   // detection
-
-  // points conversion
-  cy.intercept('POST', `/Prod/mercator`, mercator_mock).as('createDetectionImage');
-  // points conversion
-
-  // email message
-  cy.intercept('POST', `**/detections/*/pdf`, { body: {} }).as('sendPdf');
-  cy.intercept('POST', `**/detections/*/roofer/email`, { body: {} }).as('sendUserInfo');
-  // email message
 
   cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
 
   geoSessionInterceptions();
+  roofAnalysisInterceptions(llmResult_mock);
 };
 
 describe('Component testing', () => {
@@ -122,9 +108,37 @@ describe('Component testing', () => {
     cy.contains('Visualisez et délimitez votre toiture').closest('.step-item').should('have.class', 'active');
     //steppers state
 
-    // the roof analyser takes over from here, on the geocoded position
+    // the roof analyser takes over from here, on the geocoded position, with the building's outline pre-filled
     cy.dataCy('roof-annotator');
     cy.wait('@getActualMapLayer');
-    cy.contains("Lancer l'analyse");
+    cy.wait('@getFootprint');
+    cy.contains('Emprise du bâtiment détectée automatiquement');
+
+    cy.contains('button', "Lancer l'analyse").should('not.be.disabled').click();
+    cy.wait('@detectionSync');
+
+    //steppers state
+    cy.contains('Analysez l’état via BIRDIA').closest('.step-item').should('have.class', 'active');
+    //steppers state
+
+    cy.contains("Résultats de l'analyse");
+    cy.contains('Surface totale');
+    cy.contains('Revêtement');
+    cy.contains('Tuiles');
+    cy.contains("Taux d'usure");
+    cy.contains('Taux de moisissure');
+    cy.contains("Taux d'humidité");
+    cy.contains('Obstacle / Velux');
+
+    // the report is asked of the LLM as soon as the analysis lands, then exported and sent to the roofer
+    cy.wait('@getLlmReport');
+    cy.contains('button', 'Comprendre votre rapport').click();
+    cy.contains('COMPRENDRE VOTRE RAPPORT');
+    cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
+    cy.wait('@exportPdf');
+    cy.wait('@notifyRoofer');
+
+    cy.contains('button', 'Terminer').click();
+    cy.contains('Merci d’avoir analysé votre toiture, votre pré-diagnostic BIRDIA est prêt.');
   });
 });
