@@ -76,5 +76,11 @@
     "vite": "^6.2.0",
     "vite-plugin-istanbul": "^7.0.0",
     "vite-tsconfig-paths": "^5.1.4"
+  },
+  "allowScripts": {
+    "core-js@3.47.0": true,
+    "cypress@14.2.0": true,
+    "esbuild@0.25.12": true,
+    "fsevents@2.3.3": true
   }
 }

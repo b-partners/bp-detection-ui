@@ -33,13 +33,6 @@ export const HeroSection = () => {
 
   return (
     <Box className='landing-hero'>
-      <Box className='top-nav'>
-        <Box className='header-birdia'>
-          <span className='dot' />
-          Propulsé par <strong>BIRDIA</strong>
-        </Box>
-      </Box>
-
       <Box className='hero-split'>
         <Box className='partner-card' component='aside'>
           <Box className='partner-card-logo'>
@@ -102,7 +95,7 @@ export const HeroSection = () => {
             Pré-diagnostiquez votre toiture <span className='accent'>sans monter dessus.</span>
           </Typography>
           <Typography className='hero-lead'>
-            Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Votre couvreur local vous recontacte sous 24 h.
+            Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
           </Typography>
 
           <AddressSearchForm primary />

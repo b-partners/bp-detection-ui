@@ -128,7 +128,7 @@ export const DetectionFormStyle: SxProps = {
   '& .bp-field': {
     display: 'flex',
     flexDirection: 'column',
-    gap: 0.75,
+    gap: 0.5,
     '& .bp-field-label': {
       fontWeight: 700,
       color: PALETTE_COLORS.black,
@@ -137,6 +137,33 @@ export const DetectionFormStyle: SxProps = {
       textTransform: 'uppercase',
     },
   },
+  '& .consent': {
+    // width: 0 + minWidth: 100% keeps the long text out of the dialog's intrinsic width, so the card stays as wide as before.
+    width: 0,
+    minWidth: '100%',
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '10px',
+    p: '12px 16px',
+    background: '#FFF7F1',
+    border: '1.5px solid #FFE1CC',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    '& input[type="checkbox"]': {
+      mt: '3px',
+      mx: 0,
+      width: 17,
+      height: 17,
+      accentColor: '#E96B33',
+      cursor: 'pointer',
+      flexShrink: 0,
+    },
+    '& .consent-text': { fontSize: '12.5px', lineHeight: 1.55, color: '#334155' },
+    '& .consent-text b': { color: '#17181B', fontWeight: 700 },
+    '& .consent-text a': { color: '#C8552A' },
+  },
+  '& .consent-invalid': { borderColor: '#d32f2f', background: '#FFF4F4' },
   '& .input-anime': {
     '& .MuiInputLabel-root.Mui-focused': {
       color: PALETTE_COLORS.neon_orange,
