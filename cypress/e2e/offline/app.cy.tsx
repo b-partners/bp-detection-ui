@@ -1,22 +1,17 @@
-import { cache } from '@/utilities/cache';
 import {
   account_holder_mock,
   account_mock,
   area_picture_mock,
-  converter_mock,
   detection_mock,
   detectionSync,
-  llmResult_mock,
   locations_mock,
   mercator_mock,
   prospect_mock,
   whoami_mock,
 } from '../../../src/__tests__/mocks';
-import { offlineUrl } from './utilities';
+import { geoSessionInterceptions, offlineUrl } from './utilities';
 
 const search_input_sel = 'address-search-input';
-const canvas_cursor_sel = 'annotator-canvas-cursor';
-const process_detection_sel = 'process-detection-button';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
 
 const requestsInterceptions = () => {
@@ -60,6 +55,8 @@ const requestsInterceptions = () => {
   // email message
 
   cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
+
+  geoSessionInterceptions();
 };
 
 describe('Component testing', () => {
@@ -116,73 +113,18 @@ describe('Component testing', () => {
     cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createAreaPicture').then(() => cache.detectionId(detection_mock.id));
+    cy.wait('@createProspect');
+    cy.wait('@createAreaPicture');
+    cy.wait('@geocode');
 
-    cy.contains("Veuillez délimiter votre toiture sur l'image suivante.");
     //steppers state
     cy.contains('Renseignez votre adresse').closest('.step-item').should('have.class', 'done');
     cy.contains('Visualisez et délimitez votre toiture').closest('.step-item').should('have.class', 'active');
     //steppers state
-    //llm result
-    cy.intercept('GET', '/toiture**', res => {
-      res.reply({ body: llmResult_mock, headers: { 'content-type': 'text/html' } });
-    });
-    //llm result
 
-    cy.dataCy(process_detection_sel).should('have.class', 'Mui-disabled');
-
-    const getX = (x: number) => Math.floor(x + 145 - 71 + 84);
-    const getY = (y: number) => Math.floor(y + 397 - 387 + 154);
-
-    cy.dataCy('zoom-in').click();
-    cy.dataCy('zoom-in').click();
-    cy.dataCy('zoom-reset').click();
-
-    cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(42), getY(279), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(25), getY(362), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(44), getY(390), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(137), getY(423), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(273), getY(438), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(381), getY(447), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(408), getY(313), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(337), getY(271), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(354), getY(203), { force: true });
-    cy.dataCy(canvas_cursor_sel).click(getX(237), getY(151), { force: true });
-    // cy.dataCy(canvas_cursor_sel).click(getX(87), getY(120), { force: true });
-
-    return;
-
-    cy.dataCy('zoom-out').click();
-    cy.dataCy(process_detection_sel).should('not.have.class', 'Mui-disabled');
-
-    cy.intercept('PUT', '/detections/*/roofs/properties', detection_mock);
-    cy.intercept('POST', '/accounts/*/annotations/convert', converter_mock);
-    cy.intercept('POST', `/accounts/${account_mock.id}/annotations/exports`, { statusCode: 200 });
-    cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects/${prospect_mock.id}/notifications`, { statusCode: 200 });
-    cy.dataCy(process_detection_sel).click();
-
-    cy.contains('Calcule de la pente en cours...');
-    cy.contains('Calcule de la hauteur du bâtiment en cours...');
-
-    cy.contains('Hauteur du bâtiment');
-    cy.contains("Taux d'usure");
-    cy.contains('Taux de moisissure');
-    cy.contains("Taux d'humidité");
-    cy.contains('Obstacle / Velux');
-
-    cy.contains('Hauteur du bâtiment: 7.9m');
-    cy.contains('Pente: 24.4%');
-
-    cy.contains('Revêtement 1: Tuiles');
-    cy.contains('Revêtement 2: Fibrociment');
-
-    cy.contains('Comprendre votre rapport');
-    cy.dataCy('toggle-llm-result-view').click();
-
-    cy.contains('COMPRENDRE VOTRE RAPPORT');
-    cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
-
-    cy.contains('Disclaimer : rapport généré par IA statistique nécessitant une confirmation sur site.');
+    // the roof analyser takes over from here, on the geocoded position
+    cy.dataCy('roof-annotator');
+    cy.wait('@getActualMapLayer');
+    cy.contains("Lancer l'analyse");
   });
 });
