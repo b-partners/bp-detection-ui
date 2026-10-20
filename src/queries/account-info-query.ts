@@ -1,4 +1,4 @@
-import { bpUserAccountApi, userInfoProvider, userProvider } from '@/providers';
+import { bpUserAccountApi, resolveUserInfo, userProvider } from '@/providers';
 import { arrayBufferToBase64, getFileUrl, ParamsUtilities } from '@/utilities';
 import { useQuery } from '@tanstack/react-query';
 import { create } from 'zustand';
@@ -38,12 +38,12 @@ export const queryFn = async () => {
   let defaultReturnValue: AccountInfo = { image: defaultLogo, website: defaultSite, feedbackLink: defaultFeedbackLink, ...emptyCompanyInfo };
   try {
     const { apiKey } = ParamsUtilities.getQueryParams();
-    const { accountId, userId } = await userInfoProvider(apiKey);
-    const { logoFileId } = (await userProvider.whoami()) || {};
-
-    const url = getFileUrl(logoFileId ?? '', 'LOGO', accountId ?? '');
-
-    const { data: accountHolders } = await bpUserAccountApi(apiKey).getAccountHolders(userId ?? '', accountId ?? '');
+    const { accountId, userId } = await resolveUserInfo(apiKey);
+    const [user, { data: accountHolders }] = await Promise.all([
+      userProvider.whoami(),
+      bpUserAccountApi(apiKey).getAccountHolders(userId ?? '', accountId ?? ''),
+    ]);
+    const url = getFileUrl(user?.logoFileId ?? '', 'LOGO', accountId ?? '');
     const accountHolder = accountHolders?.[0];
     const website = accountHolder?.companyInfo?.website || defaultSite;
     const feedbackLink = accountHolder?.feedback?.feedbackLink || defaultFeedbackLink;

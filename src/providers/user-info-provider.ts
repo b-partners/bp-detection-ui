@@ -6,7 +6,7 @@ const getCurrentAccount = (accounts: Account[]) => {
   return accounts.find(a => a.active) || accounts[0];
 };
 
-export const userInfoProvider = async (apiKey: string) => {
+export const resolveUserInfo = async (apiKey: string) => {
   const userInfo = { ...getCached.userInfo() };
   if (!userInfo.userId) {
     const { data: whoami } = await bpSecurityApi(apiKey).whoami();
@@ -24,6 +24,11 @@ export const userInfoProvider = async (apiKey: string) => {
     userInfo.accountHolderId = currentAccountHolder?.id ?? '';
   }
   cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
+  return userInfo;
+};
+
+export const userInfoProvider = async (apiKey: string) => {
+  const userInfo = await resolveUserInfo(apiKey);
 
   const { approved, legalFiles } = await legalFilesProvider.checkLegalFiles(apiKey, userInfo.userId || '');
 
