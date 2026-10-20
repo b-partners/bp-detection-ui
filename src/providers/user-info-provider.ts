@@ -22,9 +22,9 @@ export const resolveUserInfo = async (apiKey: string, knownUserId?: string) => {
   }
   let accountHolders: AccountHolder[] | undefined;
   if (!userInfo.accountHolderId) {
-    ({ data: accountHolders } = await bpUserAccountApi(apiKey).getAccountHolders(userInfo.userId ?? '', userInfo.accountId ?? ''));
-    const currentAccountHolder = accountHolders[0];
-    userInfo.accountHolderId = currentAccountHolder?.id ?? '';
+    const { data } = await bpUserAccountApi(apiKey).getAccountHolders(userInfo.userId ?? '', userInfo.accountId ?? '');
+    accountHolders = data;
+    userInfo.accountHolderId = data[0]?.id ?? '';
   }
   cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
   return { ...userInfo, accountHolders };
