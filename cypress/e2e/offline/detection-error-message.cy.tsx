@@ -9,7 +9,15 @@ import {
   tooBigPolygonResponse_mock,
   whoami_mock,
 } from '../../../src/__tests__/mocks';
-import { geoSessionInterceptions, offlineUrl, roofAnalysisInterceptions } from './utilities';
+import {
+  expectNoRequest,
+  expectResponses,
+  geoSessionInterceptions,
+  offlineUrl,
+  refuseUnmockedRequests,
+  roofAnalysisInterceptions,
+  thirdPartyInterceptions,
+} from './utilities';
 
 const search_input_sel = 'address-search-input';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
@@ -41,13 +49,30 @@ const openRoofAnalyser = () => {
   cy.contains('Emprise du bâtiment détectée automatiquement');
 };
 
-const launchAnalysis = () => {
+/** Launches the analysis and checks the detection request the roof analyser sends, and the error status it gets back. */
+const launchAnalysis = (statusCode: number) => {
   cy.contains('button', "Lancer l'analyse").should('not.be.disabled').click();
-  cy.wait('@detectionSync');
+  cy.wait('@detectionSync').then(({ request, response }) => {
+    expect(request.headers['x-api-key']).to.eq('api-key-mock');
+    expect(request.body.detectableObjectModel.modelName).to.eq('BP_TOITURE');
+    expect(request.body.geoJsonDelimitationType).to.eq('ROOF');
+    expect(request.body.geoJsonZone[0].geometry.type).to.eq('Polygon');
+    expect(response?.statusCode).to.eq(statusCode);
+  });
+};
+
+/** A failed detection stops the analysis there: no result, report, export nor roofer notification is requested. */
+const expectAnalysisStopped = () => {
+  ['getDetectionResultVgg', 'getLlmReport', 'uploadAttachment', 'exportPdf', 'notifyRoofer'].forEach(expectNoRequest);
 };
 
 describe('Test process detection error', () => {
+  let unmocked: string[] = [];
+
   beforeEach(() => {
+    unmocked = refuseUnmockedRequests();
+    thirdPartyInterceptions();
+
     cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -66,12 +91,35 @@ describe('Test process detection error', () => {
     // prospect & areaPictures
     cy.intercept('POST', `/accountHolders/${account_holder_mock.id}/prospects`, [prospect_mock]).as('createProspect');
     cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/**`, area_picture_mock).as('createAreaPicture');
+    // the roof analyser saving its session: the annotation sent is the one saved
+    cy.intercept('PUT', `/accounts/${account_mock.id}/areaPictures/*/annotations/*`, req => req.reply(req.body)).as('saveGeoSession');
     // prospect & areaPictures
 
     geoSessionInterceptions();
     roofAnalysisInterceptions(llmResult_mock);
 
     cy.visit(offlineUrl);
+  });
+
+  afterEach(() => {
+    // every request the flow sent was answered by its mock, with the status that mock gives
+    expectResponses('location-search', 200);
+    expectResponses('getWhoami', 200);
+    expectResponses('getAccounts', 200);
+    expectResponses('getAccountHolders', 200);
+    expectResponses('getLegalFiles', 200);
+    expectResponses('createProspect', 200);
+    expectResponses('createAreaPicture', 200);
+    expectResponses('saveGeoSession', 200);
+    expectResponses('geocode', 200);
+    expectResponses('getFootprint', 200);
+    expectResponses('getGeoSession', 404);
+    expectResponses('getActualMapLayer', 200);
+    expectResponses('getMapLayers', 200);
+    expectResponses('getWmsTile', 200);
+    expectResponses('generateRoofModel', 500);
+
+    cy.then(() => expect(unmocked, 'unmocked requests').to.be.empty);
   });
 
   it('Test /sync error 500', () => {
@@ -103,37 +151,43 @@ describe('Test process detection error', () => {
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.contains('Adresse email non valide');
+    expectNoRequest('createProspect');
 
     cy.dataName('email').clear().type('john.doe@example.com');
     cy.dataCy(process_detection_on_form_sel).click();
 
-    cy.wait('@createProspect');
+    cy.wait('@createProspect')
+      .its('request.body')
+      .then(body => expect(JSON.stringify(body)).to.contain('john.doe@example.com'));
     cy.wait('@createAreaPicture');
 
     cy.dataCy('roof-annotator');
     cy.wait('@getFootprint');
     cy.contains('Emprise du bâtiment détectée automatiquement');
 
-    launchAnalysis();
+    launchAnalysis(500);
 
     cy.contains('Le service a rencontré une erreur de son côté.');
+    expectAnalysisStopped();
   });
 
   it('Test free limit', () => {
     cy.intercept('POST', `/detections/*/sync`, roofAnalyseLimitExceededResponse_Mock).as('detectionSync');
 
     openRoofAnalyser();
-    launchAnalysis();
+    launchAnalysis(400);
 
     cy.contains('La limite des analyses gratuites a été atteinte.');
+    expectAnalysisStopped();
   });
 
   it('Test too big polygon', () => {
     cy.intercept('POST', `/detections/*/sync`, tooBigPolygonResponse_mock).as('detectionSync');
 
     openRoofAnalyser();
-    launchAnalysis();
+    launchAnalysis(501);
 
     cy.contains('La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge.');
+    expectAnalysisStopped();
   });
 });
