@@ -1,4 +1,4 @@
-import { useAccountInfoQuery, useAccountInfoStore } from '@/queries';
+import { defaultLogo, useAccountInfoQuery, useAccountInfoStore } from '@/queries';
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import { HeaderStyle } from './style';
 
@@ -47,7 +47,11 @@ export const AppHeader = ({ activeStep, steps }: AppHeaderProps) => {
       <Box className='hero-split'>
         <Box className='partner-card' component='aside'>
           <Box className='partner-card-logo'>
-            {isAccountLoading ? <Skeleton variant='rectangular' width='100%' height='100%' /> : <img src={image} alt={name || 'Logo du couvreur'} />}
+            {isAccountLoading ? (
+              <Skeleton variant='rectangular' width='100%' height='100%' />
+            ) : (
+              <img src={image} alt={name || 'Logo du couvreur'} onError={e => (e.currentTarget.src = defaultLogo)} />
+            )}
           </Box>
 
           {isAccountLoading ? (

@@ -11,11 +11,14 @@ describe('Error message testing', () => {
 
   it('Test the app', () => {
     cy.intercept('POST', '/address/autocomplete*', { statusCode: 403 }).as('location-search');
+    // the key is checked against the account it opens: this one opens none
+    cy.intercept('GET', '/whoami', { statusCode: 403, body: { message: 'Access Denied' } }).as('getWhoamiRefused');
 
     cy.visit(offlineUrl);
     cy.contains("Veuillez specifier votre clé d'api");
 
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
+    cy.wait('@getWhoamiRefused').its('response.statusCode').should('eq', 403);
     cy.contains('Veuillez specifier une clé valide');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');

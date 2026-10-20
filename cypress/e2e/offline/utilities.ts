@@ -36,6 +36,39 @@ export const geoSessionInterceptions = () => {
   cy.intercept('GET', '/wms-proxy?*', { fixture: 'bp-detection-image.png', headers: { 'content-type': 'image/png' } }).as('getWmsProxyTile');
 };
 
+/**
+ * Registered before every other interception, so it only sees the requests none of them answered: those leave the
+ * app's own origin unmocked. They are refused instead of reaching the network, and recorded for the spec to fail on.
+ */
+export const refuseUnmockedRequests = () => {
+  const unmocked: string[] = [];
+  cy.intercept({ url: /^https?:\/\/(?!localhost[:/])/ }, req => {
+    unmocked.push(`${req.method} ${req.url}`);
+    req.reply({ statusCode: 599, body: { message: 'unmocked request' } });
+  });
+  return unmocked;
+};
+
+/** The third parties the page loads on its own: the web fonts, and Sentry when a DSN is set. */
+export const thirdPartyInterceptions = () => {
+  cy.intercept('GET', 'https://fonts.googleapis.com/**', { body: '', headers: { 'content-type': 'text/css' } }).as('getFonts');
+  cy.intercept('GET', 'https://fonts.gstatic.com/**', { statusCode: 404, body: '' }).as('getFontFile');
+  cy.intercept('POST', /\.sentry\.io\//, { body: {} }).as('sendSentryEnvelope');
+};
+
+/** What `cy.get('@alias.all')` yields: the calls an interception answered. */
+type Interception = { request: { method: string; url: string }; response?: { statusCode: number } };
+
+/** Every request answered under `alias` got `statusCode` back, and it was sent at least once. */
+export const expectResponses = (alias: string, statusCode: number) =>
+  cy.get<Interception[]>(`@${alias}.all`).should(calls => {
+    expect(calls, `${alias} calls`).to.have.length.greaterThan(0);
+    calls.forEach(({ request, response }) => expect(response?.statusCode, `${request.method} ${request.url}`).to.eq(statusCode));
+  });
+
+/** No request was answered under `alias`. */
+export const expectNoRequest = (alias: string) => cy.get<Interception[]>(`@${alias}.all`).should('have.length', 0);
+
 /** What the roof analyser calls once the analysis is launched, besides `/detections/{id}/sync` which each spec answers itself. */
 export const roofAnalysisInterceptions = (llmReport: string) => {
   cy.intercept('GET', '**/vgg', { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');

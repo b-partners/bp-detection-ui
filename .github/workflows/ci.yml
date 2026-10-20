@@ -36,24 +36,15 @@ jobs:
           sh ./initNpmrc.sh imagery annotator-imagery-store npm-bpartners-imagery-app ${{ secrets.BP_ANNOTATOR_AWS_ID }}
 
       - run: npm install --legacy-peer-deps
+      # The offline specs mock every request (cypress/support/offline-network.ts), so these urls are never reached:
+      # fake ones are enough. Only the paths matter, matched by the mocks: /geoserver/cite/wms and /toiture.
       - run: |
-          echo REACT_APP_BPARTNERS_API_URL=${{ secrets.REACT_APP_BPARTNERS_API_URL }} > .env.local
-          echo REACT_APP_GEO_DETECTION_API=${{ secrets.REACT_APP_GEO_DETECTION_API }} >> .env.local
-          echo REACT_APP_GEODATA_API_URL=${{ secrets.REACT_APP_GEODATA_API_URL }} >> .env.local
-          echo REACT_APP_WMS_BASE_URL=${{ secrets.REACT_APP_WMS_BASE_URL }} >> .env.local
-          echo REACT_APP_WMS_TILE_BASE_URL=${{ secrets.REACT_APP_WMS_TILE_BASE_URL }} >> .env.local
-          echo RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }} >> .env.local
-          echo LLM_ANALYSE_RESULT=${{ secrets.LLM_ANALYSE_RESULT }} >> .env.local
-          echo LLM_API_KEY=${{ secrets.LLM_API_KEY }} >> .env.local
-          echo REACT_APP_ANNOTATOR_GEO_CONVERTER_API_URL=${{ secrets.REACT_APP_ANNOTATOR_GEO_CONVERTER_API_URL }} >> .env.local
-          echo REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL=${{ secrets.REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL }} >> .env.local
-          echo REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL=${{ secrets.REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL }} >> .env.local
-          echo REACT_APP_ANNOTATOR_GEO_REFERENCER_API_URL=${{ secrets.REACT_APP_ANNOTATOR_GEO_REFERENCER_API_URL }} >> .env.local
-          echo RECAPTCHA_API_URL=${{ secrets.RECAPTCHA_API_URL }} >> .env.local
-
-          echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} >> .env.local
-          echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env.local
-          echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env.local
+          echo REACT_APP_BPARTNERS_API_URL=https://api.fake.test > .env.local
+          echo REACT_APP_GEO_DETECTION_API=https://detection.fake.test >> .env.local
+          echo REACT_APP_GEODATA_API_URL=https://geodata.fake.test >> .env.local
+          echo REACT_APP_WMS_BASE_URL=https://wms.fake.test/geoserver/cite/wms >> .env.local
+          echo REACT_APP_WMS_TILE_BASE_URL=https://wms.fake.test/geoserver/cite/wms >> .env.local
+          echo LLM_ANALYSE_RESULT=https://llm.fake.test/toiture >> .env.local
 
           echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env.local
 
