@@ -4,15 +4,14 @@ import { offlineUrlWithApiKey } from './utilities';
 const whoami_mock = JSON.parse(JSON.stringify(_whoami_mock));
 whoami_mock.user.logoFileId = '';
 const defaultRooferLogo = '/assets/images/bird-ia-lg-logo.png';
-const base64Indicator = 'base64';
+/** The roofer's logo: the browser loads it itself, straight from this url. */
+const rooferLogoPath = `/accounts/account-mock-id/files/${_whoami_mock.user.logoFileId}/raw?apiKey=api-key-mock&fileType=LOGO`;
 
 describe('Roofer dynamic logo', () => {
   beforeEach(() => {
     cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
-    cy.intercept('GET', `/accounts/account-mock-id/files/${_whoami_mock.user.logoFileId}/raw?apiKey=api-key-mock&fileType=LOGO`, { statusCode: 500 }).as(
-      'getRooferLogo'
-    );
+    cy.intercept('GET', rooferLogoPath, { statusCode: 500 }).as('getRooferLogo');
 
     // user informations
     cy.intercept('GET', `/users/${whoami_mock.user.id}/accounts`, [account_mock]).as('getAccounts');
@@ -34,18 +33,19 @@ describe('Roofer dynamic logo', () => {
     cy.intercept('GET', '/whoami', _whoami_mock).as('getWhoami');
     cy.visit(offlineUrlWithApiKey);
     cy.contains('Pré-diagnostiquez votre toiture');
-    // there is no roofer logo so the app use the default image
+    cy.wait('@getRooferLogo').its('response.statusCode').should('eq', 500);
+    // the roofer logo could not be loaded so the app use the default image
     cy.get('.partner-card-logo img').should('have.attr', 'src').and('include', defaultRooferLogo);
   });
 
   it('Test if the roofer have correct logo', () => {
-    cy.intercept('GET', `/accounts/account-mock-id/files/${_whoami_mock.user.logoFileId}/raw?apiKey=api-key-mock&fileType=LOGO`, {
-      fixture: 'bird-ia-lg-logo.png',
-    });
+    cy.intercept('GET', rooferLogoPath, { fixture: 'bird-ia-lg-logo.png', headers: { 'content-type': 'image/png' } }).as('getRooferLogo');
     cy.intercept('GET', '/whoami', _whoami_mock).as('getWhoami');
     cy.visit(offlineUrlWithApiKey);
     cy.contains('Pré-diagnostiquez votre toiture');
-    // use the roofer logo as base64
-    cy.get('.partner-card-logo img').should('have.attr', 'src').and('include', base64Indicator);
+    cy.wait('@getRooferLogo').its('response.statusCode').should('eq', 200);
+    // the card shows the roofer logo from its own url, not the default one
+    cy.get('.partner-card-logo img').should('have.attr', 'src').and('include', rooferLogoPath);
+    cy.get('.partner-card-logo img').should($img => expect(($img[0] as HTMLImageElement).naturalWidth, 'logo loaded').to.be.greaterThan(0));
   });
 });
