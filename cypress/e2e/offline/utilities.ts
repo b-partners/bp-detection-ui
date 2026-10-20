@@ -56,15 +56,18 @@ export const thirdPartyInterceptions = () => {
   cy.intercept('POST', /\.sentry\.io\//, { body: {} }).as('sendSentryEnvelope');
 };
 
+/** What `cy.get('@alias.all')` yields: the calls an interception answered. */
+type Interception = { request: { method: string; url: string }; response?: { statusCode: number } };
+
 /** Every request answered under `alias` got `statusCode` back, and it was sent at least once. */
 export const expectResponses = (alias: string, statusCode: number) =>
-  cy.get<Cypress.Interception[]>(`@${alias}.all`).should(calls => {
+  cy.get<Interception[]>(`@${alias}.all`).should(calls => {
     expect(calls, `${alias} calls`).to.have.length.greaterThan(0);
     calls.forEach(({ request, response }) => expect(response?.statusCode, `${request.method} ${request.url}`).to.eq(statusCode));
   });
 
 /** No request was answered under `alias`. */
-export const expectNoRequest = (alias: string) => cy.get<Cypress.Interception[]>(`@${alias}.all`).should('have.length', 0);
+export const expectNoRequest = (alias: string) => cy.get<Interception[]>(`@${alias}.all`).should('have.length', 0);
 
 /** What the roof analyser calls once the analysis is launched, besides `/detections/{id}/sync` which each spec answers itself. */
 export const roofAnalysisInterceptions = (llmReport: string) => {
