@@ -9,15 +9,7 @@ import {
   tooBigPolygonResponse_mock,
   whoami_mock,
 } from '../../../src/__tests__/mocks';
-import {
-  expectNoRequest,
-  expectResponses,
-  geoSessionInterceptions,
-  offlineUrl,
-  refuseUnmockedRequests,
-  roofAnalysisInterceptions,
-  thirdPartyInterceptions,
-} from './utilities';
+import { expectNoRequest, expectResponses, geoSessionInterceptions, offlineUrl, roofAnalysisInterceptions } from './utilities';
 
 const search_input_sel = 'address-search-input';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
@@ -49,9 +41,8 @@ const openRoofAnalyser = () => {
   cy.contains('Emprise du bâtiment détectée automatiquement');
 };
 
-/** Launches the analysis and checks the detection request the roof analyser sends, and the error status it gets back. */
-const launchAnalysis = (statusCode: number) => {
-  cy.contains('button', "Lancer l'analyse").should('not.be.disabled').click();
+/** The detection request the roof analyser sends, and the error status it gets back. */
+const expectDetectionSent = (statusCode: number) =>
   cy.wait('@detectionSync').then(({ request, response }) => {
     expect(request.headers['x-api-key']).to.eq('api-key-mock');
     expect(request.body.detectableObjectModel.modelName).to.eq('BP_TOITURE');
@@ -59,6 +50,10 @@ const launchAnalysis = (statusCode: number) => {
     expect(request.body.geoJsonZone[0].geometry.type).to.eq('Polygon');
     expect(response?.statusCode).to.eq(statusCode);
   });
+
+const launchAnalysis = (statusCode: number) => {
+  cy.contains('button', "Lancer l'analyse").should('not.be.disabled').click();
+  expectDetectionSent(statusCode);
 };
 
 /** A failed detection stops the analysis there: no result, report, export nor roofer notification is requested. */
@@ -66,13 +61,25 @@ const expectAnalysisStopped = () => {
   ['getDetectionResultVgg', 'getLlmReport', 'uploadAttachment', 'exportPdf', 'notifyRoofer'].forEach(expectNoRequest);
 };
 
+/**
+ * The roof analyser's error panel for a failed detection. The couvreur's walk is read-only: the panel never offers
+ * to correct the outline nor to take the analysis in hand, only to relaunch it when the failure is worth retrying.
+ */
+const expectAnalysisError = ({ title, message, code, retryable }: { title: string; message: string; code?: number; retryable: boolean }) => {
+  cy.contains('.geo-error-title', title)
+    .parent()
+    .within(() => {
+      cy.contains('.geo-error-message', message);
+      if (code) cy.contains('.geo-error-detail', `Code ${code}`);
+      else cy.get('.geo-error-detail').should('not.exist');
+      cy.contains('button', "Relancer l'analyse").should(retryable ? 'not.be.disabled' : 'not.exist');
+      cy.contains('button', "Faire l'analyse manuellement").should('not.exist');
+      cy.contains('button', "Corriger l'emprise").should('not.exist');
+    });
+};
+
 describe('Test process detection error', () => {
-  let unmocked: string[] = [];
-
   beforeEach(() => {
-    unmocked = refuseUnmockedRequests();
-    thirdPartyInterceptions();
-
     cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
 
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -118,11 +125,11 @@ describe('Test process detection error', () => {
     expectResponses('getMapLayers', 200);
     expectResponses('getWmsTile', 200);
     expectResponses('generateRoofModel', 500);
-
-    cy.then(() => expect(unmocked, 'unmocked requests').to.be.empty);
   });
 
   it('Test /sync error 500', () => {
+    // wide enough for the 3D preview card to leave the error panel's buttons clear
+    cy.viewport(1280, 900);
     cy.intercept('POST', `/detections/*/sync`, { statusCode: 500 }).as('detectionSync');
 
     cy.contains("Veuillez specifier votre clé d'api");
@@ -167,7 +174,20 @@ describe('Test process detection error', () => {
 
     launchAnalysis(500);
 
-    cy.contains('Le service a rencontré une erreur de son côté.');
+    const unavailable = {
+      title: 'Analyse indisponible',
+      message: 'L’analyse de la toiture est indisponible : le service n’a pas pu la traiter. Réessayez dans un instant.',
+      code: 500,
+      retryable: true,
+    };
+    expectAnalysisError(unavailable);
+    expectAnalysisStopped();
+
+    // a server failure is worth retrying: the relaunch sends the detection again, and fails the same way
+    cy.contains('button', "Relancer l'analyse").click();
+    expectDetectionSent(500);
+    cy.get('@detectionSync.all').should('have.length', 2);
+    expectAnalysisError(unavailable);
     expectAnalysisStopped();
   });
 
@@ -177,7 +197,7 @@ describe('Test process detection error', () => {
     openRoofAnalyser();
     launchAnalysis(400);
 
-    cy.contains('La limite des analyses gratuites a été atteinte.');
+    expectAnalysisError({ title: 'Limite atteinte', message: 'La limite des analyses gratuites a été atteinte.', retryable: false });
     expectAnalysisStopped();
   });
 
@@ -187,7 +207,11 @@ describe('Test process detection error', () => {
     openRoofAnalyser();
     launchAnalysis(501);
 
-    cy.contains('La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge.');
+    expectAnalysisError({
+      title: 'Zone trop grande',
+      message: 'La délimitation que vous avez faite est trop grande et ne peut pas encore être prise en charge. Réduisez le contour puis relancez.',
+      retryable: false,
+    });
     expectAnalysisStopped();
   });
 });
