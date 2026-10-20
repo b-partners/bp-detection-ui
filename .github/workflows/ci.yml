@@ -39,6 +39,9 @@ jobs:
       - run: |
           echo REACT_APP_BPARTNERS_API_URL=${{ secrets.REACT_APP_BPARTNERS_API_URL }} > .env.local
           echo REACT_APP_GEO_DETECTION_API=${{ secrets.REACT_APP_GEO_DETECTION_API }} >> .env.local
+          echo REACT_APP_GEODATA_API_URL=${{ secrets.REACT_APP_GEODATA_API_URL }} >> .env.local
+          echo REACT_APP_WMS_BASE_URL=${{ secrets.REACT_APP_WMS_BASE_URL }} >> .env.local
+          echo REACT_APP_WMS_TILE_BASE_URL=${{ secrets.REACT_APP_WMS_TILE_BASE_URL }} >> .env.local
           echo RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }} >> .env.local
           echo LLM_ANALYSE_RESULT=${{ secrets.LLM_ANALYSE_RESULT }} >> .env.local
           echo LLM_API_KEY=${{ secrets.LLM_API_KEY }} >> .env.local

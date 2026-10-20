@@ -1,5 +1,5 @@
 import { account_holder_mock, account_mock, area_picture_mock, detection_mock, locations_mock, prospect_mock, whoami_mock } from '../../../src/__tests__/mocks';
-import { offlineUrl } from './utilities';
+import { geoSessionInterceptions, offlineUrl } from './utilities';
 
 const search_input_sel = 'address-search-input';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
@@ -57,6 +57,7 @@ describe('Error message testing', () => {
   });
 
   it('Test get image error', () => {
+    geoSessionInterceptions();
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
 
     // user informations
@@ -82,7 +83,7 @@ describe('Error message testing', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.contains('Renseignez votre adresse');
+    cy.contains('Pré-diagnostiquez votre toiture');
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
@@ -191,7 +192,7 @@ describe('Error message testing', () => {
     cy.dataCy(process_detection_on_form_sel).click();
 
     // a lower-precision image is now accepted instead of being rejected
-    cy.dataCy('zoom-in');
+    cy.dataCy('roof-annotator');
   });
 
   it('Test get image prospect already exist', () => {
@@ -226,7 +227,7 @@ describe('Error message testing', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.contains('Renseignez votre adresse');
+    cy.contains('Pré-diagnostiquez votre toiture');
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
@@ -281,7 +282,7 @@ describe('Error message testing', () => {
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
 
-    cy.contains('Renseignez votre adresse');
+    cy.contains('Pré-diagnostiquez votre toiture');
 
     cy.dataCy(search_input_sel).type('24 rue mozart');
     cy.wait('@location-search');
