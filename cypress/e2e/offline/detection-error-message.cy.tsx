@@ -214,4 +214,20 @@ describe('Test process detection error', () => {
     });
     expectAnalysisStopped();
   });
+
+  it('Test /sync answering 200 without result file', () => {
+    // a 200 the service did not label as a failure, but with nothing to read: said as the service-side failure it is
+    cy.intercept('POST', `/detections/*/sync`, { statusCode: 200, body: { geoJsonZone: [{ type: 'Feature', properties: {} }] } }).as('detectionSync');
+
+    openRoofAnalyser();
+    launchAnalysis(200);
+
+    expectAnalysisError({
+      title: 'Analyse indisponible',
+      message: 'L’analyse de la toiture est indisponible : le service n’a pas pu la traiter. Réessayez dans un instant.',
+      code: 502,
+      retryable: true,
+    });
+    expectAnalysisStopped();
+  });
 });
