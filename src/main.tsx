@@ -7,7 +7,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { RouterProvider } from 'react-router-dom';
-import { clearCached } from './utilities/cache';
+import { queryFn as accountInfoQueryFn } from './queries/account-info-query';
+import { clearCached, ParamsUtilities } from './utilities';
 import { isCaptchaEnabled } from './utilities/captcha';
 import { routes } from './utilities/routes';
 import { captureError, initSentry } from './utilities/sentry';
@@ -37,4 +38,8 @@ const Main = () => {
 };
 
 // One session per user: erase every cached data before anything renders, so no component can read a previous session's values.
-clearCached.all().finally(() => createRoot(document.getElementById('root')!).render(<Main />));
+// The roofer's logo and contact details are fetched first, in parallel with the first render, so the header no longer waits for the page to mount.
+clearCached.all().finally(() => {
+  if (ParamsUtilities.getQueryParams().apiKey) queryClient.prefetchQuery({ queryKey: ['accountInfo'], queryFn: accountInfoQueryFn });
+  createRoot(document.getElementById('root')!).render(<Main />);
+});
