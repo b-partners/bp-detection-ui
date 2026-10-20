@@ -1,9 +1,9 @@
 import { bpUserAccountApi, resolveUserInfo, userProvider } from '@/providers';
-import { arrayBufferToBase64, getFileUrl, ParamsUtilities } from '@/utilities';
+import { getFileUrl, ParamsUtilities } from '@/utilities';
 import { useQuery } from '@tanstack/react-query';
 import { create } from 'zustand';
 
-const defaultLogo = '/assets/images/bird-ia-lg-logo.png';
+export const defaultLogo = '/assets/images/bird-ia-lg-logo.png';
 const defaultSite = 'https://www.birdia.fr';
 const defaultFeedbackLink = 'https://www.bpartners.app/contact';
 
@@ -38,11 +38,9 @@ export const queryFn = async () => {
   let defaultReturnValue: AccountInfo = { image: defaultLogo, website: defaultSite, feedbackLink: defaultFeedbackLink, ...emptyCompanyInfo };
   try {
     const { apiKey } = ParamsUtilities.getQueryParams();
-    const { accountId, userId } = await resolveUserInfo(apiKey);
-    const [user, { data: accountHolders }] = await Promise.all([
-      userProvider.whoami(),
-      bpUserAccountApi(apiKey).getAccountHolders(userId ?? '', accountId ?? ''),
-    ]);
+    const user = await userProvider.whoami();
+    const { accountId, userId, accountHolders: resolvedHolders } = await resolveUserInfo(apiKey, user?.id);
+    const accountHolders = resolvedHolders ?? (await bpUserAccountApi(apiKey).getAccountHolders(userId ?? '', accountId ?? '')).data;
     const url = getFileUrl(user?.logoFileId ?? '', 'LOGO', accountId ?? '');
     const accountHolder = accountHolders?.[0];
     const website = accountHolder?.companyInfo?.website || defaultSite;
@@ -60,12 +58,8 @@ export const queryFn = async () => {
 
     if (url.includes('null') || url.includes('undefined') || url.split('://')[1].includes('//')) throw new Error();
 
-    const file = await fetch(url, { headers: { 'x-api-key': apiKey, 'content-type': '*/*' } });
-    const imageAsArrayBuffer = await file.arrayBuffer();
-    if (imageAsArrayBuffer.byteLength === 0) throw new Error('There is no roofer logo available');
-    const imageAsBase64 = arrayBufferToBase64(imageAsArrayBuffer);
-
-    useAccountInfoStore.getState().setAccountInfo({ image: imageAsBase64, website, feedbackLink, ...companyInfo });
+    // The browser loads the logo itself (apiKey is in the URL), so the card no longer waits for the download.
+    useAccountInfoStore.getState().setAccountInfo({ image: url, website, feedbackLink, ...companyInfo });
   } catch {
     useAccountInfoStore.getState().setAccountInfo(defaultReturnValue);
   }

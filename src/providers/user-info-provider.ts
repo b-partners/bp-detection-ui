@@ -1,13 +1,15 @@
 import { cache, getCached, ParamsUtilities } from '@/utilities';
-import { Account, LegalFile } from '@bpartners/typescript-client';
+import { Account, AccountHolder, LegalFile } from '@bpartners/typescript-client';
 import { bpSecurityApi, bpUserAccountApi } from '.';
 
 const getCurrentAccount = (accounts: Account[]) => {
   return accounts.find(a => a.active) || accounts[0];
 };
 
-export const resolveUserInfo = async (apiKey: string) => {
+// `knownUserId` lets a caller that already ran `whoami` skip the duplicate request.
+export const resolveUserInfo = async (apiKey: string, knownUserId?: string) => {
   const userInfo = { ...getCached.userInfo() };
+  if (knownUserId) userInfo.userId = knownUserId;
   if (!userInfo.userId) {
     const { data: whoami } = await bpSecurityApi(apiKey).whoami();
     const { user } = whoami;
@@ -18,13 +20,14 @@ export const resolveUserInfo = async (apiKey: string) => {
     const currentAccount = getCurrentAccount(accounts);
     userInfo.accountId = currentAccount?.id ?? '';
   }
+  let accountHolders: AccountHolder[] | undefined;
   if (!userInfo.accountHolderId) {
-    const { data: accountHolders } = await bpUserAccountApi(apiKey).getAccountHolders(userInfo.userId ?? '', userInfo.accountId ?? '');
+    ({ data: accountHolders } = await bpUserAccountApi(apiKey).getAccountHolders(userInfo.userId ?? '', userInfo.accountId ?? ''));
     const currentAccountHolder = accountHolders[0];
     userInfo.accountHolderId = currentAccountHolder?.id ?? '';
   }
   cache.userInfo(userInfo.userId ?? '', userInfo.accountId ?? '', userInfo.accountHolderId ?? '');
-  return userInfo;
+  return { ...userInfo, accountHolders };
 };
 
 export const userInfoProvider = async (apiKey: string) => {
