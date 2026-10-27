@@ -28,6 +28,7 @@ export const demoAnnotationApi = {
 
 export const demoProspectApi = {
   createProspects: async (_accountHolderId: string, prospects: any[]) => ({ data: prospects.map(p => ({ ...p, id: p.id || v4() })) }),
+  createProspectNotificationAttachmentUpload: async () => ({ data: { fileKey: 'demo-file-key', uploadUrl: 'demo' } }),
   notifyProspects: async () => ({ data: {} }),
 };
 

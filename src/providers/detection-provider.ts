@@ -151,7 +151,15 @@ export const sendRooferInformationsToMail = async (info: RooferInformations) => 
 export const notifyRooferAfterAnalyze = async (prospectId: string, pdf: File) => {
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountHolderId = '' } = await userInfoProvider(apiKey);
-  const result = await bpProspectApi(apiKey).notifyProspects(accountHolderId || '', prospectId, pdf);
+  const prospectApi = bpProspectApi(apiKey);
+  const { data: upload } = await prospectApi.createProspectNotificationAttachmentUpload(accountHolderId || '', prospectId, { fileSize: pdf.size });
+  if (!isDemoApiKey(apiKey)) {
+    const response = await fetch(upload.uploadUrl as string, { method: 'PUT', body: pdf });
+    if (!response.ok) {
+      throw new Error(`Échec de l'upload de la pièce jointe (${response.status})`);
+    }
+  }
+  const result = await prospectApi.notifyProspects(accountHolderId || '', prospectId, upload.fileKey);
   return result.data;
 };
 
