@@ -2,6 +2,8 @@ import { analysisTimeout, defaultTimeout, process_detection_on_form_sel, search_
 
 /** Every request the live walk goes through, aliased to be waited on and checked. None of them is mocked. */
 const aliasRequests = () => {
+  cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
+
   cy.intercept('POST', '/address/autocomplete*').as('location-search');
 
   cy.intercept('POST', '/accountHolders/*/prospects').as('createProspect');
@@ -79,7 +81,7 @@ export const analyseRoof = (address: string) => {
   expectSuccess('getLlmReport', analysisTimeout);
   cy.contains('button', 'Comprendre votre rapport').click();
   cy.contains('COMPRENDRE VOTRE RAPPORT', { timeout: defaultTimeout });
-  cy.contains('CATÉGORIE');
+  cy.contains('Diagnostic principal');
   expectSuccess('exportPdf', analysisTimeout);
   expectSuccess('notifyRoofer');
 
