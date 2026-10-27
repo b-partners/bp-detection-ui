@@ -43,7 +43,8 @@ export const analyseRoof = (address: string) => {
   cy.contains('Pré-diagnostiquez votre toiture');
   cy.dataCy(search_input_sel).type(address);
   expectSuccess('location-search');
-  cy.get('.location-list .MuiPaper-root > :nth-child(1)', { timeout: defaultTimeout }).click();
+  // the address is free text: it is submitted as typed rather than through a suggestion the popup may not show headless
+  cy.dataCy(search_input_sel).closest('form').contains('button', 'Analyser').click();
 
   cy.contains('Quel est l’objectif de votre demande ?');
   cy.contains('Entretien / réparation préventive').click();
