@@ -111,10 +111,14 @@ export const analyseRoof = (address: string) => {
   aliasRequests();
   cy.visit('https://roof.birdia.fr');
 
-  // the page refuses the missing key first: only the whoami sent with the typed one has to succeed
+  // the page refuses the missing key first, and that keyless whoami can land after the intercept is set: only the
+  // whoami carrying the typed key is aliased, so a late 403 for the empty one is never the one waited on
+  const apiKey = `${process.env.REACT_PROD_API_KEY}`;
   cy.contains("Veuillez specifier votre clé d'api");
-  cy.intercept('GET', '/whoami').as('getWhoami');
-  cy.dataCy('api-key-input').type(`${process.env.REACT_PROD_API_KEY}{enter}`);
+  cy.intercept('GET', '/whoami', req => {
+    if (Object.values(req.headers).includes(apiKey)) req.alias = 'getWhoami';
+  });
+  cy.dataCy('api-key-input').type(`${apiKey}{enter}`);
   expectSuccess('getWhoami');
 
   cy.contains('Pré-diagnostiquez votre toiture');
