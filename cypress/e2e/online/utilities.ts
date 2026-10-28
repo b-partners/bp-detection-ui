@@ -1,9 +1,6 @@
-export const syncDetectionTimeout = 60000;
 export const defaultTimeout = 60000;
-export const expectedImagePrecisionInCm = 5;
-export const expectedIsExtendedValueAfterExtendImage = true;
+/** The detection, the 3D model, the LLM report and the export each run on the live backend: they take minutes. */
+export const analysisTimeout = 300000;
 
 export const search_input_sel = 'address-search-input';
-export const canvas_cursor_sel = 'annotator-canvas-cursor';
-export const process_detection_sel = 'process-detection-button';
 export const process_detection_on_form_sel = 'process-detection-on-form-button';

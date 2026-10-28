@@ -16,6 +16,7 @@ env:
   REACT_APP_ANNOTATOR_GEO_MERCATOR_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/mercator
   REACT_APP_ANNOTATOR_GEO_PIXEL_API_URL: https://1gup5vvyyg.execute-api.eu-west-3.amazonaws.com/Prod/pixel
   REACT_APP_GEO_DETECTION_API: https://qncd60qbk0.execute-api.eu-west-3.amazonaws.com
+  RUN_IT: ${{ secrets.RUN_IT }}
 
 jobs:
   test-it:
@@ -27,6 +28,8 @@ jobs:
           fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.0
       - uses: browser-actions/setup-firefox@v1
       - id: install-aws-cli
         uses: unfor19/install-aws-cli-action@v1.0.3
@@ -48,42 +51,53 @@ jobs:
 
       - run: npm install --legacy-peer-deps
 
+      # Only the IT step's own outcome says whether roof.birdia.fr works: a failure to install (CodeArtifact, npm) is
+      # ours, and must neither open an incident on the status page nor resolve one.
       - name: Run IT
+        id: it
+        if: env.RUN_IT == '1'
         run: |
           echo REACT_PROD_API_KEY=${{ secrets.REACT_PROD_API_KEY }} > .env
           echo REACT_IT_TEST_EMAIL=${{ secrets.REACT_IT_TEST_EMAIL }} >> .env
           echo REACT_IT_TEST_PHONE=${{ secrets.REACT_IT_TEST_PHONE }} >> .env
-          if [ "${{ secrets.RUN_IT }}" = "1" ]; then
-            npm run it -- --browser firefox
-          fi
+          npm run it -- --browser firefox
+
+      - name: Upload screenshots
+        if: failure() && steps.it.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: it-screenshots
+          path: cypress/screenshots/
 
       - name: Check previous test status
-        if: always() && github.ref == 'refs/heads/prod'
+        id: status
+        if: always() && (steps.it.outcome == 'success' || steps.it.outcome == 'failure') && github.ref == 'refs/heads/prod'
         run: |
-          response=$(curl -s -X GET "${{ secrets.INSTATUS_STATUS_URL }}")
+          response=$(curl -fsS "${{ secrets.INSTATUS_STATUS_URL }}")
 
-          instatusId=$(echo "$response" | jq -r '.instatusId')
-          isResolve=$(echo "$response" | jq -r '.isResolve')
-
-          echo "instatusId=$instatusId" >> $GITHUB_ENV
-          echo "isResolve=$isResolve" >> $GITHUB_ENV
+          echo "instatusId=$(echo "$response" | jq -r '.instatusId')" >> "$GITHUB_OUTPUT"
+          echo "isResolve=$(echo "$response" | jq -r '.isResolve')" >> "$GITHUB_OUTPUT"
 
       - name: Resolve last Instatus if there was an error
-        if: success() && env.isResolve == 'false' && github.ref == 'refs/heads/prod'
+        if: always() && steps.it.outcome == 'success' && steps.status.outputs.isResolve == 'false'
         run: |
-          curl -X POST "https://api.instatus.com/v2/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ env.instatusId }}/incident-updates/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_RESOLVE_TEMPLATE_ID }}" \
+          curl -fsS -X POST "https://api.instatus.com/v2/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ steps.status.outputs.instatusId }}/incident-updates/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_RESOLVE_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.INSTATUS_API_KEY }}"
 
-          curl -X PUT "${{ secrets.INSTATUS_STATUS_URL }}"
+          curl -fsS -X PUT "${{ secrets.INSTATUS_STATUS_URL }}"
 
       - name: Instatus request
-        if: failure() && github.event_name == 'schedule' && github.ref == 'refs/heads/prod' && env.isResolve == 'true'
+        if: always() && steps.it.outcome == 'failure' && github.event_name == 'schedule' && steps.status.outputs.isResolve == 'true'
         run: |
-          response=$(curl -s -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
+          response=$(curl -fsS -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.INSTATUS_API_KEY }}")
 
           currentIncidentId=$(echo "$response" | jq -r '.id')
+          if [ -z "$currentIncidentId" ] || [ "$currentIncidentId" = "null" ]; then
+            echo "Instatus did not return an incident id: $response"
+            exit 1
+          fi
 
-          curl -s -X POST "${{ secrets.INSTATUS_STATUS_URL }}/${currentIncidentId}"
+          curl -fsS -X POST "${{ secrets.INSTATUS_STATUS_URL }}/${currentIncidentId}"
