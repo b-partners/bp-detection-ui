@@ -1,6 +1,9 @@
 import { analysisTimeout, defaultTimeout, process_detection_on_form_sel, search_input_sel } from './utilities';
 
-/** Every request the live walk goes through, aliased to be waited on and checked. None of them is mocked. */
+/**
+ * Every request the live walk goes through, aliased to be waited on and checked. Only the pdf export and the roofer
+ * notification are stubbed: the walk still triggers both, but no real report is generated nor sent to the roofer.
+ */
 const aliasRequests = () => {
   cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
 
@@ -14,21 +17,93 @@ const aliasRequests = () => {
 
   cy.intercept('POST', '**/detections/*/sync').as('detectionSync');
   cy.intercept('POST', '**/toiture?*').as('getLlmReport');
-  cy.intercept('POST', '**/annotations/exports').as('exportPdf');
-  cy.intercept('POST', '**/prospects/*/notifications').as('notifyRoofer');
+  cy.intercept('POST', '**/annotations/exports', { fixture: 'legal-file.pdf', headers: { 'content-type': 'application/pdf' } }).as('exportPdf');
+  cy.intercept('POST', '**/prospects/*/notifications', { statusCode: 200, body: {} }).as('notifyRoofer');
 };
 
 const expectSuccess = (alias: string, timeout = defaultTimeout) =>
   cy.wait(`@${alias}`, { timeout }).then(({ request, response }) => expect(response?.statusCode, `${request.method} ${request.url}`).to.be.within(200, 299));
 
+/** The sidebar's hint under the roof, shown only while an emprise is traced. */
+const tracedRoofHint = "Le toit est l'emprise envoyée à la génération 3D et à l'analyse. Tracez-en une nouvelle sur la carte pour remplacer celle-ci.";
+
+/** Reads the first number of a figure the analyser prints, `12.34 m²` or `5.6%` alike. */
+const numberIn = (text: string) => parseFloat(text.replace(',', '.').match(/-?\d+(\.\d+)?/)?.[0] ?? 'NaN');
+
 /**
- * In `cypress open`, the walk stops on the roof analyser for the outline to be traced by hand — the pans drawn, the
- * lines moved — then goes on with the resume button. A headless run keeps the outline the analyser pre-filled.
+ * The roof the analyser pre-filled is deleted with its red bin in the sidebar, then the walk stops for the roof to be
+ * traced by hand, and goes on with the resume button. A headless run cannot trace one, so it keeps the pre-filled roof:
+ * deleting it there would fail every scheduled run and open an Instatus incident for a roof.birdia.fr that works.
  */
-const letTheUserDraw = () => {
+const traceTheRoof = () => {
+  cy.contains(tracedRoofHint, { timeout: defaultTimeout });
   if (!Cypress.config('isInteractive')) return;
-  cy.log('Tracez les pans et ajustez les lignes, puis reprenez le test (▶)');
+  cy.contains(tracedRoofHint).parent().find('.geo-list-item button[aria-label^="Supprimer"]').click();
+  cy.log('Tracez le toit, puis reprenez le test (▶)');
   cy.pause();
+};
+
+/**
+ * The roof about to be analysed has a real area and at least three corners, and its measurements add up: every side
+ * is a length, and the perimeter is their sum. Its area is kept as `@roofArea` for the analysis to be checked against.
+ */
+const checkTheRoofMeasurements = () => {
+  cy.contains(tracedRoofHint)
+    .parent()
+    .within(() => {
+      cy.get('.geo-list-item').should('have.length', 1);
+      cy.get('.geo-list-item-area')
+        .invoke('text')
+        .then(text => {
+          const [area, corners] = text.split('·').map(numberIn);
+          expect(area, 'roof area (m²)').to.be.greaterThan(0);
+          expect(corners, 'roof corners').to.be.at.least(3);
+          cy.wrap(area).as('roofArea');
+        });
+
+      cy.get('.geo-list-item button[aria-label^="Afficher les mesures"]').click();
+      cy.get('.geo-list-side-length').should('have.length.at.least', 3);
+      cy.get('.geo-list-side-length').then($sides => {
+        const sides = [...$sides].map(side => numberIn(side.textContent ?? ''));
+        sides.forEach((side, index) => expect(side, `side ${index + 1} (m)`).to.be.greaterThan(0));
+        cy.get('.geo-list-perimeter-value')
+          .invoke('text')
+          .then(perimeter =>
+            expect(numberIn(perimeter), 'perimeter (m)').to.be.closeTo(
+              sides.reduce((sum, side) => sum + side, 0),
+              0.01 * sides.length
+            )
+          );
+      });
+      cy.get('.geo-list-item button[aria-label^="Masquer les mesures"]').click();
+    });
+};
+
+/** The text of one of the six result lines the analysis is summed up in. */
+const resultValue = (label: string) => cy.contains('.geo-summary-name', label).siblings('.geo-summary-value').invoke('text');
+
+/**
+ * The six results are real values: the slope only ever adds to the traced roof's area (a 60° roof doubles it, hence
+ * the upper bound), the covering is named, the three rates are percentages and the obstacle is answered.
+ */
+const checkTheResults = () => {
+  cy.contains("Résultats de l'analyse", { timeout: defaultTimeout });
+  cy.get('.geo-summary-item', { timeout: defaultTimeout }).should('have.length', 6);
+
+  cy.get<number>('@roofArea').then(roofArea =>
+    resultValue('Surface totale').then(text => {
+      expect(text, 'Surface totale').to.match(/^\d+(\.\d+)? m²$/);
+      expect(numberIn(text), 'Surface totale (m²)').to.be.within(roofArea * 0.8, roofArea * 2.5);
+    })
+  );
+  resultValue('Revêtement').should('not.be.empty').and('not.eq', 'Non renseigné');
+  ["Taux d'usure", 'Taux de moisissure', "Taux d'humidité"].forEach(label =>
+    resultValue(label).then(text => {
+      expect(text, label).to.match(/^\d+(\.\d+)?%$/);
+      expect(numberIn(text), label).to.be.within(0, 100);
+    })
+  );
+  resultValue('Obstacle / Velux').should('be.oneOf', ['OUI', 'NON']);
 };
 
 /** The whole live walk on prod: api key, address, questions, contact form, roof analysis, report and acknowledgement. */
@@ -69,14 +144,14 @@ export const analyseRoof = (address: string) => {
   cy.dataCy('roof-annotator');
   expectSuccess('getFootprint');
 
-  letTheUserDraw();
+  traceTheRoof();
+  checkTheRoofMeasurements();
 
   cy.contains('button', "Lancer l'analyse", { timeout: defaultTimeout }).should('not.be.disabled').click();
   expectSuccess('detectionSync', analysisTimeout);
 
   cy.contains('Analysez l’état via BIRDIA').closest('.step-item').should('have.class', 'active');
-  cy.contains("Résultats de l'analyse", { timeout: defaultTimeout });
-  ['Surface totale', 'Revêtement', "Taux d'usure", 'Taux de moisissure', "Taux d'humidité", 'Obstacle / Velux'].forEach(label => cy.contains(label));
+  checkTheResults();
 
   expectSuccess('getLlmReport', analysisTimeout);
   cy.contains('button', 'Comprendre votre rapport').click();
