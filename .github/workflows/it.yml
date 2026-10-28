@@ -67,35 +67,29 @@ jobs:
           name: it-screenshots
           path: cypress/screenshots/
 
-      - name: Check previous test status
+      # Instatus itself says whether an incident is open, as in bpartners-web: an unresolved incident on the roof page
+      # is the one this run opened earlier. per_page, so an open incident past the first page is not opened twice.
+      - name: Find the open Instatus incident
         id: status
         if: always() && (steps.it.outcome == 'success' || steps.it.outcome == 'failure') && github.ref == 'refs/heads/prod'
         run: |
-          response=$(curl -fsS "${{ secrets.INSTATUS_STATUS_URL }}")
+          incidentId=$(curl -fsSL \
+            -H "Authorization: Bearer ${{ secrets.INSTATUS_API_KEY }}" \
+            "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents?page=0&per_page=100" |
+            jq -r 'map(select(.status != "RESOLVED")) | first | .id // empty')
 
-          echo "instatusId=$(echo "$response" | jq -r '.instatusId')" >> "$GITHUB_OUTPUT"
-          echo "isResolve=$(echo "$response" | jq -r '.isResolve')" >> "$GITHUB_OUTPUT"
+          echo "incidentId=$incidentId" >> "$GITHUB_OUTPUT"
 
-      - name: Resolve last Instatus if there was an error
-        if: always() && steps.it.outcome == 'success' && steps.status.outputs.isResolve == 'false'
+      - name: Resolve the open Instatus incident
+        if: always() && steps.it.outcome == 'success' && steps.status.outcome == 'success' && steps.status.outputs.incidentId != ''
         run: |
-          curl -fsS -X POST "https://api.instatus.com/v2/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ steps.status.outputs.instatusId }}/incident-updates/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_RESOLVE_TEMPLATE_ID }}" \
+          curl -fsS -X POST "https://api.instatus.com/v2/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ steps.status.outputs.incidentId }}/incident-updates/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_RESOLVE_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.INSTATUS_API_KEY }}"
 
-          curl -fsS -X PUT "${{ secrets.INSTATUS_STATUS_URL }}"
-
-      - name: Instatus request
-        if: always() && steps.it.outcome == 'failure' && github.event_name == 'schedule' && steps.status.outputs.isResolve == 'true'
+      - name: Open an Instatus incident
+        if: always() && steps.it.outcome == 'failure' && github.event_name == 'schedule' && steps.status.outcome == 'success' && steps.status.outputs.incidentId == ''
         run: |
-          response=$(curl -fsS -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
+          curl -fsS -X POST "https://api.instatus.com/v1/${{ secrets.INSTATUS_ROOF_PAGE_ID }}/incidents/${{ secrets.INSTATUS_ROOF_WEBSITE_EXCEPTION_TEMPLATE_ID }}" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.INSTATUS_API_KEY }}")
-
-          currentIncidentId=$(echo "$response" | jq -r '.id')
-          if [ -z "$currentIncidentId" ] || [ "$currentIncidentId" = "null" ]; then
-            echo "Instatus did not return an incident id: $response"
-            exit 1
-          fi
-
-          curl -fsS -X POST "${{ secrets.INSTATUS_STATUS_URL }}/${currentIncidentId}"
+            -H "Authorization: Bearer ${{ secrets.INSTATUS_API_KEY }}"
