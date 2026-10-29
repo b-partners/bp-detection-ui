@@ -32,3 +32,6 @@ mock/
 cypress/screenshots
 cypress/videos
 cypress/downloads
+
+#claude
+.claude/*
