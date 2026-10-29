@@ -90,5 +90,10 @@ export const roofAnalysisInterceptions = (llmReport: string) => {
   cy.intercept('POST', '**/toiture?*', { body: llmReport, headers: { 'content-type': 'text/html' } }).as('getLlmReport');
   cy.intercept('POST', '**/files/*/raw?fileType=ATTACHMENT', { statusCode: 200, body: {} }).as('uploadAttachment');
   cy.intercept('POST', '**/annotations/exports', { fixture: 'legal-file.pdf', headers: { 'content-type': 'application/pdf' } }).as('exportPdf');
-  cy.intercept('POST', '**/prospects/*/notifications', { statusCode: 200, body: {} }).as('notifyRoofer');
+  // the pdf goes to a presigned storage url first, the notification then only carries its key
+  cy.intercept('POST', '**/prospects/*/notifications/attachmentUploads', {
+    body: { fileKey: 'attachment-file-key-mock', uploadUrl: 'https://storage.fake.test/attachments/report.pdf' },
+  }).as('createAttachmentUpload');
+  cy.intercept('PUT', 'https://storage.fake.test/attachments/**', { statusCode: 200 }).as('putAttachment');
+  cy.intercept('POST', '**/prospects/*/notifications?*', { statusCode: 200, body: {} }).as('notifyRoofer');
 };

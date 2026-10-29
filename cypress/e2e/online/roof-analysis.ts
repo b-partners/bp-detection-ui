@@ -18,7 +18,12 @@ const aliasRequests = () => {
   cy.intercept('POST', '**/detections/*/sync').as('detectionSync');
   cy.intercept('POST', '**/toiture?*').as('getLlmReport');
   cy.intercept('POST', '**/annotations/exports', { fixture: 'legal-file.pdf', headers: { 'content-type': 'application/pdf' } }).as('exportPdf');
-  cy.intercept('POST', '**/prospects/*/notifications', { statusCode: 200, body: {} }).as('notifyRoofer');
+  // the pdf goes to a presigned storage url first, the notification then only carries its key
+  cy.intercept('POST', '**/prospects/*/notifications/attachmentUploads', {
+    body: { fileKey: 'attachment-file-key-mock', uploadUrl: 'https://storage.fake.test/attachments/report.pdf' },
+  }).as('createAttachmentUpload');
+  cy.intercept('PUT', 'https://storage.fake.test/attachments/**', { statusCode: 200 }).as('putAttachment');
+  cy.intercept('POST', '**/prospects/*/notifications?*', { statusCode: 200, body: {} }).as('notifyRoofer');
 };
 
 const expectSuccess = (alias: string, timeout = defaultTimeout) =>
@@ -158,6 +163,8 @@ export const analyseRoof = (address: string) => {
   cy.contains('COMPRENDRE VOTRE RAPPORT', { timeout: defaultTimeout });
   cy.contains('Diagnostic principal');
   expectSuccess('exportPdf', analysisTimeout);
+  expectSuccess('createAttachmentUpload');
+  expectSuccess('putAttachment');
   expectSuccess('notifyRoofer');
 
   cy.contains('button', 'Terminer').click();
