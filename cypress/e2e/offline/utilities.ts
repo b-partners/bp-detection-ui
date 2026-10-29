@@ -69,8 +69,22 @@ export const expectResponses = (alias: string, statusCode: number) =>
 /** No request was answered under `alias`. */
 export const expectNoRequest = (alias: string) => cy.get<Interception[]>(`@${alias}.all`).should('have.length', 0);
 
+/** The imagery over the position is the 5 cm HD layer, so the analysis is run with the roof model. */
+export const hdCoverage_mock = {
+  position: position_mock,
+  imagery: { covered: true, hd: true, layer: { ...mapLayer_mock, precisionInCm: 5 }, supportedDetectableModels: [{ modelName: 'BP_TOITURE' }] },
+};
+
+/** The imagery over the position is the ordinary 20 cm layer, where the roof model is refused. */
+export const lowPrecisionCoverage_mock = {
+  position: position_mock,
+  imagery: { covered: true, hd: false, layer: { ...mapLayer_mock, precisionInCm: 20 }, supportedDetectableModels: [{ modelName: 'BP_REVETEMENT_OBSTACLE' }] },
+};
+
 /** What the roof analyser calls once the analysis is launched, besides `/detections/{id}/sync` which each spec answers itself. */
 export const roofAnalysisInterceptions = (llmReport: string) => {
+  // read before each detection to pick the model the imagery can be read with
+  cy.intercept('GET', '**/coverage?*', hdCoverage_mock).as('getImageryCoverage');
   cy.intercept('GET', '**/vgg', { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
   cy.intercept('POST', '**/3d/*/sync', { statusCode: 500, body: {} }).as('generateRoofModel');
   cy.intercept('POST', '**/toiture?*', { body: llmReport, headers: { 'content-type': 'text/html' } }).as('getLlmReport');

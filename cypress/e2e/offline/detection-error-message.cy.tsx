@@ -9,7 +9,15 @@ import {
   tooBigPolygonResponse_mock,
   whoami_mock,
 } from '../../../src/__tests__/mocks';
-import { expectNoRequest, expectResponses, geoSessionInterceptions, offlineUrl, roofAnalysisInterceptions } from './utilities';
+import {
+  expectNoRequest,
+  expectResponses,
+  footprint_mock,
+  geoSessionInterceptions,
+  lowPrecisionCoverage_mock,
+  offlineUrl,
+  roofAnalysisInterceptions,
+} from './utilities';
 
 const search_input_sel = 'address-search-input';
 const process_detection_on_form_sel = 'process-detection-on-form-button';
@@ -41,19 +49,33 @@ const openRoofAnalyser = () => {
   cy.contains('Emprise du bâtiment détectée automatiquement');
 };
 
-/** The detection request the roof analyser sends, and the error status it gets back. */
-const expectDetectionSent = (statusCode: number) =>
+/** The imagery coverage asked for the outline's centre before the detection is sent. */
+const expectCoverageAsked = () =>
+  cy.wait('@getImageryCoverage').then(({ request }) => {
+    expect(request.headers['x-api-key']).to.eq('api-key-mock');
+    const params = new URL(request.url).searchParams;
+    expect(params.get('types')).to.eq('IMAGERY');
+    expect(Number(params.get('longitude'))).to.be.closeTo(footprint_mock.coordinates[0][0][0], 0.001);
+    expect(Number(params.get('latitude'))).to.be.closeTo(footprint_mock.coordinates[0][0][1], 0.001);
+  });
+
+/** The detection request the roof analyser sends with `modelName`, and the error status it gets back. */
+const expectDetectionSent = (statusCode: number, modelName = 'BP_TOITURE') =>
   cy.wait('@detectionSync').then(({ request, response }) => {
     expect(request.headers['x-api-key']).to.eq('api-key-mock');
-    expect(request.body.detectableObjectModel.modelName).to.eq('BP_TOITURE');
+    expect(request.body.detectableObjectModel.modelName).to.eq(modelName);
+    // the low-precision model is read at the layer's own resolution: no zoom is asked for
+    if (modelName === 'BP_TOITURE') expect(request.body.geoJsonZone[0].properties.zoom).to.eq(20);
+    else expect(request.body.geoJsonZone[0].properties).not.to.have.property('zoom');
     expect(request.body.geoJsonDelimitationType).to.eq('ROOF');
     expect(request.body.geoJsonZone[0].geometry.type).to.eq('Polygon');
     expect(response?.statusCode).to.eq(statusCode);
   });
 
-const launchAnalysis = (statusCode: number) => {
+const launchAnalysis = (statusCode: number, modelName?: string) => {
   cy.contains('button', "Lancer l'analyse").should('not.be.disabled').click();
-  expectDetectionSent(statusCode);
+  expectCoverageAsked();
+  expectDetectionSent(statusCode, modelName);
 };
 
 /** A failed detection stops the analysis there: no result, report, export nor roofer notification is requested. */
@@ -125,6 +147,7 @@ describe('Test process detection error', () => {
     expectResponses('getMapLayers', 200);
     expectResponses('getWmsTile', 200);
     expectResponses('generateRoofModel', 500);
+    expectResponses('getImageryCoverage', 200);
   });
 
   it('Test /sync error 500', () => {
@@ -228,6 +251,34 @@ describe('Test process detection error', () => {
       code: 502,
       retryable: true,
     });
+    expectAnalysisStopped();
+  });
+
+  it('Test 20 cm imagery read with the low-precision model', () => {
+    // the coverage says the imagery is too coarse for the roof model: the detection goes straight to the revêtement/obstacle one
+    cy.intercept('GET', '**/coverage?*', lowPrecisionCoverage_mock).as('getImageryCoverage');
+    cy.intercept('POST', `/detections/*/sync`, { statusCode: 500 }).as('detectionSync');
+
+    openRoofAnalyser();
+    launchAnalysis(500, 'BP_REVETEMENT_OBSTACLE');
+
+    cy.get('@detectionSync.all').should('have.length', 1);
+    expectAnalysisStopped();
+  });
+
+  it('Test roof model refused for the image resolution', () => {
+    // the coverage said HD but the service refuses the layer as too coarse: the same ring is sent again with the low-precision model
+    cy.intercept('POST', `/detections/*/sync`, req =>
+      req.body.detectableObjectModel.modelName === 'BP_TOITURE'
+        ? req.reply({ statusCode: 400, body: { message: 'image resolution must be 5cm for BP_TOITURE. Current layer cite:ORTHO is 20cm' } })
+        : req.reply({ statusCode: 500 })
+    ).as('detectionSync');
+
+    openRoofAnalyser();
+    launchAnalysis(400);
+    expectDetectionSent(500, 'BP_REVETEMENT_OBSTACLE');
+
+    cy.get('@detectionSync.all').should('have.length', 2);
     expectAnalysisStopped();
   });
 });
