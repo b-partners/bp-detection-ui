@@ -42,7 +42,6 @@ jobs:
           echo REACT_APP_BPARTNERS_API_URL=https://api.fake.test > .env.local
           echo REACT_APP_GEO_DETECTION_API=https://detection.fake.test >> .env.local
           echo REACT_APP_GEODATA_API_URL=https://geodata.fake.test >> .env.local
-          echo REACT_APP_WMS_BASE_URL=https://wms.fake.test/geoserver/cite/wms >> .env.local
           echo REACT_APP_WMS_TILE_BASE_URL=https://wms.fake.test/geoserver/cite/wms >> .env.local
           echo LLM_ANALYSE_RESULT=https://llm.fake.test/toiture >> .env.local
 
