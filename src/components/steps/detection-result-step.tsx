@@ -164,7 +164,7 @@ export const DetectionResultStep = () => {
                   areaPictureDetails && {
                     imageName: `${areaPictureDetails.filename}.jpg`,
                     showLineSize: true,
-                    converterApiUrl: `${CONVERTER_BASE_URL}`,
+                    converterApiUrl: `${CONVERTER_BASE_URL}/mercator`,
                   }
                 }
               />
