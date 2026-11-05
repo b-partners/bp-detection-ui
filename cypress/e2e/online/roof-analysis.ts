@@ -16,7 +16,7 @@ const aliasRequests = () => {
   cy.intercept('GET', /\/geocode\?longitude=/).as('getFootprint');
 
   cy.intercept('POST', '**/detections/*/sync').as('detectionSync');
-  cy.intercept('POST', '**/toiture?*').as('getLlmReport');
+  cy.intercept('POST', '**/llm/toiture*').as('getLlmReport');
   cy.intercept('POST', '**/annotations/exports', { fixture: 'legal-file.pdf', headers: { 'content-type': 'application/pdf' } }).as('exportPdf');
   cy.intercept('POST', '**/prospects/*/notifications', { statusCode: 200, body: {} }).as('notifyRoofer');
 };

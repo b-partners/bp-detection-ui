@@ -131,7 +131,7 @@ describe('Test process detection error', () => {
   it('Test /sync error 500', () => {
     // wide enough for the 3D preview card to leave the error panel's buttons clear
     cy.viewport(1280, 900);
-    cy.intercept('POST', `/detections/*/sync`, { statusCode: 500 }).as('detectionSync');
+    cy.intercept('POST', '**/detections/*/sync', { statusCode: 500 }).as('detectionSync');
 
     cy.contains("Veuillez specifier votre clé d'api");
     cy.dataCy('api-key-input').type('api-key-mock{enter}');
@@ -193,7 +193,7 @@ describe('Test process detection error', () => {
   });
 
   it('Test free limit', () => {
-    cy.intercept('POST', `/detections/*/sync`, roofAnalyseLimitExceededResponse_Mock).as('detectionSync');
+    cy.intercept('POST', '**/detections/*/sync', roofAnalyseLimitExceededResponse_Mock).as('detectionSync');
 
     openRoofAnalyser();
     launchAnalysis(400);
@@ -203,7 +203,7 @@ describe('Test process detection error', () => {
   });
 
   it('Test too big polygon', () => {
-    cy.intercept('POST', `/detections/*/sync`, tooBigPolygonResponse_mock).as('detectionSync');
+    cy.intercept('POST', '**/detections/*/sync', tooBigPolygonResponse_mock).as('detectionSync');
 
     openRoofAnalyser();
     launchAnalysis(501);
@@ -218,7 +218,7 @@ describe('Test process detection error', () => {
 
   it('Test /sync answering 200 without result file', () => {
     // a 200 the service did not label as a failure, but with nothing to read: said as the service-side failure it is
-    cy.intercept('POST', `/detections/*/sync`, { statusCode: 200, body: { geoJsonZone: [{ type: 'Feature', properties: {} }] } }).as('detectionSync');
+    cy.intercept('POST', '**/detections/*/sync', { statusCode: 200, body: { geoJsonZone: [{ type: 'Feature', properties: {} }] } }).as('detectionSync');
 
     openRoofAnalyser();
     launchAnalysis(200);
@@ -234,7 +234,7 @@ describe('Test process detection error', () => {
 
   it('Test roof model refused for the image resolution', () => {
     // a layer too coarse for the roof model is not retried with another model: the one /sync is the whole analysis
-    cy.intercept('POST', `/detections/*/sync`, {
+    cy.intercept('POST', '**/detections/*/sync', {
       statusCode: 400,
       body: { message: 'image resolution must be 5cm for BP_TOITURE. Current layer cite:ORTHO is 20cm' },
     }).as('detectionSync');

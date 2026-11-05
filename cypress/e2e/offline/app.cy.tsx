@@ -36,7 +36,7 @@ const requestsInterceptions = () => {
   // prospect & areaPictures & get image
 
   // detection
-  cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
+  cy.intercept('POST', '**/detections/*/sync', detectionSync).as('detectionSync');
   // detection
 
   cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');

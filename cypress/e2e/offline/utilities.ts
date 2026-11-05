@@ -32,68 +32,12 @@ export const geoSessionInterceptions = () => {
   cy.intercept('GET', '**/areaPictures/*/annotations/*', { statusCode: 404, body: { message: 'Not found' } }).as('getGeoSession');
   cy.intercept('GET', '**/map/layers/actual?*', { layer: mapLayer_mock, secureLinkToken: secureLinkToken_mock }).as('getActualMapLayer');
   cy.intercept('GET', '**/map/layers?*', { layers: [{ layer: mapLayer_mock, reachable: true }], secureLinkToken: secureLinkToken_mock }).as('getMapLayers');
-  cy.intercept('GET', '**/geoserver/cite/wms?*', { fixture: 'bp-detection-image.png', headers: { 'content-type': 'image/png' } }).as('getWmsTile');
-  cy.intercept('GET', '/wms-proxy?*', { fixture: 'bp-detection-image.png', headers: { 'content-type': 'image/png' } }).as('getWmsProxyTile');
-  pointConverterInterceptions();
-};
-
-/** The tile a converter envelope is asked in, read off its `{id}_{zoom}_{x}_{y}.jpg` key. */
-const frameOfEnvelope = (envelope: Record<string, any>) => {
-  const [filename, entry] = Object.entries(envelope)[0];
-  const [zoom, xTile, yTile] = filename
-    .replace(/\.[^.]+$/, '')
-    .split('_')
-    .slice(-3)
-    .map(Number);
-  return { filename, entry, zoom, xTile, yTile, size: entry.size || 1024 };
-};
-
-/** The envelope answered back under the same key, each region's points mapped by `convert`. */
-const convertEnvelope = (envelope: Record<string, any>, convert: (x: number, y: number, frame: ReturnType<typeof frameOfEnvelope>) => [number, number]) => {
-  const frame = frameOfEnvelope(envelope);
-  const regions = Object.fromEntries(
-    Object.entries(frame.entry.regions ?? {}).map(([key, region]: [string, any]) => {
-      const { all_points_x = [], all_points_y = [] } = region.shape_attributes ?? {};
-      const points = all_points_x.map((x: number, index: number) => convert(x, all_points_y[index], frame));
-      return [
-        key,
-        {
-          ...region,
-          shape_attributes: { ...region.shape_attributes, all_points_x: points.map(([a]: number[]) => a), all_points_y: points.map(([, b]: number[]) => b) },
-        },
-      ];
-    })
+  // the tiles, read through the Dashboard API's GetMap bridge
+  cy.intercept('GET', '**/geoserver/wms?*', { fixture: 'bp-detection-image.png', headers: { 'content-type': 'image/png' } }).as('getWmsTile');
+  // the analysis project the roof analyser opens as a draft for the visit, keyed by the session id
+  cy.intercept('PUT', '**/users/*/analysisProjects/*', req => req.reply({ projectKey: req.url.split('/').pop(), status: 'DRAFT', ...req.body })).as(
+    'openAnalysisProject'
   );
-  return { [frame.filename]: { ...frame.entry, regions } };
-};
-
-/**
- * The point converter the roof analyser reaches at `{base}/mercator` (pixels → lon/lat) and `{base}/pixel`
- * (lon/lat → pixels), answered with the same Web Mercator tile math so shapes land where the roof is.
- * Like the real service, mercator answers latitude in `all_points_x` and longitude in `all_points_y`.
- */
-export const pointConverterInterceptions = () => {
-  cy.intercept('POST', '**/mercator', req =>
-    req.reply(
-      convertEnvelope(req.body, (x, y, { zoom, xTile, yTile, size }) => {
-        const tiles = 2 ** zoom;
-        const longitude = ((xTile + x / size) / tiles) * 360 - 180;
-        const latitude = (Math.atan(Math.sinh(Math.PI * (1 - (2 * (yTile + y / size)) / tiles))) * 180) / Math.PI;
-        return [latitude, longitude];
-      })
-    )
-  ).as('convertToLonLat');
-  cy.intercept('POST', '**/pixel', req =>
-    req.reply(
-      convertEnvelope(req.body, (longitude, latitude, { zoom, xTile, yTile, size }) => {
-        const tiles = 2 ** zoom;
-        const latitudeRad = (latitude * Math.PI) / 180;
-        const x = ((longitude + 180) / 360) * tiles - xTile;
-        const y = ((1 - Math.log(Math.tan(latitudeRad) + 1 / Math.cos(latitudeRad)) / Math.PI) / 2) * tiles - yTile;
-        return [x * size, y * size];
-      })
-    )
-  ).as('convertToPixel');
 };
 
 /**
@@ -133,7 +77,7 @@ export const expectNoRequest = (alias: string) => cy.get<Interception[]>(`@${ali
 export const roofAnalysisInterceptions = (llmReport: string) => {
   cy.intercept('GET', '**/vgg', { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
   cy.intercept('POST', '**/3d/*/sync', { statusCode: 500, body: {} }).as('generateRoofModel');
-  cy.intercept('POST', '**/toiture?*', { body: llmReport, headers: { 'content-type': 'text/html' } }).as('getLlmReport');
+  cy.intercept('POST', '**/llm/toiture*', { body: llmReport, headers: { 'content-type': 'text/html' } }).as('getLlmReport');
   cy.intercept('POST', '**/files/*/raw?fileType=ATTACHMENT', { statusCode: 200, body: {} }).as('uploadAttachment');
   cy.intercept('POST', '**/annotations/exports', { fixture: 'legal-file.pdf', headers: { 'content-type': 'application/pdf' } }).as('exportPdf');
   cy.intercept('POST', '**/prospects/*/notifications', { statusCode: 200, body: {} }).as('notifyRoofer');
