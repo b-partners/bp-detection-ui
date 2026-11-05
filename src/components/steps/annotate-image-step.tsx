@@ -1,9 +1,9 @@
 import { useStep } from '@/hooks';
-import { resolveActiveWmsLayer, resolveWmsLayers } from '@/providers';
 import { useRoofReportQuery } from '@/queries';
 import { getCached, ParamsUtilities } from '@/utilities';
 import { RoofAnnotator } from '@bpartners/roof-analyser';
 import { Box } from '@mui/material';
+import { useMemo } from 'react';
 import { ROOF_ANALYSER_CONFIG } from './roof-analyser-config';
 import { AnnotateImageStepStyle as style } from './styles';
 
@@ -12,6 +12,9 @@ export const AnnotateImageStep = () => {
   const { onPdfExport, onFinish } = useRoofReportQuery();
   const { apiKey } = ParamsUtilities.getQueryParams();
   const { accountId, accountHolderId, userId } = getCached.userInfo();
+  // Ties the analysis project the library opens for the visit to the prospect `createGeoSession` created.
+  const prospectId = geoSession?.prospect?.id ?? getCached.prospectId() ?? undefined;
+  const analysisProject = useMemo(() => ({ prospectId }), [prospectId]);
 
   if (!geoSession) return <div></div>;
 
@@ -29,8 +32,7 @@ export const AnnotateImageStep = () => {
         latitude={position.latitude}
         longitude={position.longitude}
         address={areaPictureDetails.address}
-        resolveWmsLayers={resolveWmsLayers}
-        resolveActiveWmsLayer={resolveActiveWmsLayer}
+        analysisProject={analysisProject}
         rooferButtonMode
         onPdfExport={onPdfExport}
         onFinish={onFinish}
