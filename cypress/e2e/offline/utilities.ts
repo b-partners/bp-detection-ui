@@ -26,6 +26,8 @@ export const footprint_mock = {
 
 export const geoSessionInterceptions = () => {
   cy.intercept('GET', /\/geocode\?address=/, position_mock).as('geocode');
+  // fired and forgotten by the geocoder once the position is known: the lidar around it is put in cache for the 3D
+  cy.intercept('PUT', '**/geodata/lidar/caching/*', { statusCode: 200, body: {} }).as('cacheLidar');
   // the reverse lookup the roof analyser pre-fills the roof outline from
   cy.intercept('GET', /\/geocode\?longitude=/, { geometry: footprint_mock }).as('getFootprint');
   // a fresh visit: nothing saved yet under the session's annotation
