@@ -162,7 +162,6 @@ describe('Test process detection error', () => {
     expectNoRequest('createProspect');
 
     cy.dataName('email').clear().type('john.doe@example.com');
-    cy.dataCy('consent-checkbox').check();
     cy.dataCy(process_detection_on_form_sel).click();
 
     cy.wait('@createProspect')

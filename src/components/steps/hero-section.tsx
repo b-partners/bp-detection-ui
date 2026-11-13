@@ -87,12 +87,6 @@ export const HeroSection = () => {
             </>
           )}
         </Box>
-        <Typography className='hero-title' component='h1'>
-          Pré-diagnostiquez votre toiture <span className='accent'>sans monter dessus.</span>
-        </Typography>
-        <Typography className='hero-lead'>
-          Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
-        </Typography>
 
         <Stack className='hero-content'>
           <Box className='fr-badge'>
@@ -108,10 +102,13 @@ export const HeroSection = () => {
             Notre IA analyse votre toit depuis l'imagerie aérienne ultra HD de votre département, en 2 minutes. Vous recevez votre rapport complet.
           </Typography>
 
-        <Typography className='hero-note'>
-          Gratuit · sans engagement · <strong>2 min</strong>
-        </Typography>
-      </Stack>
+          <AddressSearchForm primary />
+
+          <Typography className='hero-note'>
+            Gratuit · sans engagement · <strong>2 min</strong>
+          </Typography>
+        </Stack>
+      </Box>
 
       <Box className='hero-banner'>
         <img src='/assets/images/landing/hero-banner.jpg' alt='Analyse BIRDIA de toitures par imagerie aérienne' />
