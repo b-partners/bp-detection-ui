@@ -3,11 +3,10 @@ import { offlineUrlWithApiKey } from './utilities';
 
 const whoami_mock = JSON.parse(JSON.stringify(_whoami_mock));
 whoami_mock.user.logoFileId = '';
-const defaultRooferLogo = '/assets/images/bird-ia-lg-logo.png';
 /** The roofer's logo: the browser loads it itself, straight from this url. */
 const rooferLogoPath = `/accounts/account-mock-id/files/${_whoami_mock.user.logoFileId}/raw?apiKey=api-key-mock&fileType=LOGO`;
 
-describe('Roofer dynamic logo', () => {
+describe('Roofer logo and card', () => {
   beforeEach(() => {
     cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
     cy.intercept('POST', '/address/autocomplete*', locations_mock).as('location-search');
@@ -29,23 +28,14 @@ describe('Roofer dynamic logo', () => {
     cy.get('@getRooferLogo.all').should('have.length', 0);
   });
 
-  it('Test if the roofer does not have correct logo', () => {
+  it('Test that the roofer card stays hidden while its account info still loads', () => {
     cy.intercept('GET', '/whoami', _whoami_mock).as('getWhoami');
     cy.visit(offlineUrlWithApiKey);
     cy.contains('Pré-diagnostiquez votre toiture');
-    cy.wait('@getRooferLogo').its('response.statusCode').should('eq', 500);
-    // the roofer logo could not be loaded so the app use the default image
-    cy.get('.partner-card-logo img').should('have.attr', 'src').and('include', defaultRooferLogo);
-  });
-
-  it('Test if the roofer have correct logo', () => {
-    cy.intercept('GET', rooferLogoPath, { fixture: 'bird-ia-lg-logo.png', headers: { 'content-type': 'image/png' } }).as('getRooferLogo');
-    cy.intercept('GET', '/whoami', _whoami_mock).as('getWhoami');
-    cy.visit(offlineUrlWithApiKey);
-    cy.contains('Pré-diagnostiquez votre toiture');
-    cy.wait('@getRooferLogo').its('response.statusCode').should('eq', 200);
-    // the card shows the roofer logo from its own url, not the default one
-    cy.get('.partner-card-logo img').should('have.attr', 'src').and('include', rooferLogoPath);
-    cy.get('.partner-card-logo img').should($img => expect(($img[0] as HTMLImageElement).naturalWidth, 'logo loaded').to.be.greaterThan(0));
+    // the account info still loads: it feeds the report preview's roofer name and the final feedback link
+    cy.wait('@getAccountHolders');
+    // but no roofer card is shown, so its logo is never loaded
+    cy.get('.partner-card').should('not.exist');
+    cy.get('@getRooferLogo.all').should('have.length', 0);
   });
 });
