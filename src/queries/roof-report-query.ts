@@ -1,28 +1,17 @@
 import { useStep } from '@/hooks';
-import { notifyRooferAfterAnalyze } from '@/providers';
-import { cache, getCached } from '@/utilities';
 import { GeoExportedPdf } from '@bpartners/roof-analyser';
 import { useMutation } from '@tanstack/react-query';
 
 /**
- * Takes the report the roof analyser exports (in place of its own download) and notifies the roofer with it.
+ * Keeps the report the roof analyser exports (in place of its own download). The roofer is notified with it by the
+ * library itself, on the prospect passed as `analysisProject.prospectId`, right after this returns.
  * The user stays on the analyser: the wizard only moves on to the acknowledgement step on `onFinish`.
  */
 export const useRoofReportQuery = () => {
   const { setStep } = useStep();
-  const prospect = useStep(({ params }) => params.prospect);
 
   const mutationFn = async ({ blob, filename }: GeoExportedPdf) => {
     const pdfFile = new File([blob], filename, { type: 'application/pdf' });
-    try {
-      if (!getCached.notificationAlreadySent()) {
-        await notifyRooferAfterAnalyze(prospect?.id || getCached.prospectId() || '', pdfFile);
-        cache.notificationAlreadySent();
-      }
-    } catch (error) {
-      // The user is never left stuck on the analyser because the notification failed.
-      console.error(error);
-    }
     setStep({ actualStep: useStep.getState().actualStep, params: { pdfFile } });
   };
 

@@ -84,9 +84,9 @@ export const detectionSync = {
   geoJsonUrl: null,
   shapeUrl: null,
   excelUrl: null,
-  imageUrl: null,
+  imageUrl: 'https://mock.com/image-result',
   pdfUrl: null,
-  vggUrl: null,
+  vggUrl: 'https://mock.com/vgg',
   addresses: [],
   roofDelimiter: {
     roofHeightInMeter: 9.2,

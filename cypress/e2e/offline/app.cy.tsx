@@ -36,7 +36,7 @@ const requestsInterceptions = () => {
   // prospect & areaPictures & get image
 
   // detection
-  cy.intercept('POST', `/detections/*/sync`, detectionSync).as('detectionSync');
+  cy.intercept('POST', '**/detections/*/sync', detectionSync).as('detectionSync');
   // detection
 
   cy.intercept('GET', `/users/${whoami_mock.user.id}/legalFiles`, []).as('getLegalFiles');
@@ -136,7 +136,11 @@ describe('Component testing', () => {
     cy.contains('COMPRENDRE VOTRE RAPPORT');
     cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
     cy.wait('@exportPdf');
+    // the roof analyser notifies the roofer itself, the report going up through a pre-signed url first
+    cy.wait('@createReportUpload');
+    cy.wait('@uploadReport');
     cy.wait('@notifyRoofer');
+    cy.get('@notifyRoofer.all').should('have.length', 1);
 
     cy.contains('button', 'Terminer').click();
     cy.contains('Merci d’avoir analysé votre toiture, votre pré-diagnostic BIRDIA est prêt.');
