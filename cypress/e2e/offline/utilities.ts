@@ -75,6 +75,9 @@ export const expectResponses = (alias: string, statusCode: number) =>
 /** No request was answered under `alias`. */
 export const expectNoRequest = (alias: string) => cy.get<Interception[]>(`@${alias}.all`).should('have.length', 0);
 
+/** Where the roof analyser is told to PUT the report it notifies the roofer with. */
+const reportUploadUrl_mock = 'https://report-uploads.mock/report-file-key-mock';
+
 /** What the roof analyser calls once the analysis is launched, besides `/detections/{id}/sync` which each spec answers itself. */
 export const roofAnalysisInterceptions = (llmReport: string) => {
   cy.intercept('GET', '**/vgg', { fixture: 'mock.vgg.json', headers: { 'content-type': 'application/json' } }).as('getDetectionResultVgg');
@@ -82,5 +85,12 @@ export const roofAnalysisInterceptions = (llmReport: string) => {
   cy.intercept('POST', '**/llm/toiture*', { body: llmReport, headers: { 'content-type': 'text/html' } }).as('getLlmReport');
   cy.intercept('POST', '**/files/*/raw?fileType=ATTACHMENT', { statusCode: 200, body: {} }).as('uploadAttachment');
   cy.intercept('POST', '**/annotations/exports', { fixture: 'legal-file.pdf', headers: { 'content-type': 'application/pdf' } }).as('exportPdf');
-  cy.intercept('POST', '**/prospects/*/notifications', { statusCode: 200, body: {} }).as('notifyRoofer');
+  // the roofer's notification, sent by the roof analyser itself: the report is PUT to a pre-signed url, then named by its key
+  cy.intercept('POST', '**/prospects/*/notifications/attachmentUploads', {
+    fileKey: 'report-file-key-mock',
+    uploadUrl: reportUploadUrl_mock,
+    expiresAt: '2100-01-01T00:00:00Z',
+  }).as('createReportUpload');
+  cy.intercept('PUT', reportUploadUrl_mock, { statusCode: 200, body: '' }).as('uploadReport');
+  cy.intercept('POST', /\/prospects\/[^/]+\/notifications\?attachmentFileKey=report-file-key-mock$/, { statusCode: 200, body: {} }).as('notifyRoofer');
 };

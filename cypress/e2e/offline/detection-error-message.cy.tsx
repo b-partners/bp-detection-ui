@@ -59,7 +59,7 @@ const launchAnalysis = (statusCode: number) => {
 
 /** A failed detection stops the analysis there: no result, report, export nor roofer notification is requested. */
 const expectAnalysisStopped = () => {
-  ['getDetectionResultVgg', 'getLlmReport', 'uploadAttachment', 'exportPdf', 'notifyRoofer'].forEach(expectNoRequest);
+  ['getDetectionResultVgg', 'getLlmReport', 'uploadAttachment', 'exportPdf', 'createReportUpload', 'uploadReport', 'notifyRoofer'].forEach(expectNoRequest);
 };
 
 /**

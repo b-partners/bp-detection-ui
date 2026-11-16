@@ -1,8 +1,11 @@
 import { analysisTimeout, defaultTimeout, process_detection_on_form_sel, search_input_sel } from './utilities';
 
+/** Where the roof analyser is told to PUT the report, so that none reaches a real bucket. */
+const reportUploadUrl_stub = 'https://report-uploads.stub/report-file-key-stub';
+
 /**
  * Every request the live walk goes through, aliased to be waited on and checked. Only the pdf export and the roofer
- * notification are stubbed: the walk still triggers both, but no real report is generated nor sent to the roofer.
+ * notification (with its report upload) are stubbed: the walk still triggers both, but no real report is generated nor sent to the roofer.
  */
 const aliasRequests = () => {
   cy.intercept('GET', `/captcha/token**`, { body: true }).as('validateCaptcha');
@@ -18,7 +21,14 @@ const aliasRequests = () => {
   cy.intercept('POST', '**/detections/*/sync').as('detectionSync');
   cy.intercept('POST', '**/llm/toiture*').as('getLlmReport');
   cy.intercept('POST', '**/annotations/exports', { fixture: 'legal-file.pdf', headers: { 'content-type': 'application/pdf' } }).as('exportPdf');
-  cy.intercept('POST', '**/prospects/*/notifications', { statusCode: 200, body: {} }).as('notifyRoofer');
+  // the roof analyser notifies the roofer itself: the report goes to a pre-signed url, then is named by its key
+  cy.intercept('POST', '**/prospects/*/notifications/attachmentUploads', {
+    fileKey: 'report-file-key-stub',
+    uploadUrl: reportUploadUrl_stub,
+    expiresAt: '2100-01-01T00:00:00Z',
+  }).as('createReportUpload');
+  cy.intercept('PUT', reportUploadUrl_stub, { statusCode: 200, body: '' }).as('uploadReport');
+  cy.intercept('POST', /\/prospects\/[^/]+\/notifications\?attachmentFileKey=report-file-key-stub$/, { statusCode: 200, body: {} }).as('notifyRoofer');
 };
 
 const expectSuccess = (alias: string, timeout = defaultTimeout) =>

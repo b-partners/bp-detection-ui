@@ -136,7 +136,11 @@ describe('Component testing', () => {
     cy.contains('COMPRENDRE VOTRE RAPPORT');
     cy.contains('CATÉGORIE B : ENTRETIEN À PRÉVOIR');
     cy.wait('@exportPdf');
+    // the roof analyser notifies the roofer itself, the report going up through a pre-signed url first
+    cy.wait('@createReportUpload');
+    cy.wait('@uploadReport');
     cy.wait('@notifyRoofer');
+    cy.get('@notifyRoofer.all').should('have.length', 1);
 
     cy.contains('button', 'Terminer').click();
     cy.contains('Merci d’avoir analysé votre toiture, votre pré-diagnostic BIRDIA est prêt.');
