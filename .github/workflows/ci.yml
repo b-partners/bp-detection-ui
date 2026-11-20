@@ -38,10 +38,12 @@ jobs:
       - run: npm install --legacy-peer-deps
       # The offline specs mock every request (cypress/support/offline-network.ts), so this url is never reached: a
       # fake one is enough. It is the only one: the roof analyser reaches every service through the Dashboard API.
-      - run: |
+      # The build outgrows node's default heap: NODE_OPTIONS must reach the build's own process, which a line in
+      # .env.local never does (vite reads that file as the app's env, not node's).
+      - env:
+          NODE_OPTIONS: --max-old-space-size=8192
+        run: |
           echo REACT_APP_BPARTNERS_API_URL=https://api.fake.test > .env.local
-
-          echo NODE_OPTIONS=\"--max_old_space_size=8192\" >> .env.local
 
           npm run build
           npm run preview -- --port 3000 &
